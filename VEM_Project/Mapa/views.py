@@ -13,3 +13,7 @@ def home(request):
     return render(request=request,
                   template_name='mapa/home.html',
                   )
+def vistaMapa(request):
+    return render(request=request,
+                  template_name='mapa/vistaMapa.html',
+                  )

@@ -10,4 +10,10 @@ urlpatterns = [
         name='home'
     ),
 
+    path(
+        route='vistaMapa',
+        view=views.vistaMapa,
+        name='vistaMapa'
+    )
+
 ]
