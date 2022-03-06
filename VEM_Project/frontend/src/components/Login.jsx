@@ -4,26 +4,25 @@ import { useRef, useState } from "react";
 import "./login.css";
 
 export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
-  const [error, setError] = useState(false);
-  const usernameRef = useRef();
-  const passwordRef = useRef();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const user = {
-      username: usernameRef.current.value,
-      password: passwordRef.current.value,
+    const [error, setError] = useState(false);
+    const usernameRef = useRef();//Para sacar el campo del form para username
+    const passwordRef = useRef();//Para sacar el campo del form para password
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const publicitario = { //Se reciben los datos
+        username: usernameRef.current.value,
+        password: passwordRef.current.value,
+      };
+      try {
+        const res = await axios.post("/publicitarios/loginP", publicitario); //La Api lo pasa al backend
+        setCurrentUsername(res.data.username);// Pone el nombre del publictario actual para que pueda identificar sus pines
+        myStorage.setItem('user', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+        setShowLogin(false);
+      } catch (err) {
+        setError(true);
+      }
     };
-    try {
-      const res = await axios.post("/users/login", user);
-      setCurrentUsername(res.data.username);
-      myStorage.setItem('user', res.data.username);
-      setShowLogin(false)
-    } catch (err) {
-      setError(true);
-    }
-  };
-
   return (
     <div className="loginContainer">
       <div className="logo">
@@ -45,5 +44,5 @@ export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
       </form>
       <Cancel className="loginCancel" onClick={() => setShowLogin(false)} />
     </div>
-  );
+    );
 }

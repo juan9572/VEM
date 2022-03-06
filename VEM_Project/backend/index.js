@@ -1,25 +1,21 @@
-const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const userRoute = require("./routes/users");
-const pinRoute = require("./routes/pins");
+const express = require('express'); // Libreria para trabajar configurar nuestro backend
+const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
+const dotenv = require('dotenv'); // Libreria para almacenar información sensible como la conexión de la base de datos
+const app = express(); // Inicializamos express
+const pinRoute = require('./routes/pins');
+const publicitariosRoute = require('./routes/publicitarios');
 
-dotenv.config();
+dotenv.config(); // Le damos la configuración inicial al dotenv
 
 app.use(express.json());
 
-mongoose 
- .connect(process.env.MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,   })   
- .then(() => console.log("MongoDB connected!"))
- .catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URL).then( ()=>{ //Realizamos la conexión con la base de datos de mongodb
+    console.log('La base de datos esta OK')         //Si la conexión resulta exitosa nos dira "La base de datos esta OK"
+}).catch((err) => console.log(err));                //En caso contrario nos mostrara el error.
 
-app.use("/api/users", userRoute);
-app.use("/api/pins", pinRoute);
+app.use("/api/pins",pinRoute);
+app.use("/api/publicitarios",publicitariosRoute);
 
-app.listen(8800, () => {
-  console.log("Backend server is running!");
-});
+app.listen(8800,() =>{
+    console.log("El puerto esta OK") //Conectamos express en el puero 8800 y si todo resulta bien nos dira "El puerto esta OK"
+})
