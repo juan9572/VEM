@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import Map, {Marker,Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {Room,Star} from "@material-ui/icons";
-import './App.css';
+import './app.css';
 import axios from 'axios';
 import Register from "./components/Register";
 import Login from "./components/Login";
