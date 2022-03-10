@@ -70,7 +70,6 @@ function App() {
   };
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-
   return (
     <Map
       {...viewState}
@@ -113,7 +112,7 @@ function App() {
           </Popup>
           )}
         </>
-      ))}
+      ))} 
       {newPlace && ( //si se le da click a algun nuevo lugar para crear un evento.
           <Popup 
           longitude={newPlace.long} 
