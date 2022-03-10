@@ -3,7 +3,6 @@ const Publicitario = require('../models/users/Publicitario'); //Importamos los m
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 
 // Registrar publicitario
-
 router.post('/registerP',async (req, res) => {
     try{
         //Generamos el password encriptandolo
@@ -26,7 +25,6 @@ router.post('/registerP',async (req, res) => {
 });
 
 // Logear publicitario
-
 router.post('/loginP',async (req, res) => {
     try{
         //Encontrar si el usuario esta registrado
