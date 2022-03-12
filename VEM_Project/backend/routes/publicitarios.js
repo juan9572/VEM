@@ -28,7 +28,7 @@ router.post('/registerP',async (req, res) => {
 router.post('/loginP',async (req, res) => {
     try{
         //Encontrar si el usuario esta registrado
-        const publicitario = await Publicitario.findOne({username: req.body.username});
+        const publicitario = await Publicitario.findOne({username: req.body.username}).lean();
         if(!publicitario){ //Si no existe el usuario se devuelve un error
             return res.status(400).json("Nombre de usuario o contraseña incorrectos");
         }
