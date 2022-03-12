@@ -20,12 +20,12 @@ const PublicitarioSchema = new mongoose.Schema(
             max: 20,
             min: 3
         },
-        categoriaPublicidad:[
+        categoriaPublicidad:
             {
                 type: String,
                 require: true
             }
-        ],
+        ,
         password:{
             type: String,
             require: true,
