@@ -15,10 +15,15 @@ const PinSchema = new mongoose.Schema({
             require: true,
             min: 3
         },
+        category: {
+            type:String,
+            require: true,
+            min: 3
+        },
         rating: {
             type:Number,
             require: true,
-            min:1, 
+            min:0, 
             max: 5
         },
         latitude: {
@@ -29,7 +34,16 @@ const PinSchema = new mongoose.Schema({
             type:Number,
             require: true
         },
-        fechaEvento:{
+        link: {
+            type:String,
+            require: true,
+            min: 6
+        },
+        fechaInicio:{
+            type:Date,
+            require: true
+        },
+        fechaFinalizacion:{
             type:Date,
             require: true
         }

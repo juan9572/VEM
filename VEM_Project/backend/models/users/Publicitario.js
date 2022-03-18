@@ -20,6 +20,12 @@ const PublicitarioSchema = new mongoose.Schema(
             max: 20,
             min: 3
         },
+        telefono:{
+            type: String,
+            require: true,
+            max: 10,
+            min: 3
+        },
         categoriaPublicidad:
             {
                 type: String,
