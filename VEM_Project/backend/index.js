@@ -10,7 +10,7 @@ const fs = require('fs');
 dotenv.config(); // Le damos la configuración inicial al dotenv
 
 app.use(express.json());
-app.use('/public', express.static(`${__dirname}/storage/imgs`))
+app.use('/public', express.static(`${__dirname}/storage/img`))
 
 let bd = 'mongodb://127.0.0.1/VEM_BD'; //Dirección para conectar a la base de datos localmente.
 
