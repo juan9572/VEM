@@ -1,44 +1,36 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
+const extendSchema = require('mongoose-extend-schema');
+const { appConfig } = require('../../config');
+const UsuarioSchema = require('../../models/users/Usario');
 
-const PublicitarioSchema = new mongoose.Schema(
-    { //Creamos la tabla de los publicitarios
-        username:{
-            type: String,
-            require: true,
-            min: 3,
-            max: 30
-        },
-        email:{
-            type: String,
-            require: true,
-            max: 60,
-            unique: true
-        },
-        nit:{
-            type: String,
-            require: true,
-            max: 20,
-            min: 3
-        },
-        telefono:{
-            type: String,
-            require: true,
-            max: 10,
-            min: 3
-        },
-        categoriaPublicidad:
-            {
-                type: String,
-                require: true
-            }
-        ,
-        password:{
-            type: String,
-            require: true,
-            min:6
-        }
+const PublicitarioSchema = extendSchema(UsuarioSchema,{
+    nit:{
+        type: String,
+        require: true,
+        max: 20,
+        min: 3
     },
-    {timestamps: true}); // timestamp se encarga de hacer el createdAt y updatedAt automaticamente
-                        // doc por si las dudas https://masteringjs.io/tutorials/mongoose/timestamps
+    telefono:{
+        type: String,
+        require: true,
+        max: 10,
+        min: 3
+    },
+    categoriaPublicidad:
+        {
+            type: String,
+            require: true
+        },
+    imgUrl: {
+        type: String,
+        require: false
+    }
+},
+{timestamps: true})
+
+PublicitarioSchema.methods.setImgUrl = function setImgUrl(filename){
+    const { host, port} = appConfig
+    this.imgUrl = `${host}:${port}/public/${filename}`
+}
 
 module.exports = mongoose.model("Publicitario",PublicitarioSchema); //Se crea el modelo dentro de la base de datos

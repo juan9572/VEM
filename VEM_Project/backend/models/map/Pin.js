@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
+const { appConfig } = require('../../config');
 
 const PinSchema = new mongoose.Schema({
         username: {
@@ -46,8 +47,21 @@ const PinSchema = new mongoose.Schema({
         fechaFinalizacion:{
             type:Date,
             require: true
+        },
+        imgUrl: {
+            type: String,
+            require: false
+        },
+        imgEventoPasado:{
+            type: String,
+            require: false
         }
     },
     {timestamps: true});
+
+    PinSchema.methods.setImgUrl = function setImgUrl(filename){
+        const { host, port} = appConfig
+        this.imgUrl = `${host}:${port}/public/${filename}`
+    }
 
     module.exports = mongoose.model("Pin",PinSchema); //Se crea el modelo dentro de la base de datos

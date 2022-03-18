@@ -1,9 +1,9 @@
 const router = require('express').Router();//Api para creación de publicitarios para la app
 const Publicitario = require('../models/users/Publicitario'); //Importamos los modelos
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
-
+const upload = require('../libs/storage')
 // Registrar publicitario
-router.post('/registerP',async (req, res) => {
+router.post('/registerP',upload.single('image'),async (req, res) => {
     try{
         //Generamos el password encriptandolo
         const salt = await bcrypt.genSalt(10);
@@ -16,6 +16,10 @@ router.post('/registerP',async (req, res) => {
             categoriaPublicidad:req.body.categoriaPublicidad,
             password:hashedPassword
         });
+        if (req.file){
+            const { filename } = req.file
+            newPublicitario.setImgUrl(filename)
+        }
         //Guardamos el publicitario y se manda el response
         const publicitario = await newPublicitario.save();
         res.status(200).json(publicitario);

@@ -19,12 +19,6 @@ const UsuarioSchema = new mongoose.Schema(
             require: true,
             min:6
         },
-        age:{
-            type: Number,
-            require: true,
-            max:110,
-            min:5
-        }
     },
     {timestamps: true}); // timestamp se encarga de hacer el createdAt y updatedAt automaticamente
                         // doc por si las dudas https://masteringjs.io/tutorials/mongoose/timestamps
