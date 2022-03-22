@@ -7,6 +7,7 @@ import './App.css';
 import axios from 'axios';
 import Register from "./components/Register";
 import Login from "./components/Login";
+import Card from "./components/Card";
 
 function App() {
   const [viewState, setViewState] = useState({ //Para crear el mapa
@@ -157,6 +158,7 @@ function App() {
           />
         )}
     </Map>
+    
   );
 }
 
