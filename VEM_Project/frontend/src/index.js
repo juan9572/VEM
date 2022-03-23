@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import ReactMap from './components/Map/ReactMap.jsx';
+import ResponsiveAppBar from './components/Navbar/Navbar.jsx';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ResponsiveAppBar />
+    <ReactMap />
   </React.StrictMode>,
   document.getElementById('root')
 );

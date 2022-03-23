@@ -1,0 +1,77 @@
+.card{
+    width:250px;
+    height: 250px;
+    display:flex;
+    flex-direction: column;
+    justify-content:space-around;
+}
+
+label{
+    width:max-content;
+    color:tomato;
+    font-size: 13px;
+    border-bottom: .5px solid tomato;
+    margin: 3px 0;
+}
+
+.star{
+    color:gold;
+}
+
+form{
+    width:200px;
+    height:250px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+input,textarea{
+    border:none;
+    border-bottom: 1px solid gray;
+}
+
+input::placeholder, textarea::placeholder{
+    font-size: 12px;
+    color:gray;
+}
+
+.submitButton{
+    border:none;
+    padding:5px;
+    border-radius:5px;
+    color:white;
+    background-color:tomato;
+    cursor: pointer;
+}
+
+.btn{
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn:focus{
+    outline: none;
+  }
+
+.logout{
+    background-color:tomato;
+}
+
+.login{
+    background-color:teal;
+}
+
+.register{
+    background-color:slateblue;
+}
+
+.buttons, .logout{
+    position: absolute;
+    top:10px;
+    right:10px;
+}
