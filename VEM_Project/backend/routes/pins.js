@@ -1,5 +1,6 @@
 const router = require('express').Router();//Api para creación de PINS para el mapa
 const Pin = require('../models/map/Pin'); //Importamos los modelos
+const Publicitario = require('../models/users/Publicitario');
 const fs = require('fs');
 const upload = require('../libs/storage')
 //Creación de un PIN
@@ -29,5 +30,24 @@ router.get("/", async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+router.get("/finalizados", async (req, res) => {
+    try{
+        const fecha = new Date();
+        const eventos = await Pin.find({fechaFinalizacion:{$lt:fecha}});
+        res.status(200).json(eventos);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.get("/finalEvento", async (req,res) =>{
+    try{
+        const evento = await Pin.findById(req.id);
+        res.status(200).json(evento);
+    }catch(err){
+        res.status(500).json(err);
+    }
+})
 
 module.exports = router;
