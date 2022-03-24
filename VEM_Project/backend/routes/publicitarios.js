@@ -3,18 +3,20 @@ const Publicitario = require('../models/users/Publicitario'); //Importamos los m
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 const upload = require('../libs/storage')
 // Registrar publicitario
-router.post('/registerP',upload.single('image'),async (req, res) => {
+router.post('/register',upload.single('image'),async (req, res) => {
     try{
         //Generamos el password encriptandolo
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
         //Creamos la instancia de publicitario
         const newPublicitario = new Publicitario({
-            username:req.body.username,
+            _id:req.body.username,
             email:req.body.email,
+            password:hashedPassword,
             nit:req.body.nit,
-            categoriaPublicidad:req.body.categoriaPublicidad,
-            password:hashedPassword
+            telefono:req.body.telefono,
+            categoriaPublicidad:req.body.categoriaPublicidad
+            
         });
         if (req.file){
             const { filename } = req.file
@@ -24,12 +26,13 @@ router.post('/registerP',upload.single('image'),async (req, res) => {
         const publicitario = await newPublicitario.save();
         res.status(200).json(publicitario);
     }catch(err){
+        console.log(err);
         res.status(500).json(err);
     }
 });
 
 // Logear publicitario
-router.post('/loginP',async (req, res) => {
+router.post('/login',async (req, res) => {
     try{
         //Encontrar si el usuario esta registrado
         const publicitario = await Publicitario.findOne({username: req.body.username}).lean();

@@ -2,7 +2,7 @@ const mongoose = require('mongoose'); // Libreria para conectar nuestra base de 
 const { appConfig } = require('../../config');
 
 const PinSchema = new mongoose.Schema({
-        username: {
+        publicitario: {
             type: String,
             require: true
         },

@@ -1,9 +1,25 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
-const extendSchema = require('mongoose-extend-schema');
 const { appConfig } = require('../../config');
-const UsuarioSchema = require('../../models/users/Usario');
 
-const PublicitarioSchema = extendSchema(UsuarioSchema,{
+const PublicitarioSchema = new mongoose.Schema({
+    _id:{
+        type: String,
+        require: true,
+        unique: true,
+        min: 3,
+        max: 35
+    },
+    email:{
+        type: String,
+        min:5,
+        max: 60,
+        require:true,
+        unique: true
+    },
+    password:{
+        type: String,
+        require: true,
+    },
     nit:{
         type: String,
         require: true,
@@ -13,14 +29,9 @@ const PublicitarioSchema = extendSchema(UsuarioSchema,{
     telefono:{
         type: String,
         require: true,
-        max: 10,
-        min: 3
+        min: 6
     },
-    categoriaPublicidad:
-        {
-            type: String,
-            require: true
-        },
+    categoriaPublicidad:{type:String},
     imgUrl: {
         type: String,
         require: false

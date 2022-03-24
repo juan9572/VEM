@@ -1,7 +1,25 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
-const extendSchema = require('mongoose-extend-schema');
 
-const UsuarioSchema = extendSchema(UsuarioSchema,{
+const UsuarioSchema = new mongoose.Schema({
+    _id:false,
+    username:{
+        type: String,
+        require: true,
+        unique: true,
+        min: 3,
+        max: 30
+    },
+    email:{
+        type: String,
+        require: true,
+        max: 60,
+        unique: true
+    },
+    password:{
+        type: String,
+        require: true,
+        min:6
+    },
     age:{
         type: Number,
         require: true,
