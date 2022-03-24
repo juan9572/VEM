@@ -41,16 +41,21 @@ function ReactMap() {
   const [title,setTitle] = useState(null);//Para sacar información del form para el titulo
   const [desc,setDesc] = useState(null);//Para sacar información del form para la descripción
   const [rating,setRating] = useState(1);//Para sacar el puntaje del form
+  const [categoria,setCategoria] = useState(null);
+  const [lastTitle, setLastTitle] = useState(null);
   const handleSubmit = async (e) => { //Crear un nuevo evento en el mapa
     e.preventDefault();
     const newPin = { //Se crea el pin
-      username:currentUser,
+      publicitario:currentUser,
       title:title,
       description:desc,
+      category:categoria, //
       rating:rating,
       latitude:newPlace.lat,
       long:newPlace.long,
-      fechaEvento:"2020-06-12"
+      link:"AAA",
+      fechaInicio:"2020-06-12",
+      fechaFinalizacion:"2022-06-12"
     };
     try{
       const res = await axios.post("/pins",newPin); //Se llama a la Api para que los guarde
@@ -59,7 +64,25 @@ function ReactMap() {
     }catch(err){ 
       console.log(err);
     }
-  }
+  };
+  const actualizaDatos = async (e) => { //Crear un nuevo evento en el mapa
+    e.preventDefault();
+    const newPin = { //Se crea el pin
+      publicitario:currentUser,
+      title:title,
+      description:desc,
+      category:categoria, //
+      link:"AAA",
+      fechaInicio:"2020-06-12",
+      fechaFinalizacion:"2022-06-12"
+    };
+    try{
+      const res = await axios.post("/pins/actualizar",[newPin,lastTitle]); //Se llama a la Api para que los guarde
+      setPins([...pins, res.data]); //Lo agrega al mapa
+    }catch(err){ 
+      console.log(err);
+    }
+  };
   //Logica para el registro para crear puntos
   const myStorage = window.localStorage; //guarda en el servidor local
   const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
@@ -76,37 +99,63 @@ function ReactMap() {
       style={{width: 800, height: 600}}
       mapStyle="mapbox://styles/mapbox/streets-v11"
       mapboxAccessToken={process.env.REACT_APP_MAPBOX}
-      onClick={currentUser && sacarCordenadas} //Saca la latitud y longitud del mapa y crea un objeto newPlace
+      onContextMenu={currentUser && sacarCordenadas} //Saca la latitud y longitud del mapa y crea un objeto newPlace
     >
       {pins.map(p=>( //Es un for-each
         <>
           <Marker longitude={p.long} latitude={p.latitude}//Pone el puntero en la latitud y longitud
           offsetLeft={viewState.zoom*2} offsetTop={viewState.zoom*2} anchor="bottom">
           <Room 
-            style={{fontSize:viewState.zoom*4,color: p.username===currentUser?"tomato":"slateblue", cursor:"pointer"}}
-            onClick={()=>handleMarkerClick(p._id,p.latitude,p.long)}//Cuando se le de click sale el pop up
+            style={{fontSize:viewState.zoom*4,color: p.publicitario===currentUser?"tomato":"slateblue", cursor:"pointer"}}
+            onClick={()=>{handleMarkerClick(p._id,p.latitude,p.long);setLastTitle(p.title);}}//Cuando se le de click sale el pop up
           />
           </Marker>
-          {p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
+          {!currentUser && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
           <Popup 
           longitude={p.long} 
           latitude={p.latitude}
           anchor="bottom"
-          closeOnClick={false}
+          closeOnClick={true}
           closeButton={true}
           >
             <div className="card">
               <label>{p.title}</label>
-              <h4>Empresa</h4>
               <label>{p.description}</label>
               <h5>Evento X</h5>
-              <label>{p.fechaEvento.substring(0,10)}</label>
+              <label>{p.fechaInicio.substring(0,10)}</label>
+              <label>{p.fechaFinalizacion.substring(0,10)}</label>
+              <label>{p.category}</label>
+              <p>{p.link}</p>
+              <div className="container-star">
+                {Array(p.rating).fill(<Star className="star"/>)}
+              </div>
+            </div>
+          </Popup>
+          )}
+          {currentUser && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
+          <Popup 
+          longitude={p.long} 
+          latitude={p.latitude}
+          anchor="bottom"
+          closeOnClick={true}
+          closeButton={true}
+          >
+            <div className="card">
+            <form onSubmit={actualizaDatos}>
+            <input placeholder={p.title} type="text" onChange={(e) => setTitle(e.target.value)}/>
+              <h4>{currentUser}</h4>
+              <input placeholder={p.category} type="text" onChange={(e) => setCategoria(e.target.value)}/>
+              <textarea placeholder={p.description} onChange={(e) => setDesc(e.target.value)}/>
+              <label>{p.fechaInicio.substring(0,10)}</label>
+              <label>{p.fechaFinalizacion.substring(0,10)}</label>
               <p>AAAA</p>
               <label>Más información</label>
               <p>Link</p>
               <div className="container-star">
                 {Array(p.rating).fill(<Star className="star"/>)}
               </div>
+              <button className="submitButton" type="submit">Actualizar</button>
+              </form>
             </div>
           </Popup>
           )}
@@ -124,10 +173,12 @@ function ReactMap() {
           <div>
             <form onSubmit={handleSubmit}>
               <label>Title</label>
-              <input placeholder="Title" type="text" onChange={(e) => setTitle(e.target.value)}/>
-              <label>Review</label>
-              <textarea placeholder="Review" onChange={(e) => setDesc(e.target.value)}/>
-              <label>rating</label>
+              <input placeholder="Titulo" type="text" onChange={(e) => setTitle(e.target.value)}/>
+              <label>Categoria</label>
+              <input placeholder="Categoria" type="text" onChange={(e) => setCategoria(e.target.value)}/>
+              <label>Descripción</label>
+              <textarea placeholder="Descripción" onChange={(e) => setDesc(e.target.value)}/>
+              <label>Puntaje</label>
               <select onChange={(e) => setRating(e.target.value)}>
                 <option defaultValue value="1">1</option>
                 <option value="2">2</option>
@@ -135,7 +186,7 @@ function ReactMap() {
                 <option value="4">4</option>
                 <option value="5">5</option>
               </select>
-              <button className="submitButton" type="submit">Add pin</button>
+              <button className="submitButton" type="submit">Agregar evento</button>
             </form>
           </div>
           </Popup>

@@ -10,14 +10,13 @@ router.post('/register',upload.single('image'),async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
         //Creamos la instancia de publicitario
         const newPublicitario = new Publicitario({
-            _id:req.body.username,
+            _id:req.body._id,
             email:req.body.email,
             password:hashedPassword,
             nit:req.body.nit,
-            telefono:req.body.telefono,
             categoriaPublicidad:req.body.categoriaPublicidad
-            
         });
+        console.log(newPublicitario);
         if (req.file){
             const { filename } = req.file
             newPublicitario.setImgUrl(filename)
@@ -35,7 +34,7 @@ router.post('/register',upload.single('image'),async (req, res) => {
 router.post('/login',async (req, res) => {
     try{
         //Encontrar si el usuario esta registrado
-        const publicitario = await Publicitario.findOne({username: req.body.username}).lean();
+        const publicitario = await Publicitario.findOne({_id: req.body._id}).lean();
         if(!publicitario){ //Si no existe el usuario se devuelve un error
             return res.status(400).json("Nombre de usuario o contraseña incorrectos");
         }

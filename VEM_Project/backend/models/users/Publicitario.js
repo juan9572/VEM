@@ -28,7 +28,6 @@ const PublicitarioSchema = new mongoose.Schema({
     },
     telefono:{
         type: String,
-        require: true,
         min: 6
     },
     categoriaPublicidad:{type:String},

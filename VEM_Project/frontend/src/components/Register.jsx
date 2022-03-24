@@ -15,14 +15,14 @@ export default function Register({setShowRegister}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newPublicitario = {
-      username: usernameRef.current.value,
+      _id: usernameRef.current.value,
       email: emailRef.current.value,
       nit: nitRef.current.value,
       categoriaPublicidad: categoriaPublicidadRef.current.value,
       password: passwordRef.current.value,
     };
     try {
-      await axios.post("/publicitarios/registerP", newPublicitario); // La Api lo manda al backend
+      await axios.post("/publicitarios/register", newPublicitario); // La Api lo manda al backend
       setError(false);
       setSuccess(true); //Se confrima que se hizo bien el registro
     } catch (err) {

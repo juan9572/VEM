@@ -11,13 +11,13 @@ export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
     const handleSubmit = async (e) => {
       e.preventDefault();
       const publicitario = { //Se reciben los datos
-        username: usernameRef.current.value,
+        _id: usernameRef.current.value,
         password: passwordRef.current.value,
       };
       try {
-        const res = await axios.post("/publicitarios/loginP", publicitario); //La Api lo pasa al backend
-        setCurrentUsername(res.data.username);// Pone el nombre del publictario actual para que pueda identificar sus pines
-        myStorage.setItem('user', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+        const res = await axios.post("/publicitarios/login", publicitario); //La Api lo pasa al backend
+        setCurrentUsername(res.data._id);// Pone el nombre del publictario actual para que pueda identificar sus pines
+        myStorage.setItem('user', res.data._id); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
         setShowLogin(false);
       } catch (err) {
         setError(true);
