@@ -11,6 +11,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import {Link} from 'react-router-dom';
+import Logo from '../../Logo.svg';
 
 const pages = ['Inicio', 'Mapa', 'Eventos Finalizados'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -35,7 +37,7 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ background: '#ffffff' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -44,7 +46,9 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            <img src="../../Logo.png" alt="logo"/>
+            <Link to={'/Inicio'}>
+              <img src={Logo} style={{width:150}} alt="logo"/>
+            </Link>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -55,6 +59,7 @@ const ResponsiveAppBar = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              style={{"color":"#909090"}}
             >
               <MenuIcon />
             </IconButton>
@@ -78,7 +83,9 @@ const ResponsiveAppBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography textAlign="center">
+                  <Link style={{textDecoration:'none', color: 'black'}}to={`/${page.includes(' ')?page.replaceAll(' ',''):page}`}>{page}</Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -89,16 +96,16 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
-            <img src="../../Logo.png" alt="logo"/>
+            <img src={Logo} style={{width:100}} alt="logo"/>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: 'black', display: 'block' }}
               >
-                {page}
+              <Link style={{textDecoration:'none', color: 'black'}}to={`/${page.includes(' ')?page.replaceAll(' ',''):page}`}>{page}</Link>
               </Button>
             ))}
           </Box>

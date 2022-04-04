@@ -4,6 +4,7 @@ import axios from 'axios';
 
 function Card({title, imageUrl, body,
 fechaInicio, fechaFinalizacion}){
+    /*
     const [eventosF,setEventosF] = useState(null);
     useEffect(() => {
         const getEventosFinalizados = async (id) => {
@@ -15,7 +16,7 @@ fechaInicio, fechaFinalizacion}){
             }
         }
         getEventosFinalizados();
-    },[]);
+    },[]);*/
     return(
         <div className="card-container">
             <div className="image-container">
@@ -24,15 +25,15 @@ fechaInicio, fechaFinalizacion}){
             <div className="card-content">
                 <div className="card-items">
                     <h3>Nombre:</h3>
-                    <p>{eventosF.title}</p>
+                    <p>{"eventosF.title"}</p>
                 </div>
                 <div className="card-items">
                     <h3>Fecha inicio:</h3>
-                    <p>{eventosF.fechaInicio}</p>
+                    <p>{"eventosF.fechaInicio"}</p>
                 </div>
                 <div className="card-items">
                     <h3>Fecha finalización:</h3>
-                    <p>{eventosF.fechaFinalizacion}</p>
+                    <p>{"eventosF.fechaFinalizacion"}</p>
                 </div>
                 <div className="card-body">
                     <h3>Descripción:</h3>
@@ -40,10 +41,8 @@ fechaInicio, fechaFinalizacion}){
                 </div>
             </div>
             <div className="btn">
-                <button>
-                    <a>
+                <button className="loginBtn" type="submit">
                         seguir empresa
-                    </a>
                 </button>
             </div>
         </div>

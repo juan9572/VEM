@@ -142,13 +142,15 @@ function ReactMap() {
           >
             <div className="card">
             <form onSubmit={actualizaDatos}>
+            <label>Titulo</label>
             <input placeholder={p.title} type="text" onChange={(e) => setTitle(e.target.value)}/>
               <h4>{currentUser}</h4>
+              <label>Categoria</label>
               <input placeholder={p.category} type="text" onChange={(e) => setCategoria(e.target.value)}/>
+              <label>Descripción</label>
               <textarea placeholder={p.description} onChange={(e) => setDesc(e.target.value)}/>
               <label>{p.fechaInicio.substring(0,10)}</label>
               <label>{p.fechaFinalizacion.substring(0,10)}</label>
-              <p>AAAA</p>
               <label>Más información</label>
               <p>Link</p>
               <div className="container-star">

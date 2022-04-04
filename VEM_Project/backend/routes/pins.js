@@ -26,6 +26,8 @@ router.post("/actualizar", async (req, res) => {
     const filter = {title:req.body[1]};
     try{
         const actualizar = await Pin.findOneAndUpdate(filter,datosPin);
+        const pins = await Pin.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(pins));
         res.status(200).json(actualizar);
     }catch(err){
         res.status(500).json(err);
