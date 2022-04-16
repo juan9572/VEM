@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 
 const pages = ['Inicio', 'Mapa', 'Eventos Finalizados'];
@@ -47,7 +47,7 @@ const ResponsiveAppBar = () => {
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
             <Link to={'/Inicio'}>
-              <img src={Logo} style={{width:150}} alt="logo"/>
+              <img src={Logo} style={{ width: 150 }} alt="logo" />
             </Link>
           </Typography>
 
@@ -59,7 +59,7 @@ const ResponsiveAppBar = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
-              style={{"color":"#909090"}}
+              style={{ "color": "#909090" }}
             >
               <MenuIcon />
             </IconButton>
@@ -84,7 +84,7 @@ const ResponsiveAppBar = () => {
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                  <Link style={{textDecoration:'none', color: 'black'}}to={`/${page.includes(' ')?page.replaceAll(' ',''):page}`}>{page}</Link>
+                    <Link style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</Link>
                   </Typography>
                 </MenuItem>
               ))}
@@ -96,7 +96,7 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
-            <img src={Logo} style={{width:100}} alt="logo"/>
+            <img src={Logo} style={{ width: 100 }} alt="logo" />
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -105,7 +105,7 @@ const ResponsiveAppBar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'black', display: 'block' }}
               >
-              <Link style={{textDecoration:'none', color: 'black'}}to={`/${page.includes(' ')?page.replaceAll(' ',''):page}`}>{page}</Link>
+                <Link style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</Link>
               </Button>
             ))}
           </Box>
