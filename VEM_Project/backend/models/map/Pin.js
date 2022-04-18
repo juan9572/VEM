@@ -1,67 +1,103 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
 const { appConfig } = require('../../config');
 
-const PinSchema = new mongoose.Schema({
-        publicitario: {
+const ResenaSchema = new mongoose.Schema(
+    {
+        username: {
             type: String,
-            require: true
-        },
-        title: {
-            type:String,
             require: true,
-            min:3
+            min: 3,
+            max: 30
         },
-        description: {
-            type:String,
-            require: true,
-            min: 3
-        },
-        category: {
-            type:String,
+        mensaje: {
+            type: String,
             require: true,
             min: 3
         },
         rating: {
-            type:Number,
+            type: Number,
             require: true,
-            min:0, 
+            min: 0,
             max: 5
         },
-        latitude: {
-            type:Number,
-            require: true
-        },
-        long: {
-            type:Number,
-            require: true
-        },
-        link: {
-            type:String,
+
+    },{ timestamps: true });
+
+const EstadisticaSchema = new mongoose.Schema(
+    { //Creamos la tabla de usuarios
+        datos: {
+            type: [String],
             require: true,
-            min: 6
+            min: 1,
+            max: 10
         },
-        fechaInicio:{
-            type:Date,
-            require: true
-        },
-        fechaFinalizacion:{
-            type:Date,
-            require: true
-        },
-        imgUrl: {
-            type: String,
-            require: false
-        },
-        imgEventoPasado:{
-            type: String,
-            require: false
-        }
+    });
+
+const PinSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        require: true,
+        min: 3
     },
-    {timestamps: true});
-
-    PinSchema.methods.setImgUrl = function setImgUrl(filename){
-        const { host, port} = appConfig
-        this.imgUrl = `${host}:${port}/public/${filename}`
+    description: {
+        type: String,
+        require: true,
+        min: 3
+    },
+    category: {
+        type: String,
+        require: true,
+        min: 3
+    },
+    rating: {
+        type: Number,
+        require: true,
+        min: 0,
+        max: 5
+    },
+    latitude: {
+        type: Number,
+        require: true
+    },
+    long: {
+        type: Number,
+        require: true
+    },
+    link: {
+        type: String,
+        require: true,
+        min: 6
+    },
+    fechaInicio: {
+        type: Date,
+        require: true
+    },
+    fechaFinalizacion: {
+        type: Date,
+        require: true
+    },
+    imgUrl: {
+        type: String,
+        require: false
+    },
+    imgEventoPasado: {
+        type: String,
+        require: false
+    },
+    comentarios: {
+        type: [ResenaSchema],
+        default: undefined
+    },
+    estadistica:{
+        type:[EstadisticaSchema],
+        default:undefined
     }
+},
+    { timestamps: true });
 
-    module.exports = mongoose.model("Pin",PinSchema); //Se crea el modelo dentro de la base de datos
+PinSchema.methods.setImgUrl = function setImgUrl(filename) {
+    const { host, port } = appConfig
+    this.imgUrl = `${host}:${port}/public/${filename}`
+}
+
+module.exports = mongoose.model("Pin", PinSchema); //Se crea el modelo dentro de la base de datos
