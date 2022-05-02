@@ -2,10 +2,8 @@ const express = require('express'); // Libreria para trabajar configurar nuestro
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
 const dotenv = require('dotenv'); // Libreria para almacenar información sensible como la conexión de la base de datos
 const app = express(); // Inicializamos express
-const pinRoute = require('./routes/pins');
 const publicitariosRoute = require('./routes/publicitarios');
 const clientesRoute = require('./routes/clientes');
-const Pin = require('./models/map/Pin');
 const fs = require('fs');
 
 dotenv.config(); // Le damos la configuración inicial al dotenv
@@ -26,7 +24,6 @@ mongoose.connect(bd,{useNewUrlParser: true, useUnifiedTopology: true}).then( ()=
     console.log("Se aplico el backup, todo al día");
 }).catch((err) => console.log(err));                //En caso contrario nos mostrara el error.
 
-app.use("/api/pins",pinRoute);
 app.use("/api/publicitarios",publicitariosRoute);
 app.use("/api/clientes",clientesRoute);
 

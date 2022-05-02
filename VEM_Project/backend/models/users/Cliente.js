@@ -22,7 +22,6 @@ const ClienteSchema = new mongoose.Schema({
     },
     age:{
         type: Number,
-        require: true,
         max:110,
         min:-1
     }

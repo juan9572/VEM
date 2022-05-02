@@ -40,17 +40,14 @@ function ReactMap() {
   };
   const [title,setTitle] = useState(null);//Para sacar información del form para el titulo
   const [desc,setDesc] = useState(null);//Para sacar información del form para la descripción
-  const [rating,setRating] = useState(1);//Para sacar el puntaje del form
   const [categoria,setCategoria] = useState(null);
   const [lastTitle, setLastTitle] = useState(null);
   const handleSubmit = async (e) => { //Crear un nuevo evento en el mapa
     e.preventDefault();
     const newPin = { //Se crea el pin
-      publicitario:currentUser,
       title:title,
       description:desc,
       category:categoria, //
-      rating:rating,
       latitude:newPlace.lat,
       long:newPlace.long,
       link:"AAA",
@@ -68,10 +65,11 @@ function ReactMap() {
   const actualizaDatos = async (e) => { //Crear un nuevo evento en el mapa
     e.preventDefault();
     const newPin = { //Se crea el pin
-      publicitario:currentUser,
       title:title,
       description:desc,
       category:categoria, //
+      latitude:newPlace.lat,
+      long:newPlace.long,
       link:"AAA",
       fechaInicio:"2020-06-12",
       fechaFinalizacion:"2022-06-12"
@@ -181,7 +179,7 @@ function ReactMap() {
               <label>Descripción</label>
               <textarea placeholder="Descripción" onChange={(e) => setDesc(e.target.value)}/>
               <label>Puntaje</label>
-              <select onChange={(e) => setRating(e.target.value)}>
+              <select >
                 <option defaultValue value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>

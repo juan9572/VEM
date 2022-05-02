@@ -18,7 +18,7 @@ ReactDOM.render(
         <Route path="/" element={<Inicio />} />
         <Route path="/Inicio" element={<Inicio />} />
         <Route path="/EventosFinalizados" element={<EventosFinalizados />} />
-        <Route path="/Mapa" element={<LoginPublicitario />} />
+        <Route path="/Mapa" element={<Mapa />} />
         <Route path="/Login-Publicitario" element={<LoginPublicitario />} />
         <Route path="/Login-Cliente" element={<LoginCliente />} />
         <Route path="/Register-Publicitario" element={<RegisterPublicitario />} />

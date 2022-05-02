@@ -1,10 +1,27 @@
 const router = require('express').Router();//Api para creación de publicitarios para la app
 const Publicitario = require('../models/users/Publicitario'); //Importamos los modelos
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
-
+const fs = require('fs');
+const upload = require('../libs/storage')
 // Registrar publicitario
 router.post('/register',async (req, res) => {
     try{
+        //Validamos que no se haya registrado con ese username, correo electronico y nit
+        //Username
+        if(await Publicitario.findOne({username: req.body.username}).lean()){
+            res.status(409).json({"field":"username","error":"Este nombre de usuario ya esta en uso"});
+            return;
+        }
+        //Email
+        if(await Publicitario.findOne({email: req.body.email}).lean()){
+            res.status(409).json({"field":"email","error":"Este email ya esta en uso"});
+            return;
+        }
+        //Nit
+        if(await Publicitario.findOne({nit: req.body.nit}).lean()){
+            res.status(409).json({"field":"nit","error":"Este nit ya esta en uso"});
+            return;
+        }
         //Generamos el password encriptandolo
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
@@ -36,15 +53,79 @@ router.post('/login',async (req, res) => {
         //Encontrar si el usuario esta registrado
         const publicitario = await Publicitario.findOne({username: req.body.username}).lean();
         if(!publicitario){ //Si no existe el usuario se devuelve un error
-            return res.status(400).json("Nombre de usuario o contraseña incorrectos");
+            return res.status(409).json({"error":"Nombre de usuario o contraseña incorrectos"});
         }
         //Validar la contraseña
         const validarPassword = await bcrypt.compare(req.body.password, publicitario.password);
         if(!validarPassword){//Si no coincide la clave se devuelve un error
-            return res.status(400).json("Nombre de usuario o contraseña incorrectos");
+            return res.status(409).json({"error":"Nombre de usuario o contraseña incorrectos"});
         }
         //Devolver respuesta
         res.status(200).json(publicitario);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+
+//AAAAAAAAAAAAAAAAAAAAAA
+
+
+//Creación de un PIN
+router.post("/crearEvento",upload.single('image'),async (req,res)=>{
+    const newPin = new Publicitario(req.body);
+    try{
+        const savePin = await newPin.save();
+        const pins = await Publicitario.find().lean();
+        if (req.file){
+            const { filename } = req.file
+            newPin.setImgUrl(filename)
+        }
+        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(pins));
+         //Se crea el backup, para tener las bases de datos sincronizadas
+        res.status(200).json(savePin);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/actualizarEvento", async (req, res) => {
+    const datosPin = req.body[0];
+    const filter = {title:req.body[1]};
+    try{
+        const actualizar = await Publicitario.findOneAndUpdate(filter,datosPin);
+        const pins = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(pins));
+        res.status(200).json(actualizar);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+//Obtener todos los pins del mapa
+router.get("/getEventos", async (req, res) => {
+    try{
+        const pins = await Publicitario.find().lean();
+        res.status(200).json(pins);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.get("/getFinalizados", async (req, res) => {
+    try{
+        const fecha = new Date();
+        const eventos = await Publicitario.find({fechaFinalizacion:{$lt:fecha}});
+        res.status(200).json(eventos);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.get("/getFinalEvento", async (req,res) =>{
+    try{
+        const evento = await Publicitario.findById(req.id);
+        res.status(200).json(evento);
     }catch(err){
         res.status(500).json(err);
     }
