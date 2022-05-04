@@ -12,13 +12,18 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 import Publicitario from '../../../PublicitarioImagen.svg';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-
 const theme = createTheme();
-
 export default function SignInSide() {
+  const [errorServidor, setErrorServidor] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const myStorage = window.localStorage; //guarda en el servidor local
   const logeoPublicitario = async (data) => {
     const publicitario = { //Se reciben los datos
@@ -26,8 +31,20 @@ export default function SignInSide() {
       password: data.password,
     };
     try {
-      const res = await axios.post("/publicitarios/login", publicitario); //La Api lo pasa al backend
-      myStorage.setItem('Publicitario', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      const res = await axios.post("api/publicitarios/login", publicitario).catch(
+        function (error) {
+          if(error.response.status === 200) {
+            console.log("Melo caramelo");
+          } else if (error.response.status === 409) {
+            setError("username", { type: "error", message: error.response.data.error });
+            setError("password", { type: "error", message: error.response.data.error });
+          } else if (error.response.status === 500) {
+            setOpen(true);
+            setErrorServidor(true);
+          }
+        }
+      ); //La Api lo pasa al backend
+      //myStorage.setItem('Publicitario', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
     } catch (err) {
       console.log(err);
     }
@@ -40,7 +57,7 @@ export default function SignInSide() {
     username: "",
     password: ""
   };
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setError } = useForm({
     mode: 'all',
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
@@ -84,6 +101,29 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Ingresar
             </Typography>
+            {errorServidor &&
+              <Collapse in={open}>
+                <Alert
+                  severity="error"
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setOpen(false);
+                      }}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                  sx={{ mb: 2 }}
+                >
+                  <AlertTitle>Error</AlertTitle>
+                  Parece que algo ha salido mal, intentalo más tarde
+                </Alert>
+              </Collapse>
+            }
             <Box component="form" noValidate onSubmit={handleSubmit((data) => logeoPublicitario(data))} sx={{ mt: 1, width: '100%' }}>
               <Controller
                 control={control}
@@ -96,7 +136,7 @@ export default function SignInSide() {
                   }}
                 render={({
                   field: { onChange, onBlur, value, ref },
-                  fieldState: {error },
+                  fieldState: { error },
                   formState,
                 }) => (
                   <TextField

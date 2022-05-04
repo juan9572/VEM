@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 
 const pages = ['Inicio', 'Mapa', 'Eventos Finalizados'];
@@ -20,37 +20,32 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
   return (
     <AppBar position="static" style={{ background: '#ffffff' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-          >
-            <Link to={'/Inicio'}>
+          <NavLink to={'/Inicio'}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
               <img src={Logo} style={{ width: 150 }} alt="logo" />
-            </Link>
-          </Typography>
-
+            </Typography>
+          </NavLink>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -83,9 +78,11 @@ const ResponsiveAppBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</Link>
-                  </Typography>
+                  <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>
+                    <Typography textAlign="center">
+                      {page}
+                    </Typography>
+                  </NavLink>
                 </MenuItem>
               ))}
             </Menu>
@@ -105,11 +102,10 @@ const ResponsiveAppBar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'black', display: 'block' }}
               >
-                <Link style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</Link>
+                <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</NavLink>
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

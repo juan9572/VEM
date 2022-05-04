@@ -1,3 +1,4 @@
+import React from 'react';
 import {useEffect, useState} from 'react';
 import Map, {Marker,Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -15,6 +16,7 @@ function ReactMap() {
   });
   const [pins,setPins] = useState([]);//Para poner pins(los eventos) en el mapa
   const [currentPlaceId,setCurrentPlaceId] = useState(null);
+  /*
   useEffect(() => { //Toma todos los eventos que hay
     const getEventos = async () =>{
       try{
@@ -25,7 +27,7 @@ function ReactMap() {
       }
     }
     getEventos();
-  }, []);
+  }, []);*/
   const handleMarkerClick = (id,lat,long) => { //Para los popups de los eventos
     setViewState({...viewState,latitude:lat,longitude:long}); //Centra la atención del usuario en el popup
     setCurrentPlaceId(id);
