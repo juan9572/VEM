@@ -23,6 +23,7 @@ ReactDOM.render(
           <Route path="/" element={<Inicio />} />
           <Route path="/Inicio" element={<Inicio />} />
           <Route path="/EventosFinalizados" element={<EventoIndividual />} />
+          <Route path="/EventosFinalGeneral" element={<EventosFinalizados/>} />
           {/* Lista de eventos finalizados de cada uno de los publicitarios*/}
           <Route path="/Mapa" element={<Mapa />} />
           <Route path="/ListaPublicitarios" element={null} />  {/*Hacer esta página*/}
