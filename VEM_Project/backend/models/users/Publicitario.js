@@ -56,7 +56,6 @@ const PinSchema = new mongoose.Schema({
     },
     rating: {
         type: Number,
-        
         min: 0,
         max: 5
     },
@@ -70,7 +69,7 @@ const PinSchema = new mongoose.Schema({
     },
     link: {
         type: String,
-        require: true,
+        require: false,
         min: 6
     },
     fechaInicio: {
