@@ -142,7 +142,14 @@ router.post('/comentar', async (req, res) => {
         }
         //const publicar = await Publicitario.findOneAndUpdate({"eventosCreados.titulo":"Nose"},{$push:{"eventosCreados.$.comentarios":newComentario}})
         const comment = await Publicitario.findOne({"eventosCreados.titulo":req.body.tituloEvento});
-        comment.eventosCreados[0].comentarios.push(newComentario);
+        let index = 0;
+        for (let i = 0; i < comment.eventosCreados.length; i++) {
+            if(comment.eventosCreados.titulo === req.body.tituloEvento){
+                index = i;
+                break;
+            }
+        }
+        comment.eventosCreados[index].comentarios.push(newComentario);
         comment.save()
         res.status(200).json(comment);
     }
