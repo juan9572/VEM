@@ -21,12 +21,19 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
+
 const theme = createTheme();
 
 export default function PlantillaEvento() {
-    const [ errorServidor, setErrorServidor ] = React.useState(false);
+    const [errorServidor, setErrorServidor] = React.useState(false);
 
     const [open, setOpen] = React.useState(false);
+
+    const [value, setValue] = React.useState([null, null]);
+
+    const handleChange = (newValue) => {
+        setValue(newValue);
+    };
 
     const categorias = [{ categoria: 'Arte y cultura' }, { categoria: 'Deportes' }, { categoria: 'Gastronomía' }, { categoria: 'Mascotas' }];
 
@@ -42,7 +49,7 @@ export default function PlantillaEvento() {
         };
         try {
             const res = await axios.post("api/publicitarios/register", publicitario).catch(
-                function(error){
+                function (error) {
                     if (error.response.status === 200) {
                     } else if (error.response.data.field === "username") {
                         setError("username", { type: "error", message: error.response.data.error });
@@ -71,12 +78,14 @@ export default function PlantillaEvento() {
     };
 
     const defaultValues = {
-        username: "",
-        email: "",
-        nit: "",
-        telefono: "",
-        categoria: [],
-        password: ""
+        titulo: "",
+        descripcion: "",
+        categoria: "",
+        latitud: 0,
+        long: 0,
+        fechaInicio: "",
+        fechaFinalizacion: "",
+        publicitario: ""
     };
 
     const { handleSubmit, control, clearErrors, setError } = useForm({
@@ -87,7 +96,10 @@ export default function PlantillaEvento() {
     });
     return (
         <ThemeProvider theme={theme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
+            <Grid container component="main" sx={{
+                height: '100vh', alignItems: "center",
+                justifyContent: "center"
+            }}>
                 <CssBaseline />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
@@ -125,155 +137,77 @@ export default function PlantillaEvento() {
                                 </Alert>
                             </Collapse>
                         }
-                        <Box component="form" noValidate onSubmit={handleSubmit((data) => createPublicitario(data))} sx={{ mt: 1, width: '100%' }}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} sm={6}>
-                                    <Controller
-                                        control={control}
-                                        name="username"
-                                        rules={
-                                            {
-                                                required: { value: true, message: "Este campo es requerido" },
-                                                maxLength: { value: 35, message: "El máximo de caracteres es 35" },
-                                                minLength: { value: 2, message: "El mínimo de caracteres es 2" }
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            <TextField
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={ref}
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="username"
-                                                label="Nombre entidad"
-                                                name="username"
-                                                autoComplete="organization"
-                                                error={Boolean(error)}
-                                                helperText={error ? formState.errors.username.message : null}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Controller
-                                        control={control}
-                                        name="email"
-                                        rules={
-                                            {
-                                                required: { value: true, message: "Este campo es requerido" },
-                                                maxLength: { value: 60, message: "El máximo de caracteres es 60" },
-                                                minLength: { value: 5, message: "El mínimo de caracteres es 5" },
-                                                pattern: {
-                                                    value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                                    message: 'No es un email válido',
-                                                }
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            <TextField
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={ref}
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="email"
-                                                label="Correo electrónico"
-                                                name="email"
-                                                autoComplete="email"
-                                                error={Boolean(error)}
-                                                helperText={error ? formState.errors.email.message : null}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
+                        <Box component="form" noValidate onSubmit={handleSubmit((data) => createPublicitario(data))} sx={{ mt: 1, width: '100%', alignItems: "center", }}>
+                            <Grid item xs={12} sm={6}>
+                                <Controller
+                                    control={control}
+                                    name="titulo"
+                                    rules={
+                                        {
+                                            required: { value: true, message: "Este campo es requerido" },
+                                            maxLength: { value: 35, message: "El máximo de caracteres es 35" },
+                                            minLength: { value: 2, message: "El mínimo de caracteres es 2" }
+                                        }}
+                                    render={({
+                                        field: { onChange, onBlur, value, ref },
+                                        fieldState: { error },
+                                        formState,
+                                    }) => (
+                                        <TextField
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            checked={value}
+                                            inputRef={ref}
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="titulo"
+                                            label="Titulo"
+                                            name="titulo"
+                                            autoComplete="organization"
+                                            error={Boolean(error)}
+                                            helperText={error ? formState.errors.titulo.message : null}
+                                        />
+                                    )}
+                                />
                             </Grid>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} sm={6}>
-                                    <Controller
-                                        control={control}
-                                        name="nit"
-                                        rules={
-                                            {
-                                                required: { value: true, message: "Este campo es requerido" },
-                                                maxLength: { value: 10, message: "El nit es un número de 10 digitos" },
-                                                minLength: { value: 10, message: "El nit es un número de 10 digitos" },
-                                                pattern: {
-                                                    value: /^[0-9]+$/,
-                                                    message: 'No es un nit válido',
-                                                }
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            <TextField
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={ref}
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="nit"
-                                                label="Nit"
-                                                name="nit"
-                                                autoComplete="one-time-code"
-                                                error={Boolean(error)}
-                                                helperText={error ? formState.errors.nit.message : null}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Controller
-                                        control={control}
-                                        name="telefono"
-                                        rules={
-                                            {
-                                                required: { value: true, message: "Este campo es requerido" },
-                                                minLength: { value: 6, message: "El teléfono debe tener mínimo 6 digitos" },
-                                                pattern: {
-                                                    value: /^[0-9]+$/,
-                                                    message: 'No es un teléfono válido',
-                                                }
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            <TextField
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={ref}
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                id="telefono"
-                                                label="Teléfono"
-                                                name="telefono"
-                                                autoComplete="Tel"
-                                                error={Boolean(error)}
-                                                helperText={error ? formState.errors.telefono.message : null}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Controller
+                                    control={control}
+                                    name="descripcion"
+                                    rules={
+                                        {
+                                            required: { value: true, message: "Este campo es requerido" },
+                                            maxLength: { value: 60, message: "El máximo de caracteres es 60" },
+                                            minLength: { value: 5, message: "El mínimo de caracteres es 5" }
+                                        }}
+                                    render={({
+                                        field: { onChange, onBlur, value, ref },
+                                        fieldState: { error },
+                                        formState,
+                                    }) => (
+                                        <TextField
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            checked={value}
+                                            inputRef={ref}
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="descripcion"
+                                            label="Descripción"
+                                            name="descripcion"
+                                            multiline
+                                            rows={6}
+                                            autoComplete="email"
+                                            error={Boolean(error)}
+                                            helperText={error ? formState.errors.descripcion.message : null}
+                                        />
+                                    )}
+                                />
                             </Grid>
                             <Controller
+                                xs={12} sm={6}
                                 control={control}
                                 name="categoria"
                                 rules={
@@ -290,8 +224,8 @@ export default function PlantillaEvento() {
                                     formState,
                                 }) => (
                                     <Autocomplete
-                                        multiple
                                         isOptionEqualToValue={(option, value) => option.categoria === value.categoria}
+                                        disablePortal
                                         id="categoria"
                                         name="categoria"
                                         onChange={(event, newValue) => {
@@ -306,6 +240,7 @@ export default function PlantillaEvento() {
                                         getOptionLabel={(option) => option.categoria}
                                         filterSelectedOptions
                                         onBlur={onBlur}
+                                        sx={{ width: 200 }}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
@@ -321,49 +256,31 @@ export default function PlantillaEvento() {
                                     />
                                 )}
                             />
-                            <Controller
-                                control={control}
-                                name="password"
-                                rules={
-                                    {
-                                        required: { value: true, message: "Este campo es requerido" }
+                            {/*
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DateRangePicker
+                                    startText="Check-in"
+                                    endText="Check-out"
+                                    value={value}
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
                                     }}
-                                render={({
-                                    field: { onChange, onBlur, value, ref },
-                                    fieldState: { error },
-                                    formState,
-                                }) => (
-                                    <TextField
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                        checked={value}
-                                        inputRef={ref}
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Contraseña"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                        error={Boolean(error)}
-                                        helperText={error ? formState.errors.password.message : null}
-                                    />
-                                )}
-                            />
+                                    renderInput={(startProps, endProps) => (
+                                        <React.Fragment>
+                                            <TextField {...startProps} />
+                                            <Box sx={{ mx: 2 }}> to </Box>
+                                            <TextField {...endProps} />
+                                        </React.Fragment>
+                                    )}
+                                />
+                                    </LocalizationProvider>*/}
                             <Button
                                 type="submit"
-                                fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 5 }}
                             >
-                                Registrarse
+                                Crear evento
                             </Button>
-                            <Grid container direction="column" alignItems="center" justifyContent="center">
-                                <Grid item xs={3}>
-                                    <Link style={{ textDecoration: 'underline' }} to={'/Login-Publicitario'}><Button variant="">Ya tienes cuenta?, Logueate</Button></Link>
-                                </Grid>
-                            </Grid>
                         </Box>
                     </Box>
                 </Grid>

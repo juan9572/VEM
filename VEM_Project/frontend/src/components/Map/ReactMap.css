@@ -5,7 +5,6 @@
     flex-direction: column;
     justify-content:space-around;
 }
-
 label{
     width:max-content;
     color:tomato;
@@ -13,11 +12,9 @@ label{
     border-bottom: .5px solid tomato;
     margin: 3px 0;
 }
-
 .star{
     color:gold;
 }
-
 form{
     width:200px;
     height:400px;
@@ -25,17 +22,14 @@ form{
     flex-direction:column;
     justify-content:space-between;
 }
-
 input,textarea{
     border:none;
     border-bottom: 1px solid gray;
 }
-
 input::placeholder, textarea::placeholder{
     font-size: 12px;
     color:gray;
 }
-
 .submitButton{
     border:none;
     padding:5px;
@@ -44,7 +38,6 @@ input::placeholder, textarea::placeholder{
     background-color:tomato;
     cursor: pointer;
 }
-
 .btn{
     border: none;
     padding: 5px;
@@ -53,23 +46,18 @@ input::placeholder, textarea::placeholder{
     font-weight: 500;
     cursor: pointer;
 }
-
 .btn:focus{
     outline: none;
   }
-
 .logout{
     background-color:tomato;
 }
-
 .login{
     background-color:teal;
 }
-
 .register{
     background-color:slateblue;
 }
-
 .buttons, .logout{
     position: absolute;
     top:10px;

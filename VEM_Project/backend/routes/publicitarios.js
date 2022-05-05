@@ -106,7 +106,7 @@ router.post("/actualizarEvento", async (req, res) => {
 //Obtener todos los pins del mapa
 router.get("/getEventos", async (req, res) => {
     try{
-        const pins = await Publicitario.find().lean();
+        const pins = await Publicitario.find();
         res.status(200).json(pins);
     }catch(err){
         res.status(500).json(err);
