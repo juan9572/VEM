@@ -47,7 +47,10 @@ export default function SignInSide() {
                     }
                 }
             ); //La Api lo pasa al backend
-            //myStorage.setItem('Cliente', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+            console.log(res)
+            const obj = JSON.parse(res.config.data)
+            console.log(typeof obj)
+            myStorage.setItem('user', obj.username); 
         } catch (err) {
             console.log(err);
         }
