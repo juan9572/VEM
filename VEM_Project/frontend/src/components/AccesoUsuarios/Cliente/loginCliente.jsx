@@ -51,6 +51,7 @@ export default function SignInSide() {
       const obj = JSON.parse(res.config.data)
       console.log(typeof obj)
       myStorage.setItem('user', obj.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      return navigate("/Inicio");
     } catch (err) {
       console.log(err);
     }

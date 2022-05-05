@@ -18,16 +18,18 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
-import Publicitario from '../../../PublicitarioImagen.svg';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
 const theme = createTheme();
 
-export default function SignInSide() {
+export default function PlantillaEvento() {
     const [ errorServidor, setErrorServidor ] = React.useState(false);
+
     const [open, setOpen] = React.useState(false);
+
     const categorias = [{ categoria: 'Arte y cultura' }, { categoria: 'Deportes' }, { categoria: 'Gastronomía' }, { categoria: 'Mascotas' }];
+
     const myStorage = window.localStorage; //guarda en el servidor local
     const createPublicitario = async (data) => {
         const publicitario = { //Se reciben los datos
@@ -59,11 +61,15 @@ export default function SignInSide() {
             console.log(err);
         }
     };
+
     const [categoria, setCategoria] = React.useState([]);
+
     let navigate = useNavigate();
+
     const handleGoToCliente = () => {
         return navigate("/Register-Cliente");
     };
+
     const defaultValues = {
         username: "",
         email: "",
@@ -72,6 +78,7 @@ export default function SignInSide() {
         categoria: [],
         password: ""
     };
+
     const { handleSubmit, control, clearErrors, setError } = useForm({
         mode: 'all',
         reValidateMode: 'onSubmit',
@@ -82,20 +89,6 @@ export default function SignInSide() {
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
-                <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundImage: `url(${Publicitario})`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[250] : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
@@ -106,15 +99,8 @@ export default function SignInSide() {
                             alignItems: 'center',
                         }}
                     >
-                        <ButtonGroup variant="outlined" aria-label="outlined button group">
-                            <Button variant="outlined" onClick={handleGoToCliente}>Cliente</Button>
-                            <Button variant="contained">Publicitario</Button>
-                        </ButtonGroup>
-                        <Avatar sx={{ m: 1, bgcolor: 'info.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
                         <Typography component="h1" variant="h5">
-                            Registrarse
+                            Crear evento
                         </Typography>
                         {errorServidor &&
                             <Collapse in={open}>

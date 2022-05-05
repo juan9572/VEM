@@ -11,7 +11,9 @@ import LoginCliente from './components/AccesoUsuarios/Cliente/loginCliente';
 import RegisterPublicitario from './components/AccesoUsuarios/Publicitario/registerPublicitario';
 import RegisterCliente from './components/AccesoUsuarios/Cliente/registerCliente';
 import Footer from './components/Footer';
+import Plantilla from './components/Paginas/PlantillaEvento';
 import Page404 from './components/Paginas/404';
+
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -36,6 +38,7 @@ ReactDOM.render(
         {/* Fin de rutas accesibles por usuario con rol de cliente  */}
         {/* Rutas accesibles por usuario con rol de publicitario */}
         {/* Rutas publicas + las siguientes */}
+        <Route path="/PlantillaEvento" element={<Plantilla />} />
           {/*<Route path="/Dashboard-Estadisticas" element={null} />
           <Route path="/CrearEventos" element={null} />
           <Route path="/EditarEventos" element={null} />
