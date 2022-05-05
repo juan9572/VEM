@@ -48,7 +48,7 @@ export default function SignInSide() {
                         setError("email", { type: "error", message: error.response.data.error });
                     } else if (error.response.data.field === "nit") {
                         setError("nit", { type: "error", message: error.response.data.error });
-                    } else if (error.response.status === 500) {
+                    } else{
                         setOpen(true);
                         setErrorServidor(true);
                     }

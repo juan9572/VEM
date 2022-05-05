@@ -38,7 +38,7 @@ export default function SignInSide() {
           } else if (error.response.status === 409) {
             setError("username", { type: "error", message: error.response.data.error });
             setError("password", { type: "error", message: error.response.data.error });
-          } else if (error.response.status === 500) {
+          } else{
             setOpen(true);
             setErrorServidor(true);
           }
