@@ -20,6 +20,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [selectedItem, setSelectedItem] = useState();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -131,10 +132,12 @@ const ResponsiveAppBar = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                  selectedItem === 'Logout' ? myStorage.removeItem('user') : 
+                  <MenuItem key={setting} onClick={() => setSelectedItem(setting)}>
+                    <Typography textAlign="center">{setting} </Typography>
                   </MenuItem>
                 ))}
+                
               </Menu>
             </Box> :
             <NavLink style={{ textDecoration: 'none', color: 'black' }} to={"/Login-Cliente"}>
