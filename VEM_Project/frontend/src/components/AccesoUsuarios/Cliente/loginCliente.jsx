@@ -27,13 +27,14 @@ export default function SignInSide() {
   const [errorServidor, setErrorServidor] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const myStorage = window.localStorage; //guarda en el servidor local
+  
   const logeoCliente = async (data) => {
     const cliente = { //Se reciben los datos
       username: data.username,
       password: data.password,
     };
     try {
-      const res = await axios.post("api/clientes/login", cliente).catch(
+      const res = await axios.post("/api/clientes/login", cliente).catch(
         function (error) {
           if (error.response.status === 200) {
             console.log("Melo caramelo");
@@ -46,7 +47,10 @@ export default function SignInSide() {
           }
         }
       ); //La Api lo pasa al backend
-      //myStorage.setItem('Cliente', res.data.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      console.log(res)
+      const obj = JSON.parse(res.config.data)
+      console.log(typeof obj)
+      myStorage.setItem('user', obj.username); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
     } catch (err) {
       console.log(err);
     }

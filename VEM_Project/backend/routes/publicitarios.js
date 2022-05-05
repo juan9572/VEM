@@ -1,5 +1,6 @@
 const router = require('express').Router();//Api para creación de publicitarios para la app
 const Publicitario = require('../models/users/Publicitario'); //Importamos los modelos
+const Cliente = require('../models/users/Cliente');
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 const fs = require('fs');
 const upload = require('../libs/storage')
@@ -127,6 +128,25 @@ router.get("/getFinalEvento", async (req,res) =>{
         const evento = await Publicitario.findById(req.id);
         res.status(200).json(evento);
     }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post('/comentar', async (req, res) => {
+    try{
+        
+        const newComentario={
+            "username": req.body.username,
+            "mensaje": req.body.mensaje,
+            "rating": req.body.rating
+        }
+        //const publicar = await Publicitario.findOneAndUpdate({"eventosCreados.titulo":"Nose"},{$push:{"eventosCreados.$.comentarios":newComentario}})
+        const comment = await Publicitario.findOne({"eventosCreados.titulo":req.body.tituloEvento});
+        comment.eventosCreados[0].comentarios.push(newComentario);
+        comment.save()
+        res.status(200).json(comment);
+    }
+    catch(err){
         res.status(500).json(err);
     }
 });

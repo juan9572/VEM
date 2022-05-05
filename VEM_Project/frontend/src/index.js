@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Inicio from './components/Paginas/Inicio';
 import EventosFinalizados from './components/Paginas/EventosFinalizados';
 import Mapa from './components/Paginas/Mapa';
+import EventoIndividual from './components/Paginas/EventoIndividual';
 import LoginPublicitario from './components/AccesoUsuarios/Publicitario/loginPublicitario';
 import LoginCliente from './components/AccesoUsuarios/Cliente/loginCliente';
 import RegisterPublicitario from './components/AccesoUsuarios/Publicitario/registerPublicitario';
@@ -19,7 +20,7 @@ ReactDOM.render(
         {/*Rutas publicas accesibles por todos los usuarios*/}
           <Route path="/" element={<Inicio />} />
           <Route path="/Inicio" element={<Inicio />} />
-          <Route path="/EventosFinalizados" element={<RegisterPublicitario />} />
+          <Route path="/EventosFinalizados" element={<EventoIndividual />} />
           {/* Lista de eventos finalizados de cada uno de los publicitarios*/}
           <Route path="/Mapa" element={<Mapa />} />
           <Route path="/ListaPublicitarios" element={null} />  {/*Hacer esta página*/}

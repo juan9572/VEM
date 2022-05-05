@@ -22,7 +22,7 @@ const ResenaSchema = new mongoose.Schema(
         },
 
     },{ timestamps: true });
-
+module.exports = ResenaSchema;
 const EstadisticaSchema = new mongoose.Schema(
     { //Creamos la tabla de usuarios
         datos: [{

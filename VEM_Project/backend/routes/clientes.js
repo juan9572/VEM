@@ -1,5 +1,6 @@
 const router = require('express').Router();//Api para creación de usuarios para la app
 const Cliente = require('../models/users/Cliente'); //Importamos los modelos
+
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 
 // Registrar cliente
@@ -51,5 +52,7 @@ router.post('/login',async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+
 
 module.exports = router;
