@@ -14,6 +14,7 @@ let bd = 'mongodb://127.0.0.1/VEM_BD'; //Dirección para conectar a la base de d
 
 mongoose.connect(bd,{useNewUrlParser: true, useUnifiedTopology: true}).then( ()=>{ //Realizamos la conexión con la base de datos de mongodb
     console.log('La base de datos esta OK')         //Si la conexión resulta exitosa nos dira "La base de datos esta OK"
+    /*
     console.log("Sincronizando base de datos");
     Pin.deleteMany({},(err) => {
         if(err) console.log(err);
@@ -21,7 +22,7 @@ mongoose.connect(bd,{useNewUrlParser: true, useUnifiedTopology: true}).then( ()=
     const data = fs.readFileSync('./database/collections/VEM_BD_Backup_Collection.json');
     const docs = JSON.parse(data.toString());
     Pin.insertMany(JSON.parse(fs.readFileSync('./database/collections/VEM_BD_Backup_Collection.json').toString()));
-    console.log("Se aplico el backup, todo al día");
+    console.log("Se aplico el backup, todo al día");*/
 }).catch((err) => console.log(err));                //En caso contrario nos mostrara el error.
 
 app.use("/api/publicitarios",publicitariosRoute);
