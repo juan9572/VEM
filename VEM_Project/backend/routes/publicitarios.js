@@ -68,6 +68,10 @@ router.post('/login',async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 62e5bddc28172cc463ada79e310cd66e1f2708cf
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const newPin = new Publicitario(req.body);
@@ -102,7 +106,7 @@ router.post("/actualizarEvento", async (req, res) => {
 //Obtener todos los pins del mapa
 router.get("/getEventos", async (req, res) => {
     try{
-        const pins = await Publicitario.find();
+        const pins = await Publicitario.find({},{eventosCreados:1});
         res.status(200).json(pins);
     }catch(err){
         res.status(500).json(err);
