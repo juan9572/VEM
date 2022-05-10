@@ -68,10 +68,6 @@ router.post('/login',async (req, res) => {
     }
 });
 
-
-//AAAAAAAAAAAAAAAAAAAAAA
-
-
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const newPin = new Publicitario(req.body);
@@ -140,7 +136,7 @@ router.post('/comentar', async (req, res) => {
             "mensaje": req.body.mensaje,
             "rating": req.body.rating
         }
-        //const publicar = await Publicitario.findOneAndUpdate({"eventosCreados.titulo":"Nose"},{$push:{"eventosCreados.$.comentarios":newComentario}})
+        console.log(newComentario);
         const comment = await Publicitario.findOne({"eventosCreados.titulo":req.body.tituloEvento});
         let index = 0;
         for (let i = 0; i < comment.eventosCreados.length; i++) {
