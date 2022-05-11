@@ -90,11 +90,9 @@ const PinSchema = new mongoose.Schema({
     },
     comentarios: [{
         type: ResenaSchema,
-        default: undefined
     }],
     estadistica:[{
         type:EstadisticaSchema,
-        default:undefined
     }]
 },
     { timestamps: true });
@@ -137,7 +135,6 @@ const PublicitarioSchema = new mongoose.Schema({
     categoriaPublicidad:[{type:String}],
     eventosCreados:[{
         type:PinSchema,
-        default: undefined
     }],
 },{timestamps: true})
 

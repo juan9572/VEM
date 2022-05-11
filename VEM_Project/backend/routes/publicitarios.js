@@ -70,17 +70,21 @@ router.post('/login',async (req, res) => {
 
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
-    const newPin = new Publicitario(req.body);
+    const name = req.body.name;
+    const newPin = req.body;
+    delete newPin.name
     try{
-        const savePin = await newPin.save();
-        const pins = await Publicitario.find().lean();
+        const publicitarios = await Publicitario.find().lean();
+        const creador = await Publicitario.findOne({"username": name})
+        creador.eventosCreados.push(newPin)
+        creador.save()
         if (req.file){
             const { filename } = req.file
             newPin.setImgUrl(filename)
         }
-        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(pins));
+        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(publicitarios));
          //Se crea el backup, para tener las bases de datos sincronizadas
-        res.status(200).json(savePin);
+        res.status(200).json(newPin);
     }catch(err){
         res.status(500).json(err);
     }
@@ -88,12 +92,33 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
 
 router.post("/actualizarEvento", async (req, res) => {
     const datosPin = req.body[0];
-    const filter = {title:req.body[1]};
+    const filter = req.body[1];
+    const name = req.body[2];
+    
     try{
-        const actualizar = await Publicitario.findOneAndUpdate(filter,datosPin);
-        const pins = await Publicitario.find().lean();
-        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(pins));
-        res.status(200).json(actualizar);
+        const actualizar = await Publicitario.findOneAndUpdate({"username": name, "eventosCreados.title": filter},
+         {'$set': {
+            'eventosCreados.$.title':datosPin.title,
+            'eventosCreados.$.description':datosPin.description,
+            'eventosCreados.$.category':datosPin.category,
+            'eventosCreados.$.link':datosPin.link,
+            'eventosCreados.$.fechaInicio':datosPin.fechaInicio,
+            'eventosCreados.$.fechaFinalizacion':datosPin.fechaFinalizacion
+        }});
+        const publi = await Publicitario.findOne({'username': name})
+        let index = 0;
+
+        for (let i = 0; i < publi.eventosCreados.length; i++) {
+            if(publi.eventosCreados[i].title == datosPin.title) { 
+                index = i;
+            }
+        }
+
+        console.log(publi.eventosCreados[index])
+        //const publicitarios = await Publicitario.find().lean();
+        //fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(publicitarios));
+        
+        res.status(200).json(publi.eventosCreados[index]);
     }catch(err){
         res.status(500).json(err);
     }
@@ -137,10 +162,10 @@ router.post('/comentar', async (req, res) => {
             "rating": req.body.rating
         }
         console.log(newComentario);
-        const comment = await Publicitario.findOne({"eventosCreados.titulo":req.body.tituloEvento});
+        const comment = await Publicitario.findOne({"eventosCreados.title":req.body.tituloEvento});
         let index = 0;
         for (let i = 0; i < comment.eventosCreados.length; i++) {
-            if(comment.eventosCreados.titulo === req.body.tituloEvento){
+            if(comment.eventosCreados[i].title === req.body.tituloEvento){
                 index = i;
                 break;
             }

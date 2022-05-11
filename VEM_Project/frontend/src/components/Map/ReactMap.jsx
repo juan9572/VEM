@@ -37,6 +37,7 @@ function ReactMap() {
     setViewState({...viewState,latitude:latitude,longitude:longitude}); //Centra la atención en el popup
     setNewPlace({lat:latitude,long:longitude});
   };
+  const myStorage = window.localStorage
   const [title,setTitle] = useState(null);//Para sacar información del form para el titulo
   const [desc,setDesc] = useState(null);//Para sacar información del form para la descripción
   const [categoria,setCategoria] = useState(null);
@@ -50,11 +51,12 @@ function ReactMap() {
       latitude:newPlace.lat,
       long:newPlace.long,
       link:"AAA",
-      fechaInicio:"2020-06-12",
-      fechaFinalizacion:"2022-06-12"
+      fechaInicio: new Date('2020-06-12'),
+      fechaFinalizacion:new Date ('2022-06-12'),
+      name: myStorage.getItem("user")
     };
     try{
-      const res = await axios.post("/pins",newPin); //Se llama a la Api para que los guarde
+      const res = await axios.post("api/publicitarios/crearEvento",newPin); //Se llama a la Api para que los guarde
       setPins([...pins, res.data]); //Lo agrega al mapa
       setNewPlace(null);
     }catch(err){ 
@@ -63,25 +65,24 @@ function ReactMap() {
   };
   const actualizaDatos = async (e) => { //Crear un nuevo evento en el mapa
     e.preventDefault();
+    const name = myStorage.getItem("user");
     const newPin = { //Se crea el pin
       title:title,
       description:desc,
       category:categoria, //
-      latitude:newPlace.lat,
-      long:newPlace.long,
       link:"AAA",
-      fechaInicio:"2020-06-12",
-      fechaFinalizacion:"2022-06-12"
+      fechaInicio:new Date ('2022-06-12'),
+      fechaFinalizacion: new Date('2020-06-12')
     };
     try{
-      const res = await axios.post("/pins/actualizar",[newPin,lastTitle]); //Se llama a la Api para que los guarde
+      const res = await axios.post("api/publicitarios/actualizarEvento",[newPin,lastTitle,name]); //Se llama a la Api para que los guarde
+      console.log(res.data)
       setPins([...pins, res.data]); //Lo agrega al mapa
     }catch(err){ 
       console.log(err);
     }
   };
   //Logica para el registro para crear puntos
-  const myStorage = window.localStorage; //guarda en el servidor local
   const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   const handleLogout = () => { //Manejar el log out
     setCurrentUser(null);
