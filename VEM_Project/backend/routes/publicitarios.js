@@ -68,10 +68,6 @@ router.post('/login',async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 62e5bddc28172cc463ada79e310cd66e1f2708cf
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const newPin = new Publicitario(req.body);

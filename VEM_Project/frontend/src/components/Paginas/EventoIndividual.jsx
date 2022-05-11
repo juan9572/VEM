@@ -9,10 +9,11 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ImageList, ImageListItem } from '@mui/material';
+import Carousel from 'react-material-ui-carousel';
+import { Paper } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import '../Card.css'
 import Imagen from '../../17010.jpg';
-
-
 
 function EventoIndividual(tituloEvento) {
   const myStorage = window.localStorage;
@@ -32,12 +33,12 @@ function EventoIndividual(tituloEvento) {
     }
   };
   const itemData = [{
-    img:Imagen,
-    title:"Logo"
+    img: Imagen,
+    title: "Logo"
   },
   {
-    img:Imagen,
-    title:"cliente"
+    img: Imagen,
+    title: "cliente"
   }
   ]
   const defaultValues = {
@@ -52,20 +53,45 @@ function EventoIndividual(tituloEvento) {
     shouldFocusError: false,
     defaultValues,
   });
+  const settings = {
+    autoPlay: true,
+    animation: "fade",
+    duration: 1000,
+    indicators: false,
+    interval: 6000
+  };
   return (
-    <Grid container>
-      <Grid banner>
-        <Box component="img" src={Imagen}
+    <div>
+      <Carousel
+        className="MainCarousel"
+        {...settings}
+      >
+        <Paper
           sx={{
-            position: 'realtive',
-            top: 10,
-            bottom: 0,
-            right: 0,
-            left: 10,
-            backgroundColor: 'rgba(0,0,0,.3)',
-          }}>
-        </Box>
-      </Grid>
+            position: 'relative',
+            backgroundColor: 'grey.800',
+            color: '#ffffff',
+            mb: 2,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundImage: `url(${Imagen})`,
+            height: 350
+          }}
+        >
+          {<img style={{ display: 'none' }} src={Imagen} alt={"Error"} />}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: 'rgba(0,0,0,.3)',
+            }}
+          />
+        </Paper>
+      </Carousel>
       <div className="card-container">
         <div className="image-container">
           <img src={Imagen} alt='' />
@@ -171,7 +197,7 @@ function EventoIndividual(tituloEvento) {
         </Box>
       </Grid>
 
-    </Grid>
+    </div>
 
   );
 
