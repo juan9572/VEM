@@ -1,6 +1,7 @@
 const express = require('express'); // Libreria para trabajar configurar nuestro backend
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
 const dotenv = require('dotenv'); // Libreria para almacenar información sensible como la conexión de la base de datos
+const cors = require('cors');
 const app = express(); // Inicializamos express
 const publicitariosRoute = require('./routes/publicitarios');
 const clientesRoute = require('./routes/clientes');
