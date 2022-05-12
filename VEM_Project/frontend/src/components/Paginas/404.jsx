@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Page404() {
     let navigate = useNavigate();
     const handleOnClick = () => {
-      return navigate("/Inicio");
+      return navigate("/");
     };
     return (
         <Box container component="main"

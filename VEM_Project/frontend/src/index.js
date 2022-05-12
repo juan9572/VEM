@@ -12,17 +12,20 @@ import RegisterPublicitario from './components/AccesoUsuarios/Publicitario/regis
 import RegisterCliente from './components/AccesoUsuarios/Cliente/registerCliente';
 import Footer from './components/Footer';
 import Plantilla from './components/Paginas/PlantillaEvento';
+import ProfielCliente from './components/Paginas/ProfielCliente';
 import Page404 from './components/Paginas/404';
+import PrivateRoute from './components/Paginas/PrivateRoute';
+import AuthProvider from './components/Auth/AuthProvider';
 
 ReactDOM.render(
   <React.StrictMode>
+    <AuthProvider>
     <BrowserRouter>
       <ResponsiveAppBar />
       <Routes>
         {/*Rutas publicas accesibles por todos los usuarios*/}
           <Route path="/" element={<Inicio />} />
-          <Route path="/Inicio" element={<Inicio />} />
-          <Route path="/EventosFinalizados" element={<EventoIndividual />} />
+          {/*<Route path="/EventosFinalizados" element={<EventoIndividual />} />*/}
           <Route path="/EventosFinalGeneral" element={<EventosFinalizados/>} />
           {/* Lista de eventos finalizados de cada uno de los publicitarios*/}
           <Route path="/Mapa" element={<Mapa />} />
@@ -35,11 +38,13 @@ ReactDOM.render(
         {/* Fin de rutas publicas */}
         {/* Rutas accesibles por usuario con rol de cliente */}
         {/* Rutas publicas + las siguientes */}
-          {/*<Route path="/Perfil" element={null} />*/}
+          <Route path="/Profile/:username" element={<PrivateRoute />}>
+            <Route path="/Profile/:username" element={<ProfielCliente />} />
+          </ Route>
         {/* Fin de rutas accesibles por usuario con rol de cliente  */}
         {/* Rutas accesibles por usuario con rol de publicitario */}
         {/* Rutas publicas + las siguientes */}
-        <Route path="/PlantillaEvento" element={<Plantilla />} />
+          <Route path="/PlantillaEvento" element={<Plantilla />} />
           {/*<Route path="/Dashboard-Estadisticas" element={null} />
           <Route path="/CrearEventos" element={null} />
           <Route path="/EditarEventos" element={null} />
@@ -54,6 +59,7 @@ ReactDOM.render(
       </Routes>
     </BrowserRouter>
     <Footer />
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

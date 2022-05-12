@@ -1,9 +1,9 @@
 import {React,useState,useEffect} from "react";
 import './Card.css'
 import imagen from '../17010.jpg';
-import axios from 'axios';
 
 function Card(props){
+  return(
   <div className="card-container">
     <div className="image-container">
       <img src={imagen} alt='' />
@@ -15,11 +15,11 @@ function Card(props){
       </div>
       <div className="card-items">
         <h3>Fecha inicio:</h3>
-        <p>{props.evento.fechaInicio}</p>
+        <p>{props.evento.fechaInicio.substring(0,10)}</p>
       </div>
       <div className="card-items">
         <h3>Fecha finalización:</h3>
-        <p>{props.evento.fechaFinalizacion}</p>
+        <p>{props.evento.fechaFinalizacion.substring(0,10)}</p>
       </div>
       <div className="card-body">
         <h3>Descripción:</h3>
@@ -31,7 +31,7 @@ function Card(props){
         seguir empresa
       </button>
     </div>
-  </div>
+  </div>)
 }
 
 export default Card;

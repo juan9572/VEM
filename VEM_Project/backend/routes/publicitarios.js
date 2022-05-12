@@ -137,12 +137,22 @@ router.get("/getEventos", async (req, res) => {
 router.get("/getFinalizados", async (req, res) => {
     try{
         const fecha = new Date();
-        const eventos = await Publicitario.find({fechaFinalizacion:{$lt:fecha}});
+        const publicitarios = await Publicitario.find();
+        let eventos = [];
+        for(let i = 0; i < publicitarios.length; i++){
+            for(let j = 0; j < publicitarios[i].eventosCreados.length; j++){
+                if(publicitarios[i].eventosCreados[j].fechaFinalizacion < fecha){
+                    eventos.push(publicitarios[i].eventosCreados[j]);
+                }
+            }
+        }
         res.status(200).json(eventos);
     }catch(err){
         res.status(500).json(err);
     }
 });
+
+//db.publicitarios.find({"eventosCreados.fechaFinalizacion":{$lt:"2022-05-12T14:33:02.104Z"}}).pretty()
 
 router.get("/getFinalEvento", async (req,res) =>{
     try{

@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { NavLink } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 
-const pages = ['Inicio', 'Mapa', 'Eventos Finalizados'];
+const pages = [{'Nav':'Inicio','Router':''}, {'Nav':'Mapa','Router':'Mapa'}, {'Nav':'Eventos Finalizados','Router':'EventosFinalizados'}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -38,7 +38,7 @@ const ResponsiveAppBar = () => {
     <AppBar position="static" style={{ background: '#ffffff' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <NavLink to={'/Inicio'}>
+          <NavLink to={'/'}>
             <Typography
               variant="h6"
               noWrap
@@ -80,9 +80,9 @@ const ResponsiveAppBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>
+                  <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.Router}`}>
                     <Typography textAlign="center">
-                      {page}
+                      {page.Nav}
                     </Typography>
                   </NavLink>
                 </MenuItem>
@@ -104,8 +104,12 @@ const ResponsiveAppBar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'black', display: 'block' }}
               >
-                <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.includes(' ') ? page.replaceAll(' ', '') : page}`}>{page}</NavLink>
-              </Button>
+                  <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.Router}`}>
+                    <Typography textAlign="center">
+                      {page.Nav}
+                    </Typography>
+                  </NavLink>              
+                  </Button>
             ))}
           </Box>
           {myStorage.user ?
