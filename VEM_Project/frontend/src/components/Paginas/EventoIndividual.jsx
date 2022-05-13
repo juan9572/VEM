@@ -111,7 +111,7 @@ function EventoIndividual(tituloEvento) {
           </div>
           <div className="card-body">
             <h3>Descripción:</h3>
-            <p>Soy gay</p>
+            <p>Soy feliz</p>
           </div>
         </div>
         <div className="btn">

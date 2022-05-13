@@ -1,5 +1,4 @@
 import {React,useState,useEffect} from "react";
-import './Card.css'
 import imagen from '../17010.jpg';
 
 function Card(props){

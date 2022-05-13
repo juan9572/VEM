@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { NavLink } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 
-const pages = [{'Nav':'Inicio','Router':''}, {'Nav':'Mapa','Router':'Mapa'}, {'Nav':'Eventos Finalizados','Router':'EventosFinalizados'}];
+const pages = [{'Nav':'Inicio','Router':''}, {'Nav':'Mapa','Router':'Mapa'}, {'Nav':'Eventos Finalizados','Router':'EventosFinalGeneral'}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {

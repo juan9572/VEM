@@ -10,7 +10,7 @@ const banners = [
     fecha: "2022-02-02",
     lugar: "Medellin",
     image: Imagen,
-    linkEvento: 'https://youtube.com'
+    linkEvento: 'EventosFinalizados'
   },
   {
     titulo: "Viernes de descuentos",
@@ -18,7 +18,7 @@ const banners = [
     fecha: "2022-04-04",
     lugar: "Bogota xd",
     image: Imagen2,
-    linkEvento: 'https://facebook.com'
+    linkEvento: 'EventosFinalizados'
   },
 ];
 function Inicio() {
