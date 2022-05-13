@@ -45,6 +45,11 @@ router.post('/register',async (req, res) => {
             "username":publicitario.username,
             "rol":"P"
         };
+
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json',JSON.stringify(publicitarios));
+         //Se crea el backup, para tener las bases de datos sincronizadas
+
         res.status(200).json(credentials_publicitario);
     }catch(err){
         console.log(err);
@@ -82,15 +87,15 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const newPin = req.body;
     delete newPin.name
     try{
-        const publicitarios = await Publicitario.find().lean();
-        const creador = await Publicitario.findOne({"username": name})
-        creador.eventosCreados.push(newPin)
-        creador.save()
+        const creador = await Publicitario.findOne({"username": name});
+        creador.eventosCreados.push(newPin);
+        await creador.save();
         if (req.file){
             const { filename } = req.file
             newPin.setImgUrl(filename)
         }
-        fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(publicitarios));
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json',JSON.stringify(publicitarios));
          //Se crea el backup, para tener las bases de datos sincronizadas
         res.status(200).json(newPin);
     }catch(err){
@@ -102,7 +107,6 @@ router.post("/actualizarEvento", async (req, res) => {
     const datosPin = req.body[0];
     const filter = req.body[1];
     const name = req.body[2];
-    
     try{
         const actualizar = await Publicitario.findOneAndUpdate({"username": name, "eventosCreados.title": filter},
          {'$set': {
@@ -121,11 +125,10 @@ router.post("/actualizarEvento", async (req, res) => {
                 index = i;
             }
         }
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json',JSON.stringify(publicitarios));
+         //Se crea el backup, para tener las bases de datos sincronizadas
 
-        console.log(publi.eventosCreados[index])
-        //const publicitarios = await Publicitario.find().lean();
-        //fs.writeFileSync('./database/collections/VEM_BD_Backup_Collection.json',JSON.stringify(publicitarios));
-        
         res.status(200).json(publi.eventosCreados[index]);
     }catch(err){
         res.status(500).json(err);
@@ -160,8 +163,6 @@ router.get("/getFinalizados", async (req, res) => {
     }
 });
 
-//db.publicitarios.find({"eventosCreados.fechaFinalizacion":{$lt:"2022-05-12T14:33:02.104Z"}}).pretty()
-
 router.get("/getFinalEvento", async (req,res) =>{
     try{
         const evento = await Publicitario.findById(req.id);
@@ -189,7 +190,12 @@ router.post('/comentar', async (req, res) => {
             }
         }
         comment.eventosCreados[index].comentarios.push(newComentario);
-        comment.save()
+        await comment.save();
+
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json',JSON.stringify(publicitarios));
+        //Se crea el backup, para tener las bases de datos sincronizadas
+
         res.status(200).json(comment);
     }
     catch(err){

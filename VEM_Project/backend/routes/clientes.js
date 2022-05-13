@@ -1,7 +1,7 @@
 const router = require('express').Router();//Api para creación de usuarios para la app
 const Cliente = require('../models/users/Cliente'); //Importamos los modelos
-
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
+const fs = require('fs');
 
 // Registrar cliente
 router.post('/register',async(req,res)=>{
@@ -30,6 +30,11 @@ router.post('/register',async(req,res)=>{
             "username":cliente.username,
             "rol":"C"
         };
+
+        const clientes = await Cliente.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
+         //Se crea el backup, para tener las bases de datos sincronizadas
+
         res.status(200).json(credentials_cliente);
     }catch(err){
         console.log(err);

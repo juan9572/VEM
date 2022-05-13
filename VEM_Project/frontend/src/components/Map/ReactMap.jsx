@@ -4,7 +4,10 @@ import Map, {Marker,Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {Room,Star} from "@material-ui/icons";
 import axios from 'axios';
+import useAuth from '../Auth/useAuth';
+
 function ReactMap() {
+  const auth = useAuth();
   const [viewState, setViewState] = useState({ //Para crear el mapa
     latitude: 6.25184,
     longitude: -75.56359,
@@ -37,7 +40,6 @@ function ReactMap() {
     setViewState({...viewState,latitude:latitude,longitude:longitude}); //Centra la atención en el popup
     setNewPlace({lat:latitude,long:longitude});
   };
-  const myStorage = window.localStorage
   const [title,setTitle] = useState(null);//Para sacar información del form para el titulo
   const [desc,setDesc] = useState(null);//Para sacar información del form para la descripción
   const [categoria,setCategoria] = useState(null);
@@ -53,7 +55,7 @@ function ReactMap() {
       link:"AAA",
       fechaInicio: new Date('2020-06-12'),
       fechaFinalizacion:new Date ('2022-06-12'),
-      name: myStorage.getItem("user")
+      name: auth.user.username
     };
     try{
       const res = await axios.post("api/publicitarios/crearEvento",newPin); //Se llama a la Api para que los guarde
@@ -65,31 +67,23 @@ function ReactMap() {
   };
   const actualizaDatos = async (e) => { //Crear un nuevo evento en el mapa
     e.preventDefault();
-    const name = myStorage.getItem("user");
     const newPin = { //Se crea el pin
       title:title,
       description:desc,
-      category:categoria, //
+      category:categoria,
       link:"AAA",
       fechaInicio:new Date ('2022-06-12'),
       fechaFinalizacion: new Date('2020-06-12')
     };
     try{
+      const name = auth.user.username;
+      console.log(name);
       const res = await axios.post("api/publicitarios/actualizarEvento",[newPin,lastTitle,name]); //Se llama a la Api para que los guarde
-      console.log(res.data)
       setPins([...pins, res.data]); //Lo agrega al mapa
     }catch(err){ 
       console.log(err);
     }
   };
-  //Logica para el registro para crear puntos
-  const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
-  const handleLogout = () => { //Manejar el log out
-    setCurrentUser(null);
-    myStorage.removeItem("user");
-  };
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   return (
     <Map
       {...viewState}
@@ -97,18 +91,18 @@ function ReactMap() {
       style={{width: 800, height: 600}}
       mapStyle="mapbox://styles/mapbox/streets-v11"
       mapboxAccessToken={process.env.REACT_APP_MAPBOX}
-      onContextMenu={currentUser && sacarCordenadas} //Saca la latitud y longitud del mapa y crea un objeto newPlace
+      onContextMenu={auth.user && sacarCordenadas} //Saca la latitud y longitud del mapa y crea un objeto newPlace
     >
       {pins.map(p=>( //Es un for-each
         <>
           <Marker longitude={p.long} latitude={p.latitude}//Pone el puntero en la latitud y longitud
           offsetLeft={viewState.zoom*2} offsetTop={viewState.zoom*2} anchor="bottom">
           <Room
-            style={{fontSize:viewState.zoom*4,color: p.publicitario===currentUser?"tomato":"slateblue", cursor:"pointer"}}
+            style={{fontSize:viewState.zoom*4,color: p.publicitario===auth.user?"tomato":"slateblue", cursor:"pointer"}}
             onClick={()=>{handleMarkerClick(p._id,p.latitude,p.long);setLastTitle(p.title);}}//Cuando se le de click sale el pop up
           />
           </Marker>
-          {!currentUser && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
+          {!auth.user && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
           <Popup
           longitude={p.long} 
           latitude={p.latitude}
@@ -130,7 +124,7 @@ function ReactMap() {
             </div>
           </Popup>
           )}
-          {currentUser && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
+          {auth.user && p._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
           <Popup
           longitude={p.long} 
           latitude={p.latitude}
@@ -142,7 +136,7 @@ function ReactMap() {
             <form onSubmit={actualizaDatos}>
             <label>Titulo</label>
             <input placeholder={p.title} type="text" onChange={(e) => setTitle(e.target.value)}/>
-              <h4>{currentUser}</h4>
+              <h4>{auth.user.username}</h4>
               <label>Categoria</label>
               <input placeholder={p.category} type="text" onChange={(e) => setCategoria(e.target.value)}/>
               <label>Descripción</label>
@@ -190,13 +184,6 @@ function ReactMap() {
             </form>
           </div>
           </Popup>
-      )}
-      {currentUser ? ( //Si hay nombre de usuario es que esta logueado por lo tanto se muestra es el botón de logout
-      <button className="btn logout" onClick={handleLogout}>Log out</button>) : ( //logica para registrar usuarios
-      <div className="buttons">
-        <button className="btn login" onClick={() => setShowLogin(true)}>Login</button>
-        <button className="btn register" onClick={() => setShowRegister(true)}>Register</button>
-      </div>
       )}
     </Map>
   );

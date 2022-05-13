@@ -20,6 +20,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const auth = useAuth();
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [selectedItem, setSelectedItem] = useState();
@@ -114,7 +115,7 @@ const ResponsiveAppBar = () => {
                   </Button>
             ))}
           </Box>
-          {auth.user?
+          {auth.isLogged()?
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
