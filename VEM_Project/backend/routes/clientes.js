@@ -26,7 +26,11 @@ router.post('/register',async(req,res)=>{
             password:hashedPassword
         });
         const cliente = await newCliente.save();
-        res.status(200).json(cliente);
+        const credentials_cliente = {
+            "username":cliente.username,
+            "rol":"C"
+        };
+        res.status(200).json(credentials_cliente);
     }catch(err){
         console.log(err);
         res.status(500).json(err);
@@ -47,7 +51,11 @@ router.post('/login',async (req, res) => {
             return res.status(409).json({"error":"Nombre de usuario o contraseña incorrectos"});
         }
         //Devolver respuesta
-        res.status(200).json(cliente);
+        const credentials_cliente = {
+            "username":cliente.username,
+            "rol":"C"
+        };
+        res.status(200).json(credentials_cliente);
     }catch(err){
         res.status(500).json(err);
     }

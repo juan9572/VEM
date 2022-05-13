@@ -36,7 +36,6 @@ export default function SignInSide() {
       const res = await axios.post("api/publicitarios/login", publicitario).catch(
         function (error) {
           if(error.response.status === 200) {
-            console.log("Melo caramelo");
           } else if (error.response.status === 409) {
             setError("username", { type: "error", message: error.response.data.error });
             setError("password", { type: "error", message: error.response.data.error });

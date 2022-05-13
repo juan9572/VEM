@@ -41,7 +41,11 @@ router.post('/register',async (req, res) => {
         });
         //Guardamos el publicitario y se manda el response
         const publicitario = await newPublicitario.save();
-        res.status(200).json(publicitario);
+        const credentials_publicitario = {
+            "username":publicitario.username,
+            "rol":"P"
+        };
+        res.status(200).json(credentials_publicitario);
     }catch(err){
         console.log(err);
         res.status(500).json(err);
@@ -62,7 +66,11 @@ router.post('/login',async (req, res) => {
             return res.status(409).json({"error":"Nombre de usuario o contraseña incorrectos"});
         }
         //Devolver respuesta
-        res.status(200).json(publicitario);
+        const credentials_publicitario = {
+            "username":publicitario.username,
+            "rol":"P"
+        };
+        res.status(200).json(credentials_publicitario);
     }catch(err){
         res.status(500).json(err);
     }
