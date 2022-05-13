@@ -20,7 +20,9 @@ import axios from 'axios';
 import Cliente from '../../../ClienteImagen.svg';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+
 const theme = createTheme();
+
 export default function SignInSide() {
     const [errorServidor, setErrorServidor] = React.useState(false);
     const [open, setOpen] = React.useState(false);
@@ -47,9 +49,7 @@ export default function SignInSide() {
                     }
                 }
             ); //La Api lo pasa al backend
-            console.log(res)
-            const obj = JSON.parse(res.config.data)
-            console.log(typeof obj)
+            const obj = JSON.parse(res.config.data);
             myStorage.setItem('user', obj.username); 
             return navigate("/");
         } catch (err) {
