@@ -1,9 +1,14 @@
 import {React,useState,useEffect} from "react";
 import imagen from '../17010.jpg';
+import { useNavigate } from "react-router-dom";
 
 function Card(props){
+  let navigate = useNavigate();
+    const handleGoToEvento= () => {
+        return navigate(`/EventosFinalizados/${props.evento.title}`);
+    };
   return(
-  <div className="card-container">
+  <div className="card-container" onClick={handleGoToEvento}>
     <div className="image-container">
       <img src={imagen} alt='' />
     </div>

@@ -175,7 +175,7 @@ router.post('/comentar', async (req, res) => {
         const comment = await Publicitario.findOne({"eventosCreados.title":req.body.tituloEvento});
         let index = 0;
         for (let i = 0; i < comment.eventosCreados.length; i++) {
-            if(comment.eventosCreados[i].title === req.body.tituloEvento){
+            if(comment.eventosCreados[i].title == req.body.tituloEvento){
                 index = i;
                 break;
             }

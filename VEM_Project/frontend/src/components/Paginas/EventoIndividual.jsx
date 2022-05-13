@@ -14,17 +14,23 @@ import { Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import '../Card.css'
 import Imagen from '../../17010.jpg';
+import { useParams } from 'react-router-dom'
 
-function EventoIndividual(tituloEvento) {
+function EventoIndividual() {
+  const { _id } = useParams()
   const myStorage = window.localStorage;
-  const agregarComentario = async (data) => { //Crear un nuevo comentario en el evento
+  const [value, setValue] = React.useState(0)
+  const [mensaje, setMensaje] = React.useState("")
+
+  const agregarComentario = async (e) => { //Crear un nuevo comentario en el evento
+    e.preventDefault();
     const newComentario = await { //Se crea el pin
       username: myStorage.getItem("user"),
-      mensaje: data.mensaje,
-      rating: data.rating,
-      tituloEvento: tituloEvento
+      mensaje: mensaje,
+      rating: value,
+      tituloEvento: _id
     };
-    console.log(data)
+    console.log(newComentario)
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
       console.log(res);
@@ -41,18 +47,7 @@ function EventoIndividual(tituloEvento) {
     title: "cliente"
   }
   ]
-  const defaultValues = {
-    username: "",
-    mensaje: "",
-    rating: ""
-  };
-  const [value, setValue] = React.useState(0)
-  const { handleSubmit, control, setError } = useForm({
-    mode: 'all',
-    reValidateMode: 'onSubmit',
-    shouldFocusError: false,
-    defaultValues,
-  });
+
   const settings = {
     autoPlay: true,
     animation: "fade",
@@ -136,55 +131,23 @@ function EventoIndividual(tituloEvento) {
 
       </Grid>
       <Grid comentar>
-        <Box component="form" noValidate onSubmit={handleSubmit((data) => agregarComentario(data))} sx={{ mt: 1, width: '100%' }}>
-
-          <Rating name="read-only" value={5} readOnly />
-          <Controller
-            control={control}
+        <Box component="form" noValidate onSubmit={agregarComentario} sx={{ mt: 1, width: '100%' }}>
+          <TextField
+            onChange={(e) => setMensaje(e.target.value)}
+            margin="normal"
+            required
+            fullWidth
+            id="mensaje"
+            label="Que opinas?"
             name="mensaje"
-            rules={
-              {
-                required: { value: true, message: "Este campo es requerido" },
-                maxLength: { value: 200, message: "El máximo de caracteres es 200" },
-                minLength: { value: 2, message: "El mínimo de caracteres es 2" }
-              }}
-            render={({
-              field: { onChange, onBlur, value, ref },
-              fieldState: { error },
-              formState,
-            }) => (
-              <TextField
-                onBlur={onBlur}
-                onChange={onChange}
-                checked={value}
-                inputRef={ref}
-                margin="normal"
-                required
-                fullWidth
-                id="mensaje"
-                label="Que opinas?"
-                name="mensaje"
-                autoComplete="organization"
-                error={Boolean(error)}
-                helperText={error ? formState.errors.mensaje.message : null}
-              />
-            )}
+            autoComplete="organization"
           />
-          <Controller
-            control={control}
+          <Rating
             name="rating"
-            rules={{ required: "Este campo es requerido" }}
-            render={({
-              field: { onChange, onBlur, value, ref },
-            }) => (
-              <Rating
-                name="rating"
-                value={parseInt(value)}
-                onChange={(event, newvalue) => {
-                  setValue(newvalue);
-                }}
-              />
-            )}
+            value={parseInt(value)}
+            onChange={(event, newvalue) => {
+              setValue(newvalue);
+            }}
           />
           <Button
             type="submit"

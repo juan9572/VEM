@@ -20,7 +20,6 @@ export default class EventosFinalizados extends Component {
   componentDidMount() {
     axios.get('/api/publicitarios/getFinalizados')
       .then(response => {
-        console.log(response.data);
         this.setState({ eventos: response.data })
       })
       .catch((error) => {
