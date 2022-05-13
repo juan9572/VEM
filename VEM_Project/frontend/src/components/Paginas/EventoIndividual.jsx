@@ -15,17 +15,23 @@ import Typography from '@mui/material/Typography';
 import '../Card.css'
 import Imagen from '../../17010.jpg';
 import { useParams } from 'react-router-dom'
+import useAuth from '../Auth/useAuth';
 
 function EventoIndividual() {
   const { _id } = useParams()
   const myStorage = window.localStorage;
+  const auth = useAuth();
   const [value, setValue] = React.useState(0)
   const [mensaje, setMensaje] = React.useState("")
-
+  const navigate = useNavigate()
+  
   const agregarComentario = async (e) => { //Crear un nuevo comentario en el evento
+    if(!auth.isLogged()){
+      return navigate("/Login-Cliente")
+    }
     e.preventDefault();
     const newComentario = await { //Se crea el pin
-      username: myStorage.getItem("user"),
+      username: auth.user.username,
       mensaje: mensaje,
       rating: value,
       tituloEvento: _id
