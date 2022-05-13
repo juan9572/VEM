@@ -20,13 +20,15 @@ import axios from 'axios';
 import Cliente from '../../../ClienteImagen.svg';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import useAuth from '../../Auth/useAuth';
 
 const theme = createTheme();
 
 export default function SignInSide() {
     const [errorServidor, setErrorServidor] = React.useState(false);
     const [open, setOpen] = React.useState(false);
-    const myStorage = window.localStorage; //guarda en el servidor local
+    const auth = useAuth();
+
     const crearCliente = async (data) => {
         let edad = data.age ? data.age : -1;
         const cliente = { //Se reciben los datos
@@ -49,8 +51,7 @@ export default function SignInSide() {
                     }
                 }
             ); //La Api lo pasa al backend
-            const obj = JSON.parse(res.config.data);
-            myStorage.setItem('user', obj.username); 
+            auth.login(res.data);
             return navigate("/");
         } catch (err) {
             console.log(err);

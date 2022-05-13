@@ -20,13 +20,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import Publicitario from '../../../PublicitarioImagen.svg';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+import useAuth from '../../Auth/useAuth';
 
 const theme = createTheme();
 
 export default function SignInSide() {
   const [errorServidor, setErrorServidor] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const myStorage = window.localStorage; //guarda en el servidor local
+  const auth = useAuth();
+  
   const logeoPublicitario = async (data) => {
     const publicitario = { //Se reciben los datos
       username: data.username,
@@ -45,10 +47,7 @@ export default function SignInSide() {
           }
         }
       ); //La Api lo pasa al backend
-      console.log(res)
-      const obj = JSON.parse(res.config.data)
-      console.log(typeof obj)
-      myStorage.setItem('user', obj.username); 
+      auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
       return navigate("/");
     } catch (err) {
       console.log(err);
