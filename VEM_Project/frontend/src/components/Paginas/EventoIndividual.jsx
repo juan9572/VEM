@@ -22,6 +22,8 @@ function EventoIndividual() {
   const { _id } = useParams()
   const myStorage = window.localStorage;
   const auth = useAuth();
+  const [rating,setRating] = React.useState(0)
+  const [event, setEvent] = React.useState({})
   const [value, setValue] = React.useState(0)
   const [mensaje, setMensaje] = React.useState("")
   const [comentarios, setComentarios] = useState([]);
@@ -65,7 +67,11 @@ function EventoIndividual() {
     const getComentarios = async () => {
       try {
         const res = await axios.post("/api/publicitarios/getComentarios", [_id]);
+        const eve = await axios.post("/api/publicitarios/getInformacionEvento", [_id])
         let comentarios = res.data;
+        let evento = eve.data
+        setRating(evento.rating)
+        setEvent(evento)
         setComentarios(comentarios);
       } catch (err) {
         console.log(err);
@@ -73,8 +79,7 @@ function EventoIndividual() {
     }
     getComentarios();
   }, []);
-
-  console.log(comentarios)
+  
   return (
     <div>
       <Carousel
@@ -114,24 +119,24 @@ function EventoIndividual() {
         <div className="card-content">
           <div className="card-items">
             <h3>Nombre:</h3>
-            <p>Juan</p>
+            <p>{event.title}</p>
           </div>
           <div className="card-items">
-            <h3>Fecha inicio:</h3>
-            <p>Juan</p>
+            <h3>Rating</h3>
+            <Rating name="read-only" value={rating} readOnly />
           </div>
           <div className="card-items">
             <h3>Fecha finalización:</h3>
-            <p>Juan</p>
+            <p>{event.fechaFinalizacion}</p>
           </div>
           <div className="card-body">
             <h3>Descripción:</h3>
-            <p>Soy feliz</p>
+            <p>{event.description}</p>
           </div>
         </div>
         <div className="btn">
           <button className="loginBtn" type="submit">
-            seguir empresa
+            Seguir a xxx
           </button>
         </div>
       </div>

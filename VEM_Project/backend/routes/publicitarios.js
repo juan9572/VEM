@@ -181,7 +181,6 @@ router.post('/comentar', async (req, res) => {
             "mensaje": req.body.mensaje,
             "rating": req.body.rating
         }
-        console.log(newComentario);
         const comment = await Publicitario.findOne({"eventosCreados.title":req.body.tituloEvento});
         let index = 0;
         for (let i = 0; i < comment.eventosCreados.length; i++) {
@@ -215,7 +214,36 @@ router.post("/getComentarios", async (req, res) => {
                 coment = comentarios.eventosCreados[i].comentarios;
             }
         }
+
+        let rating = 0
+        for(let i = 0; i < coment.length; i++){
+            rating = rating + coment[i].rating
+        }
+        rating = rating / coment.length
+        const actualizar = await Publicitario.findOneAndUpdate({"eventosCreados.title": name},
+         {'$set': {
+            'eventosCreados.$.rating':rating,
+        }});
+
+
         res.status(200).json(coment);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getInformacionEvento", async (req, res) => {
+    const name = req.body[0];
+    try{
+        const publi = await Publicitario.findOne({"eventosCreados.title":name}, 'eventosCreados');
+        let event
+        for(let i = 0; i < publi.eventosCreados.length; i++) {
+            if(publi.eventosCreados[i].title == name){
+                event = publi.eventosCreados[i];
+            }
+        }
+        console.log(event)
+        res.status(200).json(event);
     }catch(err){
         res.status(500).json(err);
     }
