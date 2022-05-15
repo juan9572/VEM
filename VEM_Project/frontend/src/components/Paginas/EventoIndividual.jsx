@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom';
@@ -23,10 +24,10 @@ function EventoIndividual() {
   const auth = useAuth();
   const [value, setValue] = React.useState(0)
   const [mensaje, setMensaje] = React.useState("")
+  const [comentarios, setComentarios] = useState([]);
   const navigate = useNavigate()
-  
   const agregarComentario = async (e) => { //Crear un nuevo comentario en el evento
-    if(!auth.isLogged()){
+    if (!auth.isLogged()) {
       return navigate("/Login-Cliente")
     }
     e.preventDefault();
@@ -36,10 +37,9 @@ function EventoIndividual() {
       rating: value,
       tituloEvento: _id
     };
-    console.log(newComentario)
+
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
-      console.log(res);
     } catch (err) {
       console.log(err);
     }
@@ -61,6 +61,20 @@ function EventoIndividual() {
     indicators: false,
     interval: 6000
   };
+  useEffect(() => { //Toma todos los eventos que hay
+    const getComentarios = async () => {
+      try {
+        const res = await axios.post("/api/publicitarios/getComentarios", [_id]);
+        let comentarios = res.data;
+        setComentarios(comentarios);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getComentarios();
+  }, []);
+
+  console.log(comentarios)
   return (
     <div>
       <Carousel
@@ -164,6 +178,18 @@ function EventoIndividual() {
             Comentar
           </Button>
         </Box>
+      </Grid>
+      <Grid comentarios>
+      <h1>Comments</h1>
+        {comentarios.map((comentario) => (
+          <div class="comment mt-4 text-justify float-left">
+          <h4>{comentario.username}</h4>
+          <Rating name="read-only" value={comentario.rating} readOnly />
+          <span>{comentario.createdAt}</span>
+          <br></br>
+          <p>{comentario.mensaje}</p>
+        </div>
+        ))}
       </Grid>
 
     </div>

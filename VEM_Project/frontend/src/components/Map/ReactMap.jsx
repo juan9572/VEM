@@ -54,7 +54,7 @@ function ReactMap() {
       long:newPlace.long,
       link:"AAA",
       fechaInicio: new Date('2020-06-12'),
-      fechaFinalizacion:new Date ('2022-06-12'),
+      fechaFinalizacion:new Date ('2020-06-12'),
       name: auth.user.username
     };
     try{

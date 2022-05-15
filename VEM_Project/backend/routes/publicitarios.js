@@ -86,6 +86,7 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const name = req.body.name;
     const newPin = req.body;
     delete newPin.name
+    console.log(name)
     try{
         const creador = await Publicitario.findOne({"username": name});
         creador.eventosCreados.push(newPin);
@@ -199,6 +200,23 @@ router.post('/comentar', async (req, res) => {
         res.status(200).json(comment);
     }
     catch(err){
+        res.status(500).json(err);
+    }
+});
+
+//Obtener todos los pins del mapa
+router.post("/getComentarios", async (req, res) => {
+    const name = req.body[0];
+    try{
+        const comentarios = await Publicitario.findOne({"eventosCreados.title":name}, 'eventosCreados');
+        let coment = []
+        for(let i = 0; i < comentarios.eventosCreados.length; i++) {
+            if(comentarios.eventosCreados[i].title == name){
+                coment = comentarios.eventosCreados[i].comentarios;
+            }
+        }
+        res.status(200).json(coment);
+    }catch(err){
         res.status(500).json(err);
     }
 });
