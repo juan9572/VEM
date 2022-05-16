@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { NavLink } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 import useAuth from '../Auth/useAuth';
+import Imagen from '../Paginas/vsco5c3ca40baab64.jpg';
 
 const pages = [{'Nav':'Inicio','Router':''}, {'Nav':'Mapa','Router':'Mapa'}, {'Nav':'Eventos Finalizados','Router':'EventosFinalGeneral'}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -119,7 +120,7 @@ const ResponsiveAppBar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={auth.user.username} src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={auth.user.username} src={Imagen} />
                 </IconButton>
               </Tooltip>
               <Menu

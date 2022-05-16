@@ -35,12 +35,11 @@ export default class EventosFinalizados extends Component {
 
   render() {
     const settings = {
-      autoPlay: true,
-      animation: "fade",
-      duration: 1000,
+      cycleNavigation: false,
+      swipe:false,
       indicators: false,
-      interval: 6000
-    };
+      navButtonsAlwaysInvisible:true,
+  };
     return (
       <div>
         <Carousel
