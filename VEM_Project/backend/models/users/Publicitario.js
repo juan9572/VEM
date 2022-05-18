@@ -21,16 +21,16 @@ const ResenaSchema = new mongoose.Schema(
             max: 5
         },
 
-    },{ timestamps: true });
+    }, { timestamps: true });
 module.exports = ResenaSchema;
 const EstadisticaSchema = new mongoose.Schema(
     { //Creamos la tabla de usuarios
-        datos: [{
-            type: String,
-            require: true,
-            min: 1,
-            max: 10
-        }],
+        mes: {
+            type: String
+        },
+        cantidad: {
+            type: Number
+        }
     });
 
 
@@ -50,9 +50,9 @@ const PinSchema = new mongoose.Schema({
         require: true,
         min: 3
     },
-    sitio:{
+    sitio: {
         type: String,
-        require:false
+        require: false
     },
     rating: {
         type: Number,
@@ -91,8 +91,8 @@ const PinSchema = new mongoose.Schema({
     comentarios: [{
         type: ResenaSchema,
     }],
-    estadistica:[{
-        type:EstadisticaSchema,
+    estadistica: [{
+        type: EstadisticaSchema,
     }]
 },
     { timestamps: true });
@@ -103,39 +103,39 @@ PinSchema.methods.setImgUrl = function setImgUrl(filename) {
 }
 
 const PublicitarioSchema = new mongoose.Schema({
-    username:{
+    username: {
         type: String,
         require: true,
         unique: true,
         min: 2,
         max: 35
     },
-    email:{
+    email: {
         type: String,
-        min:5,
+        min: 5,
         max: 60,
-        require:true,
+        require: true,
         unique: true
     },
-    password:{
+    password: {
         type: String,
         require: true,
     },
-    nit:{
+    nit: {
         type: String,
         require: true,
         unique: true,
         max: 10,
         min: 10
     },
-    telefono:{
+    telefono: {
         type: String,
         min: 6
     },
-    categoriaPublicidad:[{type:String}],
-    eventosCreados:[{
-        type:PinSchema,
+    categoriaPublicidad: [{ type: String }],
+    eventosCreados: [{
+        type: PinSchema,
     }],
-},{timestamps: true})
+}, { timestamps: true })
 
-module.exports = mongoose.model("Publicitario",PublicitarioSchema); //Se crea el modelo dentro de la base de datos
+module.exports = mongoose.model("Publicitario", PublicitarioSchema); //Se crea el modelo dentro de la base de datos
