@@ -28,9 +28,14 @@ function ReactMap() {
     }
     getEventos();
   }, []);
-  const handleMarkerClick = (id,lat,long) => { //Para los popups de los eventos
+  const handleMarkerClick = async (id,lat,long) => { //Para los popups de los eventos
     setViewState({...viewState,latitude:lat,longitude:long}); //Centra la atención del usuario en el popup
     setCurrentPlaceId(id);
+    try{
+      const res = await axios.post("/api/publicitarios/interaccionEvento",[id]);
+    }catch(err){
+      console.log(err);
+    }
   }
   //Logica para crear eventos
   const [newPlace,setNewPlace] = useState(null); //Para crear nuevos eventos en el mapa
@@ -84,6 +89,9 @@ function ReactMap() {
       console.log(err);
     }
   };
+  const handleClick = (event) => {
+    console.log(event);
+  };
   return (
     <Map
       {...viewState}
@@ -131,6 +139,7 @@ function ReactMap() {
           anchor="bottom"
           closeOnClick={true}
           closeButton={true}
+          key={p._id}
           >
             <div className="card">
             <form onSubmit={actualizaDatos}>

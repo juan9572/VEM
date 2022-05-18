@@ -4,6 +4,8 @@ const Cliente = require('../models/users/Cliente');
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 const fs = require('fs');
 const upload = require('../libs/storage')
+var ObjectId = require('mongoose').Types.ObjectId; 
+
 // Registrar publicitario
 router.post('/register',async (req, res) => {
     try{
@@ -305,8 +307,18 @@ router.post("/getPonderadoEventos", async (req, res) => {
             estadistica: ponderado,
             title: "Ponderado de eventos"
         }
-        
         res.status(200).json(grafica);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/interaccionEvento", async (req, res) => {
+    const name = req.body[0];
+    try{
+        const id = new ObjectId(name);
+        const eventos = await Publicitario.findOne({"eventosCreados._id":id});
+        res.status(200).json(eventos);
     }catch(err){
         res.status(500).json(err);
     }
