@@ -22,7 +22,7 @@ const opciones = [
         titulo: 'Publicitarios',
         descripcion: 'Interactúa con los emprendimientos y entidades de la ciudad que participan de esta iniciativa.',
         icono: "fav",
-        linkPagina: "BBB"
+        linkPagina: "PublicitarioGeneral"
     },
     {
         titulo: 'Eventos finalizados',

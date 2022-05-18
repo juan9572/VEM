@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Inicio from './components/Paginas/Inicio';
+import ProfilePublicitario from './components/Paginas/ProfilePublicitario';
 import EventosFinalizados from './components/Paginas/EventosFinalizados';
+import PublicitarioGeneral from './components/Paginas/PublicitarioGeneral';
 import Mapa from './components/Paginas/Mapa';
 import EventoIndividual from './components/Paginas/EventoIndividual';
 import LoginPublicitario from './components/AccesoUsuarios/Publicitario/loginPublicitario';
@@ -32,7 +34,13 @@ function App() {
             <Route path="/EventosFinalizados/:_id" element={<EventoIndividual />} />
           </Route>
           <Route element={<WithNav />}>
+            <Route path="/ProfilePublicitario/:username" element={<ProfilePublicitario />} />
+          </Route>
+          <Route element={<WithNav />}>
             <Route path="/EventosFinalGeneral" element={<EventosFinalizados />} />
+          </Route>
+          <Route element={<WithNav />}>
+            <Route path="/PublicitarioGeneral" element={<PublicitarioGeneral />} />
           </Route>
           <Route element={<WithNav />}>
             <Route path="/Mapa" element={<Mapa />} />

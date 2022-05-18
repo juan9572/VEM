@@ -23,7 +23,8 @@ router.post('/register',async(req,res)=>{
             username:req.body.username,
             email:req.body.email,
             age: req.body.age,
-            password:hashedPassword
+            password:hashedPassword,
+            seguidos:[]
         });
         const cliente = await newCliente.save();
         const credentials_cliente = {
@@ -78,6 +79,47 @@ router.post("/getCliente", async (req, res) => {
     }
 });
 
+router.post("/seguir", async (req, res) => {
+    const namePubli = req.body[0]
+    const nameCliente = req.body[1]
+    try{
+        const cliente = await Cliente.findOne({"username": nameCliente});
+        let entre = false
+        for(let i = 0; i < cliente.seguidos.length; i++){
+            if(cliente.seguidos[i] == namePubli){
+                cliente.seguidos.splice(i,1)
+                await cliente.save()
+                entre = true
+            }
+        }
+        if(!entre){
+            cliente.seguidos.push(namePubli)
+            await cliente.save()
+        }
+        const clientes = await Cliente.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
+        res.status(200).json(!entre);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/preguntaSeguido", async (req, res) => {
+    const namePubli = req.body[0]
+    const nameCliente = req.body[1]
+    try{
+        const cliente = await Cliente.findOne({"username": nameCliente});
+        let seguido = false
+        for(let i = 0; i < cliente.seguidos.length; i++){
+            if(cliente.seguidos[i] == namePubli){
+                seguido = true
+            }
+        }
+        res.status(200).json(seguido);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
 
 
 module.exports = router;

@@ -356,4 +356,59 @@ router.post("/getBusquedaEvento", async (req, res) => {
     }
 });
 
+router.get("/getPublicitarios", async (req, res) => {
+    try{
+        const publi = await Publicitario.find({});
+        res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getPublicitarioIndividual", async (req, res) => {
+    try{
+        const publi = await Publicitario.findOne({username: req.body.username}).lean();
+        res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getCantidadFollowers", async (req, res) => {
+    const name = req.body[0]
+    console.log(name)
+    try{
+        const clientes = await Cliente.find({},{seguidos:1});
+        let cantidad = 0
+        for(let i = 0; i < clientes.length; i++){ 
+            for(let j = 0; j < clientes[i].seguidos.length; j++){
+                if(clientes[i].seguidos[j] == name){
+                    cantidad = cantidad + 1;
+                }
+            }
+        }
+        res.status(200).json(cantidad);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getBusquedaPubli", async (req, res) => {
+    const name = req.body.name;
+    try{
+        const publicitarios = await Publicitario.find();
+        let publi = [];
+        let reg = new RegExp(name,'i')
+        for(let i = 0; i < publicitarios.length; i++){
+            if(publicitarios[i].username.match(reg) != null){
+                publi.push(publicitarios[i]);
+            }
+        }
+        console.log(publi)
+        res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
 module.exports = router;

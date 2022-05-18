@@ -38,6 +38,7 @@ export default function Sidebar() {
     const [open, setOpen] = React.useState(false);
     const auth = useAuth();
     const [ponde,setPonderado] = React.useState({})
+    const [followers,setFollowers] = React.useState(0)
 
     const dashboard = {
         text: "Dashboard",
@@ -67,8 +68,11 @@ export default function Sidebar() {
         const getPonderado = async () => {
           try {
             const res = await axios.post("/api/publicitarios/getPonderadoEventos", [auth.user.username]);
+            const aaa = await axios.post("/api/publicitarios/getCantidadFollowers", [auth.user.username]);
+            let cantidad = aaa.data
             let ponderado = res.data
             setPonderado(ponderado)
+            setFollowers(cantidad)
             
           } catch (err) {
             console.log(err);
@@ -142,6 +146,7 @@ export default function Sidebar() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
+                <Typography sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }}>Followers: {followers}</Typography>
                 <Grid item xs={3}><Graph evento={ponde} /></Grid>
                 <Footer />
             </Box>
