@@ -9,6 +9,7 @@ import LoginCliente from './components/AccesoUsuarios/Cliente/loginCliente';
 import RegisterPublicitario from './components/AccesoUsuarios/Publicitario/registerPublicitario';
 import RegisterCliente from './components/AccesoUsuarios/Cliente/registerCliente';
 import Plantilla from './components/Paginas/PlantillaEvento';
+import VerDatosEvento from './components/Paginas/VerDatosEvento';
 import ProfielCliente from './components/Paginas/ProfileCliente';
 import ProfielClienteEdit from './components/Paginas/ProfileClienteEdit';
 import Page404 from './components/Paginas/404';
@@ -81,7 +82,7 @@ function App() {
             <Route path="/Dashboard/EditarEvento" element={<Dashboard />} />
           </Route>
           <Route path="/Dashboard/VerDatosEvento" element={<PrivateRouteP />}>
-            <Route path="/Dashboard/VerDatosEvento" element={<Dashboard />} />
+            <Route path="/Dashboard/VerDatosEvento" element={<VerDatosEvento />} />
           </Route>
           
           <Route element={<WithNav />}> {/* Cambiar esto pa que funcione*/}

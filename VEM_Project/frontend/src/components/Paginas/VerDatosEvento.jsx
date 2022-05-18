@@ -14,17 +14,17 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import HomeIcon from '@mui/icons-material/Home'; import AppBar from '../NavbarP';
-import Footer from '../../Footer';
+import HomeIcon from '@mui/icons-material/Home'; import AppBar from '../Navbar/NavbarP';
+import Footer from '../Footer';
 import ListSubheader from '@mui/material/ListSubheader';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
-import Graph from '../../Graph';
+import Graph from '../Graph';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import useAuth from '../../Auth/useAuth';
+import useAuth from '../Auth/useAuth';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
 
@@ -33,11 +33,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const drawerWidth = 300;
 
-export default function Sidebar() {
+export default function VerDatosEvento() {
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const auth = useAuth();
-    const [ponde,setPonderado] = React.useState({})
+    const [events,setEventos] = React.useState([])
 
     const dashboard = {
         text: "Dashboard",
@@ -64,17 +64,16 @@ export default function Sidebar() {
     ];
 
     useEffect(() => { //Toma todos los eventos que hay
-        const getPonderado = async () => {
+        const getEventos = async () => {
           try {
-            const res = await axios.post("/api/publicitarios/getPonderadoEventos", [auth.user.username]);
-            let ponderado = res.data
-            setPonderado(ponderado)
-            
+            const res = await axios.post("/api/publicitarios/getEventosSamePublicitario", [auth.user.username]);
+            let even = res.data
+            setEventos(even)
           } catch (err) {
             console.log(err);
           }
         }
-        getPonderado();
+        getEventos();
       }, []);
 
     const handleClick = () => {
@@ -142,7 +141,12 @@ export default function Sidebar() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                <Grid item xs={3}><Graph evento={ponde} /></Grid>
+                    {
+                    events.map((currentevent) => {
+                        return (
+                        <Grid item xs={3}><Graph evento={currentevent} /></Grid>
+                        )
+                    })}
                 <Footer />
             </Box>
         </Box>
