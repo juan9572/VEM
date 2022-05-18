@@ -9,12 +9,15 @@ import LoginCliente from './components/AccesoUsuarios/Cliente/loginCliente';
 import RegisterPublicitario from './components/AccesoUsuarios/Publicitario/registerPublicitario';
 import RegisterCliente from './components/AccesoUsuarios/Cliente/registerCliente';
 import Plantilla from './components/Paginas/PlantillaEvento';
-import ProfielCliente from './components/Paginas/ProfielCliente';
+import ProfielCliente from './components/Paginas/ProfileCliente';
+import ProfielClienteEdit from './components/Paginas/ProfileClienteEdit';
 import Page404 from './components/Paginas/404';
 import AuthProvider from './components/Auth/AuthProvider';
 import PublicRoute from './components/Paginas/PublicRoute';
 import PrivateRouteC from './components/Paginas/PrivateRouteC';
+import PrivateRouteP from './components/Paginas/PrivateRouteP';
 import WithNav from './components/Paginas/WithNavAndFooter';
+import Dashboard from './components/Navbar/Sidebar/Sidebar';
 
 function App() {
   return (
@@ -41,6 +44,11 @@ function App() {
               <Route path="/Profile/:username" element={<ProfielCliente />} />
             </Route>
           </Route>
+          <Route element={<WithNav />}>
+            <Route path="/Profile/:username/editProfile" element={<PrivateRouteC />}>
+              <Route path="/Profile/:username/editProfile" element={<ProfielClienteEdit />} />
+            </Route>
+          </Route>
           {/* Lista de eventos finalizados de cada uno de los publicitarios*/}
           {/*Rutas publicas accesibles por todos los usuarios*/}
           <Route path="/Login-Publicitario" element={<PublicRoute />}>
@@ -63,7 +71,24 @@ function App() {
           {/* Fin de rutas accesibles por usuario con rol de cliente  */}
           {/* Rutas accesibles por usuario con rol de publicitario */}
           {/* Rutas publicas + las siguientes */}
-          <Route path="/PlantillaEvento" element={<Plantilla />} />
+          <Route path="/Dashboard" element={<PrivateRouteP />}>
+            <Route path="/Dashboard" element={<Dashboard />} />
+          </Route>
+          <Route path="/Dashboard/CrearEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/CrearEvento" element={<Plantilla />} />
+          </Route>
+          <Route path="/Dashboard/EditarEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/EditarEvento" element={<Dashboard />} />
+          </Route>
+          <Route path="/Dashboard/VerDatosEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/VerDatosEvento" element={<Dashboard />} />
+          </Route>
+          
+          <Route element={<WithNav />}> {/* Cambiar esto pa que funcione*/}
+            <Route path="/Profile/:username" element={<PrivateRouteP />}>
+              <Route path="/Profile/:username" element={<ProfielCliente />} />
+            </Route>
+          </Route>
           {/*<Route path="/Dashboard-Estadisticas" element={null} />
           <Route path="/CrearEventos" element={null} />
           <Route path="/EditarEventos" element={null} />

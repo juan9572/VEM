@@ -93,8 +93,8 @@ function ReactMap() {
       mapboxAccessToken={process.env.REACT_APP_MAPBOX}
       onContextMenu={auth.user && sacarCordenadas} //Saca la latitud y longitud del mapa y crea un objeto newPlace
     >
-      {pins.map(p=>( //Es un for-each
-        <>
+      {pins.map((p,index)=>( //Es un for-each
+        <div key={index}>
           <Marker longitude={p.long} latitude={p.latitude}//Pone el puntero en la latitud y longitud
           offsetLeft={viewState.zoom*2} offsetTop={viewState.zoom*2} anchor="bottom">
           <Room
@@ -153,7 +153,7 @@ function ReactMap() {
             </div>
           </Popup>
           )}
-        </>
+        </div>
       ))} 
       {newPlace && ( //si se le da click a algun nuevo lugar para crear un evento.
           <Popup

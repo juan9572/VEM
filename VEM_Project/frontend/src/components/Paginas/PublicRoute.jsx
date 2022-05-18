@@ -4,5 +4,11 @@ import useAuth from "../Auth/useAuth";
 
 export default function PublicRoute() {
     const auth = useAuth();
-    return !auth.isLogged() ? <Outlet /> : <Navigate to="/" />
+    let route;
+    if(auth.user && auth.user.rol === "C"){
+        route = `/Profile/${auth.user.username}`;
+    }else{
+        route = "/Dashboard";
+    }
+    return !auth.isLogged() ? <Outlet /> : <Navigate to={route} />
 }

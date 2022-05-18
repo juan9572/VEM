@@ -20,7 +20,6 @@ import useAuth from '../Auth/useAuth';
 
 function EventoIndividual() {
   const { _id } = useParams()
-  const myStorage = window.localStorage;
   const auth = useAuth();
   const [rating,setRating] = React.useState(0)
   const [event, setEvent] = React.useState({})
@@ -33,15 +32,15 @@ function EventoIndividual() {
       return navigate("/Login-Cliente")
     }
     e.preventDefault();
-    const newComentario = await { //Se crea el pin
+    const newComentario = { //Se crea el pin
       username: auth.user.username,
       mensaje: mensaje,
       rating: value,
       tituloEvento: _id
     };
-
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
+      setComentarios([...comentarios, newComentario]);
     } catch (err) {
       console.log(err);
     }

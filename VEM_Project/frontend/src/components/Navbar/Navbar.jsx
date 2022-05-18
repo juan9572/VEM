@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,16 +15,46 @@ import { NavLink } from 'react-router-dom';
 import Logo from '../../Logo.svg';
 import useAuth from '../Auth/useAuth';
 import Imagen from '../Paginas/vsco5c3ca40baab64.jpg';
+import { useNavigate } from 'react-router-dom';
 
-const pages = [{'Nav':'Inicio','Router':''}, {'Nav':'Mapa','Router':'Mapa'}, {'Nav':'Eventos Finalizados','Router':'EventosFinalGeneral'}];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = [{ 'Nav': 'Inicio', 'Router': '' }, { 'Nav': 'Mapa', 'Router': 'Mapa' }, { 'Nav': 'Eventos Finalizados', 'Router': 'EventosFinalGeneral' }];
+const settings = [];
 
 const ResponsiveAppBar = () => {
   const auth = useAuth();
-
+  useEffect(() => {
+    if (auth.isLogged() && auth.isPublicitario()) {
+      let l = settings.length;
+      for(let i = 0; i < l;i++){
+        settings.pop();
+      }
+      settings.push("Profile");
+      settings.push("Dashboard");
+      settings.push("Logout");
+    }else{
+      let l = settings.length;
+      for(let i = 0; i < l;i++){
+        settings.pop();
+      }
+      settings.push("Profile");
+      settings.push("Logout");
+    }
+  }, []);
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [selectedItem, setSelectedItem] = useState();
+
+  const handleOptionsMenu = (event) => {
+    if (event === "Profile") {
+      navigate(`/Profile/${auth.user.username}`);
+    } else if (event === "Dashboard") {
+      navigate(`/Dashboard`);
+    } else {
+      auth.logout();
+      navigate("/");
+    }
+  }
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -37,9 +67,8 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const myStorage = window.localStorage; //guarda en el servidor local
   return (
-    <AppBar position="static" style={{ background: '#ffffff' }}>
+    <AppBar position="static" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style={{ background: '#ffffff' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <NavLink to={'/'}>
@@ -82,8 +111,8 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
                   <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.Router}`}>
                     <Typography textAlign="center">
                       {page.Nav}
@@ -102,25 +131,25 @@ const ResponsiveAppBar = () => {
             <img src={Logo} style={{ width: 100 }} alt="logo" />
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages.map((page, index) => (
               <Button
-                key={page}
+                key={index}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'black', display: 'block' }}
               >
-                  <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.Router}`}>
-                    <Typography textAlign="center">
-                      {page.Nav}
-                    </Typography>
-                  </NavLink>              
-                  </Button>
+                <NavLink style={{ textDecoration: 'none', color: 'black' }} to={`/${page.Router}`}>
+                  <Typography textAlign="center">
+                    {page.Nav}
+                  </Typography>
+                </NavLink>
+              </Button>
             ))}
           </Box>
-          {auth.isLogged()?
+          {auth.isLogged() ?
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={auth.user.username} src={Imagen} />
+                  <Avatar src={Imagen} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -139,13 +168,12 @@ const ResponsiveAppBar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  selectedItem === 'Logout' ? myStorage.removeItem('user') : 
-                  <MenuItem key={setting} onClick={() => setSelectedItem(setting)}>
+                {settings.map((setting, index) => (
+                  <MenuItem key={index} onClick={() => handleOptionsMenu(setting)}>
                     <Typography textAlign="center">{setting} </Typography>
                   </MenuItem>
                 ))}
-                
+
               </Menu>
             </Box> :
             <NavLink style={{ textDecoration: 'none', color: 'black' }} to={"/Login-Cliente"}>

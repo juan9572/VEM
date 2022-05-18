@@ -10,10 +10,36 @@ import ImagenProfile from './vsco5c3ca40baab64.jpg';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import {useEffect, useState} from 'react';
+import useAuth from '../Auth/useAuth';
 
 export default function ProfielCliente() {
+    const navigate = useNavigate();
+    const auth = useAuth();
     const { username } = useParams();
+    const [usuario,setUsuario] = useState({});
+    useEffect(() => { //Toma todos los eventos que hay
+        if(username !== auth.user.username){
+            navigate("*");
+        }
+        const getData = async () =>{ 
+          try{
+            const name = {"username": username};
+            const res = await axios.post("/api/clientes/getCliente",name);
+            setUsuario({
+                "name":res.data.username,
+                "email":res.data.email,
+                "createdAt":res.data.createdAt.substring(0,10),
+                "age":res.data.age
+            });
+          }catch(err){
+            console.log(err);
+          }
+        }
+        getData();
+      });
     const settings = {
         cycleNavigation: false,
         swipe: false,
@@ -64,19 +90,18 @@ export default function ProfielCliente() {
                                 <Grid container>
                                     <Grid item xs mt={2}>
                                         <Stack textAlign="center">
-                                            <Typography fontWeight="600" sx={{"&:hover":{color:"#347aeb"},cursor:"pointer"}} variant="h6">22</Typography>
-                                            <Typography sx={{"&:hover":{color:"#347aeb"},cursor:"pointer"}}>Seguidos</Typography>
+                                            <Typography fontWeight="600" sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }} variant="h6">22</Typography>
+                                            <Typography sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }}>Seguidos</Typography>
                                         </Stack>
                                     </Grid>
                                     <Grid item xs={4}>
                                         <Avatar
-                                            alt="Remy Sharp"
                                             src={ImagenProfile}
                                             sx={{ width: 140, height: 140, transform: 'translateY(-30%)', position: 'absolute' }}
                                         />
                                     </Grid>
                                     <Grid item mt={2} mr={14}>
-                                        <Button variant="contained">Editar perfil</Button>
+                                        <Button variant="contained" onClick={() => {navigate(`/Profile/${auth.user.username}/editProfile`)}}>Editar perfil</Button>
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -95,18 +120,28 @@ export default function ProfielCliente() {
                             borderTopRightRadius: 0,
                             borderBottomLeftRadius: 20,
                             borderBottomRightRadius: 20,
-                            paddingBottom:5,
-                            marginBottom:5
+                            paddingBottom: 5,
+                            marginBottom: 5
                         }} elevation={3} >
-                            <Typography mt={1} fontWeight="600" variant="h5">{username}</Typography>
-                            <Stack>
-                                <Typography mt={1} fontWeight="0" variant="h5">, 19 años</Typography>
-                                <Typography mt={23} fontWeight="0" variant="h6">Te uniste el día</Typography>
-                            </Stack>
-                            <Typography mt={1} fontWeight="600" variant="h6">2020-02-20</Typography>
-                                Esta distribución esta lo más de fea tengo que arreglarla :,(
-                            <Typography mt={23} fontWeight="0" variant="h6">jrinconusma@gmail.com</Typography>
-
+                            <Grid
+                                container
+                                direction="column"
+                                justifyContent="flex-start"
+                                alignItems="center"
+                            >
+                                <Grid container direction="row" justifyContent="center" alignItems="flex-start">
+                                    <Typography mt={1} fontWeight="600" variant="h5">{usuario.name}</Typography>
+                                    {usuario.age !== -1 ?<Typography mt={1} fontWeight="0" variant="h5">, {usuario.age} años</Typography>:null}
+                                </Grid>
+                                <Grid item xs={2} textAlign="center">
+                                    <Typography mt={6} fontWeight="0" variant="h6">Te uniste el día</Typography>
+                                    <Typography mt={1} fontWeight="600" variant="h6">{usuario.createdAt}</Typography>
+                                    <Typography fontWeight="600" variant="subtitle2">YYYY-MM-DD</Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Typography mt={6} fontWeight="0" variant="h6">{usuario.email}</Typography>
+                                </Grid>
+                            </Grid>
                         </Paper>
                     </Box>
                 </div>

@@ -21,10 +21,10 @@ mongoose.connect(bd,{useNewUrlParser: true, useUnifiedTopology: true}).then( ()=
     Publicitario.deleteMany({},(err) => {
         if(err) console.log(err);
     });
+    Publicitario.insertMany(JSON.parse(fs.readFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json').toString()));
     Clientes.deleteMany({},(err) => {
         if(err) console.log(err);
     });
-    Publicitario.insertMany(JSON.parse(fs.readFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json').toString()));
     Clientes.insertMany(JSON.parse(fs.readFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json').toString()));
     console.log("Se aplico el backup, todo al día");
 }).catch((err) => console.log(err));                //En caso contrario nos mostrara el error.

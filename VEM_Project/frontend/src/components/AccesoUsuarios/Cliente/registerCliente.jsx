@@ -51,8 +51,8 @@ export default function SignInSide() {
                     }
                 }
             ); //La Api lo pasa al backend
+            navigate("/");
             auth.login(res.data);
-            return navigate("/");
         } catch (err) {
             console.log(err);
         }

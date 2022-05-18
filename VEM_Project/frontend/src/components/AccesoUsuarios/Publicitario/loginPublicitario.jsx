@@ -28,7 +28,7 @@ export default function SignInSide() {
   const [errorServidor, setErrorServidor] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const auth = useAuth();
-  
+
   const logeoPublicitario = async (data) => {
     const publicitario = { //Se reciben los datos
       username: data.username,
@@ -37,18 +37,17 @@ export default function SignInSide() {
     try {
       const res = await axios.post("api/publicitarios/login", publicitario).catch(
         function (error) {
-          if(error.response.status === 200) {
+          if (error.response.status === 200) {
           } else if (error.response.status === 409) {
             setError("username", { type: "error", message: error.response.data.error });
             setError("password", { type: "error", message: error.response.data.error });
-          } else{
+          } else {
             setOpen(true);
             setErrorServidor(true);
           }
         }
       ); //La Api lo pasa al backend
       auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
-      return navigate("/");
     } catch (err) {
       console.log(err);
     }

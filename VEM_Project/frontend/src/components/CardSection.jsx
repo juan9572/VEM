@@ -28,7 +28,7 @@ const opciones = [
         titulo: 'Eventos finalizados',
         descripcion: 'Encuentra los eventos más memorables que han pasado por VEM.',
         icono: "fot",
-        linkPagina: "CCC"
+        linkPagina: "EventosFinalGeneral"
     }
 ];
 function giveIcon(icono) {
@@ -65,7 +65,7 @@ function CardSection() {
                                 alignContent: 'center',
                                 backgroundColor: '#FBFBFB'
                             }} variant="outlined">
-                                <CardActionArea component={Link} to={`/Mapa`}>{/*to={`/poll/${poll.id}`}*/}
+                                <CardActionArea component={Link} to={`/${tier.linkPagina}`}>{/*to={`/poll/${poll.id}`}*/}
                                     <Box
                                         sx={{
                                             display: 'flex',
