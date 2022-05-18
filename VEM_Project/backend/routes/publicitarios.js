@@ -86,7 +86,22 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
     const name = req.body.name;
     const newPin = req.body;
     delete newPin.name
-    console.log(name)
+    const defaultEsta = [
+        {mes:"Enero", cantidad:0},
+        {mes:"Febrero", cantidad:0},
+        {mes:"Marzo", cantidad:0},
+        {mes:"Abril", cantidad:0},
+        {mes:"Mayo", cantidad:0},
+        {mes:"Junio", cantidad:0},
+        {mes:"Julio", cantidad:0},
+        {mes:"Agosto", cantidad:0},
+        {mes:"Septiembre", cantidad:0},
+        {mes:"Octubre", cantidad:0},
+        {mes:"Noviembre", cantidad:0},
+        {mes:"Diciembre", cantidad:0},
+    ]
+    newPin.estadistica = defaultEsta
+    
     try{
         const creador = await Publicitario.findOne({"username": name});
         creador.eventosCreados.push(newPin);
@@ -242,8 +257,56 @@ router.post("/getInformacionEvento", async (req, res) => {
                 event = publi.eventosCreados[i];
             }
         }
-        console.log(event)
+        
         res.status(200).json(event);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getEventosSamePublicitario", async (req, res) => {
+    const name = req.body[0];
+    try{
+        const eventos = await Publicitario.findOne({"username":name});
+        let event = []
+        event = eventos.eventosCreados
+        res.status(200).json(event);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getPonderadoEventos", async (req, res) => {
+    const name = req.body[0];
+    try{
+        const eventos = await Publicitario.findOne({"username":name});
+        let event = []
+        event = eventos.eventosCreados
+        let ponderado = [
+            {mes:"Enero", cantidad:0},
+            {mes:"Febrero", cantidad:0},
+            {mes:"Marzo", cantidad:0},
+            {mes:"Abril", cantidad:0},
+            {mes:"Mayo", cantidad:0},
+            {mes:"Junio", cantidad:0},
+            {mes:"Julio", cantidad:0},
+            {mes:"Agosto", cantidad:0},
+            {mes:"Septiembre", cantidad:0},
+            {mes:"Octubre", cantidad:0},
+            {mes:"Noviembre", cantidad:0},
+            {mes:"Diciembre", cantidad:0},
+        ]
+        for(let i = 0; i < eventos.eventosCreados.length;i++){
+            for(let j = 0; j<12;j++){
+                ponderado[j].cantidad = ponderado[j].cantidad + eventos.eventosCreados[i].estadistica[j].cantidad
+            }
+        }
+        const grafica = {
+            estadistica: ponderado,
+            title: "Ponderado de eventos"
+        }
+        
+        res.status(200).json(grafica);
     }catch(err){
         res.status(500).json(err);
     }
