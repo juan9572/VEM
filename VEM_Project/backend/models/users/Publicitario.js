@@ -25,22 +25,12 @@ const ResenaSchema = new mongoose.Schema(
 module.exports = ResenaSchema;
 const EstadisticaSchema = new mongoose.Schema(
     { //Creamos la tabla de usuarios
-<<<<<<< HEAD
-        interaccionesArteyCultura:Number,
-        datos: [{
-            type: String,
-            require: true,
-            min: 1,
-            max: 10
-        }],
-=======
         mes: {
             type: String
         },
         cantidad: {
             type: Number
         }
->>>>>>> 409b06803d7cf570507fa38981064fe72febda85
     });
 
 
@@ -101,9 +91,9 @@ const PinSchema = new mongoose.Schema({
     comentarios: [{
         type: ResenaSchema,
     }],
-    estadistica:{
-        type:EstadisticaSchema,
-    }
+    estadistica: [{
+        type: EstadisticaSchema,
+    }]
 },
     { timestamps: true });
 
