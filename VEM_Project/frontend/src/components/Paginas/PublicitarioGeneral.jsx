@@ -72,9 +72,12 @@ export default class PublicitarioGeneral extends Component {
             />
           </Paper>
         </Carousel>
-        <Grid container direction="column" alignItems="center" justifyContent="center">
+        {<h1>Publicitarios</h1>}
+        <br/>
+        <Grid container spacing={2} alignItems="center" justifyContent="center">
           {this.eventList()}
         </Grid>
+        <br/>
       </div>
     )
   }

@@ -6,9 +6,13 @@ import Box from '@mui/material/Box';
 import Card from '../Card';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
+import { createFilterOptions } from '@mui/material/Autocomplete';
+import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Room, Star } from "@material-ui/icons";
 
+
+const options = ['Mascotas', 'Deportes'];
 
 export default class EventosFinalizados extends Component {
   constructor(props) {
@@ -39,7 +43,8 @@ export default class EventosFinalizados extends Component {
       swipe:false,
       indicators: false,
       navButtonsAlwaysInvisible:true,
-  };
+    };
+
     return (
       <div>
         <Carousel
@@ -72,9 +77,14 @@ export default class EventosFinalizados extends Component {
             />
           </Paper>
         </Carousel>
-        <Grid container direction="column" alignItems="center" justifyContent="center">
-          {this.eventList()}
-        </Grid>
+        {<h1>Eventos Finalizados</h1>}
+        <br/>
+        <div className="container p-4">
+          <Grid container spacing={2} alignItems="center" justifyContent="center">
+            {this.eventList()}
+          </Grid>
+        </div>
+        <br/>
       </div>
     )
   }
