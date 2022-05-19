@@ -85,7 +85,6 @@ router.post('/login',async (req, res) => {
 
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
-    console.log(req.body);
     const name = req.body.name;
     const newPin = req.body;
     delete newPin.name
@@ -427,8 +426,9 @@ router.post("/getBusquedaPubli", async (req, res) => {
     }
 });
 
-router.post("/getFollowers", async (req, res) => {
-    const name = req.body[0]
+router.post("/gFollowers", async (req, res) => {
+    const name = req.body.name
+    console.log(req.body)
     try{
         const clientes = await Cliente.find({});
         let datos = []

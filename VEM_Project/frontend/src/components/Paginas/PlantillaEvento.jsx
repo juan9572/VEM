@@ -87,6 +87,29 @@ export default function PlantillaEvento() {
         }
     ];
 
+    const notificar = async (data) => {
+        try{
+            const res = await axios.post("/api/publicitarios/gFollowers", {name:auth.user.username})
+            let lista = res.data
+            console.log(res.data)
+            for (let i = 0; i < lista.length; i++) {
+                var dato = {
+                    service_id: 'service_lfewldj',
+                    template_id: 'template_b26cy9f',
+                    user_id: '1nddrz4D7Xy8naENC',
+                    template_params: {
+                        'email': lista[i].email,
+                        'to_name': lista[i].username,
+                        'from_name': auth.user.username
+                    }
+                };
+                const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
+            }
+        }catch (err) {
+            console.log(err);
+        }
+    };
+
     const crearEvento = async (data) => {
         const evento = {
             name: auth.user.username,
@@ -101,29 +124,15 @@ export default function PlantillaEvento() {
         if (data.link) {
             evento.link = data.link;
         }
-        console.log(evento);
         try {
             const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
-            const res = await axios.post("/api/publicitarios/getFollowers", [auth.user.username])
-            let lista = res.data
-            for (let i = 0; i < lista.length; i++) {
-                var dato = {
-                    service_id: 'service_lfewldj',
-                    template_id: 'template_b26cy9f',
-                    user_id: '1nddrz4D7Xy8naENC',
-                    template_params: {
-                        'email': lista[i].email,
-                        'to_name': lista[i].username,
-                        'from_name': auth.user.username
-                    }
-                };
-                const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
-            }
             navigate("/Dashboard");
+            notificar()
         } catch (err) {
             console.log(err);
         }
     };
+    
     const handleClick = () => {
         setOpen(!open);
     };
