@@ -393,7 +393,6 @@ router.post("/getPublicitarioIndividual", async (req, res) => {
 
 router.post("/getCantidadFollowers", async (req, res) => {
     const name = req.body[0]
-    console.log(name)
     try{
         const clientes = await Cliente.find({},{seguidos:1});
         let cantidad = 0
@@ -421,8 +420,30 @@ router.post("/getBusquedaPubli", async (req, res) => {
                 publi.push(publicitarios[i]);
             }
         }
-        console.log(publi)
         res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getFollowers", async (req, res) => {
+    const name = req.body[0]
+    try{
+        const clientes = await Cliente.find({});
+        let datos = []
+        for(let i = 0; i < clientes.length; i++){ 
+            for(let j = 0; j < clientes[i].seguidos.length; j++){
+                if(clientes[i].seguidos[j] == name){
+                    let infoCliente = {
+                        username: clientes[i].username,
+                        email: clientes[i].email
+                    }
+                    datos.push(infoCliente)
+                }
+            }
+        }
+        console.log(datos)
+        res.status(200).json(datos);
     }catch(err){
         res.status(500).json(err);
     }

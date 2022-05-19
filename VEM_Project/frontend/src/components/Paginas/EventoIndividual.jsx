@@ -41,6 +41,8 @@ function EventoIndividual() {
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
       setComentarios([...comentarios, newComentario]);
+      
+
     } catch (err) {
       console.log(err);
     }
