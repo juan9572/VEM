@@ -221,6 +221,10 @@ function ReactMap() {
     setValue(newValue);
   };
 
+  const buscarPorRegex = (evento) => {
+    console.log(evento.target.value);
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -235,7 +239,7 @@ function ReactMap() {
             </Box>
             <TabPanel value={value} index={0}>
               <Paper sx={{ width: '100%' }}>
-                <Search>
+                <Search onChange={buscarPorRegex}>
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>

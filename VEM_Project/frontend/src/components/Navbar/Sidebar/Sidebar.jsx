@@ -28,9 +28,6 @@ import useAuth from '../../Auth/useAuth';
 import axios from 'axios';
 import Grid from '@mui/material/Grid';
 
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-
 const drawerWidth = 300;
 
 export default function Sidebar() {
