@@ -21,7 +21,6 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
-
 const theme = createTheme();
 
 export default function PlantillaEvento() {

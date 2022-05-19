@@ -1,11 +1,14 @@
 import React from 'react'
-import ReactMap from '../Map/ReactMap.jsx';
+import ReactMap from '../Map/ReactMapVisualizacion.jsx';
+import Toolbar from '@mui/material/Toolbar';
 
 
 function Mapa() {
   return (
-    <div><ReactMap/></div>
-  )
+    <div mt={2}>
+      <ReactMap />
+    </div>
+  ) 
 }
 
 export default Mapa
