@@ -19,30 +19,40 @@ export default function ProfielCliente() {
     const navigate = useNavigate();
     const auth = useAuth();
     const { username } = useParams();
-    const [usuario,setUsuario] = useState({});
-    const [cantidadSeguidos, setCantidad] = useState(0)
+    const [publi,setPubli] = useState({});
+    const [alreadyFoll, setAlreadyFoll] = useState(false);
     useEffect(() => { //Toma todos los eventos que hay
-        if(username !== auth.user.username){
-            navigate("*");
-        }
         const getData = async () =>{ 
           try{
             const name = {"username": username};
-            const res = await axios.post("/api/clientes/getCliente",name);
-            setUsuario({
+            const res = await axios.post("/api/publicitarios/getPublicitarioIndividual",name);
+            const aaa = await axios.post("/api/clientes/preguntaSeguido", [username, auth.user.username]);
+            setAlreadyFoll(aaa.data)
+            setPubli({
                 "name":res.data.username,
                 "email":res.data.email,
                 "createdAt":res.data.createdAt.substring(0,10),
-                "age":res.data.age,
-                "seguidos": res.data.seguidos
+                "cantidad":res.data.eventosCreados.length
             });
-            setCantidad(usuario.seguidos.length);
+            
           }catch(err){
             console.log(err);
           }
         }
         getData();
       });
+
+    const follow = async (e) => {
+        if (auth.user.rol != "C") {
+            return navigate("/")
+        }
+        try {
+            const aaaa = await axios.post("/api/clientes/seguir", [username, auth.user.username]); //Se llama a la Api para que los guarde
+            setAlreadyFoll(aaaa.data)
+          } catch (err) {
+            console.log(err);
+          }
+    };
     const settings = {
         cycleNavigation: false,
         swipe: false,
@@ -93,8 +103,8 @@ export default function ProfielCliente() {
                                 <Grid container>
                                     <Grid item xs mt={2}>
                                         <Stack textAlign="center">
-                                            <Typography fontWeight="600" sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }} variant="h6">{cantidadSeguidos}</Typography>
-                                            <Typography sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }}>Seguidos</Typography>
+                                            <Typography fontWeight="600" sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }} variant="h6">{publi.cantidad}</Typography>
+                                            <Typography sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }}>Eventos Creados</Typography>
                                         </Stack>
                                     </Grid>
                                     <Grid item xs={4}>
@@ -104,7 +114,12 @@ export default function ProfielCliente() {
                                         />
                                     </Grid>
                                     <Grid item mt={2} mr={14}>
-                                        <Button variant="contained" onClick={() => {navigate(`/Profile/${auth.user.username}/editProfile`)}}>Editar perfil</Button>
+                                        {alreadyFoll ? 
+                                        <Button variant="contained" onClick={follow}>Unfollow</Button>
+                                        :
+                                        <Button variant="contained" onClick={follow}>Follow</Button>
+                                        }
+                                        
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -133,16 +148,15 @@ export default function ProfielCliente() {
                                 alignItems="center"
                             >
                                 <Grid container direction="row" justifyContent="center" alignItems="flex-start">
-                                    <Typography mt={1} fontWeight="600" variant="h5">{usuario.name}</Typography>
-                                    {usuario.age !== -1 ?<Typography mt={1} fontWeight="0" variant="h5">, {usuario.age} años</Typography>:null}
+                                    <Typography mt={1} fontWeight="600" variant="h5">{publi.name}</Typography>
                                 </Grid>
                                 <Grid item xs={2} textAlign="center">
-                                    <Typography mt={6} fontWeight="0" variant="h6">Te uniste el día</Typography>
-                                    <Typography mt={1} fontWeight="600" variant="h6">{usuario.createdAt}</Typography>
+                                    <Typography mt={6} fontWeight="0" variant="h6">Se unio el día</Typography>
+                                    <Typography mt={1} fontWeight="600" variant="h6">{publi.createdAt}</Typography>
                                     <Typography fontWeight="600" variant="subtitle2">YYYY-MM-DD</Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography mt={6} fontWeight="0" variant="h6">{usuario.email}</Typography>
+                                    <Typography mt={6} fontWeight="0" variant="h6">{publi.email}</Typography>
                                 </Grid>
                             </Grid>
                         </Paper>

@@ -24,7 +24,10 @@ const ClienteSchema = new mongoose.Schema({
         type: Number,
         max:110,
         min:-1
-    }
+    },
+    seguidos:[{
+        type: String
+    }]
     },{timestamps: true})
    
 

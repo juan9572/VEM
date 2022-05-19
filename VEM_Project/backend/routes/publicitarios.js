@@ -241,7 +241,6 @@ router.post("/getComentarios", async (req, res) => {
             'eventosCreados.$.rating':rating,
         }});
 
-
         res.status(200).json(coment);
     }catch(err){
         res.status(500).json(err);
@@ -255,7 +254,7 @@ router.post("/getInformacionEvento", async (req, res) => {
         let event
         for(let i = 0; i < publi.eventosCreados.length; i++) {
             if(publi.eventosCreados[i].title == name){
-                event = publi.eventosCreados[i];
+                event = publi.eventosCreados[i]
             }
         }
         
@@ -317,6 +316,39 @@ router.post("/interaccionEvento", async (req, res) => {
     try{
         const id = new ObjectId(name);
         const eventos = await Publicitario.findOne({"eventosCreados._id":id});
+        let index = 0
+        for(let i = 0; i < eventos.eventosCreados.length; i++) {
+            if(eventos.eventosCreados[i]._id.equals(id)){
+                index = i;
+                break;
+            }
+        }
+        
+        let mes = new Date().getMonth()
+        eventos.eventosCreados[index].estadistica[mes].cantidad = eventos.eventosCreados[index].estadistica[mes].cantidad + 1
+        await eventos.save()
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json',JSON.stringify(publicitarios));
+        res.status(200).json(eventos);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getBusquedaEvento", async (req, res) => {
+    const name = req.body.name;
+    try{
+        const publicitarios = await Publicitario.find();
+        let eventos = [];
+        let reg = new RegExp(name,'i')
+        for(let i = 0; i < publicitarios.length; i++){
+            for(let j = 0; j < publicitarios[i].eventosCreados.length; j++){
+                if(publicitarios[i].eventosCreados[j].title.match(reg) != null || 
+                publicitarios[i].eventosCreados[j].category.match(reg) != null){
+                    eventos.push(publicitarios[i].eventosCreados[j]);
+                }
+            }
+        }
         res.status(200).json(eventos);
     }catch(err){
         res.status(500).json(err);
@@ -336,6 +368,61 @@ router.post("/filtrarEvento", async (req, res) => {
             }
         }
         res.status(200).json(eventos);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.get("/getPublicitarios", async (req, res) => {
+    try{
+        const publi = await Publicitario.find({});
+        res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getPublicitarioIndividual", async (req, res) => {
+    try{
+        const publi = await Publicitario.findOne({username: req.body.username}).lean();
+        res.status(200).json(publi);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getCantidadFollowers", async (req, res) => {
+    const name = req.body[0]
+    console.log(name)
+    try{
+        const clientes = await Cliente.find({},{seguidos:1});
+        let cantidad = 0
+        for(let i = 0; i < clientes.length; i++){ 
+            for(let j = 0; j < clientes[i].seguidos.length; j++){
+                if(clientes[i].seguidos[j] == name){
+                    cantidad = cantidad + 1;
+                }
+            }
+        }
+        res.status(200).json(cantidad);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/getBusquedaPubli", async (req, res) => {
+    const name = req.body.name;
+    try{
+        const publicitarios = await Publicitario.find();
+        let publi = [];
+        let reg = new RegExp(name,'i')
+        for(let i = 0; i < publicitarios.length; i++){
+            if(publicitarios[i].username.match(reg) != null){
+                publi.push(publicitarios[i]);
+            }
+        }
+        console.log(publi)
+        res.status(200).json(publi);
     }catch(err){
         res.status(500).json(err);
     }
