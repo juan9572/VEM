@@ -103,7 +103,7 @@ export default function PlantillaEvento() {
         }
         console.log(evento);
         try {
-            const resEvento = await axios.post("api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
+            const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
             /*
             const res = await axios.post("/api/publicitarios/getFollowers", [auth.user.username])
             let lista = res.data
