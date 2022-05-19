@@ -31,6 +31,8 @@ import CardContent from '@mui/material/CardContent';
 import { Button } from '@mui/material';
 import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
+import ShareIcon from '@mui/icons-material/Share';
+import Link from '@mui/material/Link';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,7 +114,7 @@ function ReactMap() {
     longitude: -75.56359,
     zoom: 11
   });
-  const [totalPins,setTotalPins] = useState([]);
+  const [totalPins, setTotalPins] = useState([]);
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState();
 
@@ -225,9 +227,9 @@ function ReactMap() {
   const buscarPorRegex = async (evento) => {
     console.log(evento.target.value);
     try {
-      if(evento.target.value == ""){
+      if (evento.target.value == "") {
         setPins(totalPins)
-      }else{
+      } else {
         const res = await axios.post("/api/publicitarios/getBusquedaEvento", [evento.target.value]);
         setPins(res.data)
       }
@@ -367,7 +369,7 @@ function ReactMap() {
                       <CardHeader
                         avatar={
                           <Avatar sx={{ bgcolor: "#2692E1" }} aria-label="recipe">
-                            R
+                            {evento.publicitario}
                           </Avatar>
                         }
                         title={evento.publicitario}
@@ -381,11 +383,14 @@ function ReactMap() {
                           {evento.description}
                         </Typography>
                       </CardContent>
-                      <CardActions disableSpacing>
-                      <div class="fb-share-button" data-href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-layout="button" data-size="small">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ&amp"src="sdkpreparse" class="fb-xfbml-parse-ignore">
-                          Compartir</a>
-                        </div>
+                      <CardActions spacing={4}>
+                        <Link href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ&amp" src="sdkpreparse" target="_blank" rel="noreferrer" color="inherit">
+                          <ShareIcon sx={{fontSize:20}} />
+                        </Link>
+                        {evento.link?
+                        <Link href={evento.link} target="_blank" rel="noreferrer" color="inherit">
+                          Ver más
+                        </Link>:null}
                       </CardActions>
                     </Card>
                   </Popup>
