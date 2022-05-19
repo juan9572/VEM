@@ -104,7 +104,6 @@ export default function PlantillaEvento() {
         console.log(evento);
         try {
             const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
-            /*
             const res = await axios.post("/api/publicitarios/getFollowers", [auth.user.username])
             let lista = res.data
             for (let i = 0; i < lista.length; i++) {
@@ -119,7 +118,7 @@ export default function PlantillaEvento() {
                     }
                 };
                 const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
-            }*/
+            }
             navigate("/Dashboard");
         } catch (err) {
             console.log(err);
