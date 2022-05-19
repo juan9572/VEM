@@ -139,10 +139,7 @@ function EventoIndividual() {
           <button className="loginBtn" type="submit">
             Seguir a xxx
           </button>
-          <div class="fb-share-button" data-href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-layout="button" data-size="small">
-            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ&amp"src="sdkpreparse" class="fb-xfbml-parse-ignore">
-              Compartir</a>
-          </div>
+          
         </div>
       </div>
       <Grid imagenes>

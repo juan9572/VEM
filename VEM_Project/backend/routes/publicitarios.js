@@ -336,7 +336,7 @@ router.post("/interaccionEvento", async (req, res) => {
 });
 
 router.post("/getBusquedaEvento", async (req, res) => {
-    const name = req.body.name;
+    const name = req.body[0];
     try{
         const publicitarios = await Publicitario.find();
         let eventos = [];
