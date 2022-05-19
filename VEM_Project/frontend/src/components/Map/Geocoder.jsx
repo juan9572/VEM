@@ -117,7 +117,6 @@ class Geocoder extends PureComponent {
 
     getMapboxMap = () => {
         const { mapRef } = this.props
-        console.log(this.props);
         return (mapRef && mapRef.current && mapRef.current.getMap()) || null
     }
 
@@ -284,7 +283,6 @@ class Geocoder extends PureComponent {
         limit: 5,
         reverseGeocode: false,
         enableEventLogging: true,
-        marker: true,
         position: 'top-right',
         onInit: () => { },
         onClear: () => { },

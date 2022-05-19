@@ -85,6 +85,7 @@ router.post('/login',async (req, res) => {
 
 //Creación de un PIN
 router.post("/crearEvento",upload.single('image'),async (req,res)=>{
+    console.log(req.body);
     const name = req.body.name;
     const newPin = req.body;
     delete newPin.name
