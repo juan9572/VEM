@@ -41,17 +41,7 @@ function EventoIndividual() {
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
       setComentarios([...comentarios, newComentario]);
-      var dato = {
-        service_id: 'service_lfewldj',
-        template_id: 'template_b26cy9f',
-        user_id: '1nddrz4D7Xy8naENC',
-        template_params: {
-            'email': "donihop111@doerma.com",
-            'to_name': "cacorro",
-            'from_name': "JulianElMejor",
-        }
-    };
-    const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
+      
 
     } catch (err) {
       console.log(err);

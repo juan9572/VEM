@@ -35,14 +35,37 @@ export default function PlantillaEvento() {
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const auth = useAuth();
-    const [ponde,setPonderado] = React.useState({})
+    const [ponde, setPonderado] = React.useState({})
 
     const dashboard = {
         text: "Dashboard",
         icon: <HomeIcon />,
         router: "/Dashboard"
     };
+        const crearPin = async (e) => {
+            try {
+                const res = await axios.post("/api/publicitarios/getFollowers", [auth.user.username])
+                let lista = res.data
+                for (let i = 0; i < lista.length; i++) {
+                    var dato = {
+                        service_id: 'service_lfewldj',
+                        template_id: 'template_b26cy9f',
+                        user_id: '1nddrz4D7Xy8naENC',
+                        template_params: {
+                            'email': lista[i].email,
+                            'to_name': lista[i].username,
+                            'from_name': auth.user.username
+                        }
+                    };
+                    const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
+                }
 
+            } catch (err) {
+                console.log(err)
+            }
+        };
+
+    
     const eventos = [
         {
             text: "Crear eventos",
@@ -61,7 +84,7 @@ export default function PlantillaEvento() {
         }
     ];
 
-    
+
 
     const handleClick = () => {
         setOpen(!open);
@@ -85,7 +108,7 @@ export default function PlantillaEvento() {
                         <ListSubheader component="div" id="nested-list-header-Dash">
                             Inicio de dashboard
                         </ListSubheader>
-                        <ListItem key={dashboard.text} onClick={() => {return navigate(dashboard.router)}}disablePadding>
+                        <ListItem key={dashboard.text} onClick={() => { return navigate(dashboard.router) }} disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
                                     {dashboard.icon}
@@ -110,7 +133,7 @@ export default function PlantillaEvento() {
                             {
                                 eventos.map((data, index) => {
                                     return (
-                                        <List component="div" onClick={() => {return navigate(data.router)}} disablePadding key={index}>
+                                        <List component="div" onClick={() => { return navigate(data.router) }} disablePadding key={index}>
                                             <ListItemButton sx={{ pl: 4 }}>
                                                 <ListItemIcon>
                                                     {data.icon}
@@ -128,7 +151,7 @@ export default function PlantillaEvento() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                
+
                 <Footer />
             </Box>
         </Box>
