@@ -102,8 +102,7 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
         {mes:"Noviembre", cantidad:0},
         {mes:"Diciembre", cantidad:0},
     ]
-    newPin.estadistica = defaultEsta
-    
+    newPin.estadistica = defaultEsta    
     try{
         const creador = await Publicitario.findOne({"username": name});
         creador.eventosCreados.push(newPin);
@@ -156,7 +155,7 @@ router.post("/actualizarEvento", async (req, res) => {
 //Obtener todos los pins del mapa
 router.get("/getEventos", async (req, res) => {
     try{
-        const pins = await Publicitario.find({},{eventosCreados:1});
+        const pins = await Publicitario.find({});
         res.status(200).json(pins);
     }catch(err){
         res.status(500).json(err);
@@ -346,6 +345,24 @@ router.post("/getBusquedaEvento", async (req, res) => {
             for(let j = 0; j < publicitarios[i].eventosCreados.length; j++){
                 if(publicitarios[i].eventosCreados[j].title.match(reg) != null || 
                 publicitarios[i].eventosCreados[j].category.match(reg) != null){
+                    eventos.push(publicitarios[i].eventosCreados[j]);
+                }
+            }
+        }
+        res.status(200).json(eventos);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.post("/filtrarEvento", async (req, res) => {
+    const categoria = req.body[0];
+    try{
+        const publicitarios = await Publicitario.find({"eventosCreados.category":categoria});
+        let eventos = [];
+        for(let i = 0; i < publicitarios.length; i++){
+            for(let j = 0; j < publicitarios[i].eventosCreados.length; j++){
+                if(publicitarios[i].eventosCreados[j].category === categoria){
                     eventos.push(publicitarios[i].eventosCreados[j]);
                 }
             }

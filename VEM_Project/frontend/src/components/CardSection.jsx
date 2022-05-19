@@ -11,12 +11,13 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PhotoSizeSelectActualIcon from '@mui/icons-material/PhotoSizeSelectActual';
 import { Link } from "react-router-dom";
+
 const opciones = [
     {
         titulo: 'Categorias',
         descripcion: 'Descubre las categorias de eventos de ciudad que tenemos preparadas para ti.',
         icono: "pin",
-        linkPagina: "AAA"
+        linkPagina: "Mapa"
     },
     {
         titulo: 'Publicitarios',
@@ -65,7 +66,7 @@ function CardSection() {
                                 alignContent: 'center',
                                 backgroundColor: '#FBFBFB'
                             }} variant="outlined">
-                                <CardActionArea component={Link} to={`/${tier.linkPagina}`}>{/*to={`/poll/${poll.id}`}*/}
+                                <CardActionArea component={Link} to={`/${tier.linkPagina}`}>
                                     <Box
                                         sx={{
                                             display: 'flex',
