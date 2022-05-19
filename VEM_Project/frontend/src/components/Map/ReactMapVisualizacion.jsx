@@ -112,7 +112,7 @@ function ReactMap() {
     longitude: -75.56359,
     zoom: 11
   });
-
+  const [totalPins,setTotalPins] = useState([]);
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState();
 
@@ -144,12 +144,12 @@ function ReactMap() {
       }
     },
     {
-      titulo: "Gastronomía",
+      titulo: "Gastronomia",
       icon: <FoodBankIcon sx={{ fontSize: 40 }} />,
       color: 'rgba(255, 20, 0, 1)',
       onClick: async () => {
         try {
-          const res = await axios.post("/api/publicitarios/filtrarEvento", ["Gastronomía"]);
+          const res = await axios.post("/api/publicitarios/filtrarEvento", ["Gastronomia"]);
           setPins(res.data);
         } catch (err) {
           console.log(err);
@@ -199,6 +199,7 @@ function ReactMap() {
           }
         }
         setPins(eventos);
+        setTotalPins(eventos);
       } catch (err) {
         console.log(err);
       }
@@ -221,8 +222,18 @@ function ReactMap() {
     setValue(newValue);
   };
 
-  const buscarPorRegex = (evento) => {
+  const buscarPorRegex = async (evento) => {
     console.log(evento.target.value);
+    try {
+      if(evento.target.value == ""){
+        setPins(totalPins)
+      }else{
+        const res = await axios.post("/api/publicitarios/getBusquedaEvento", [evento.target.value]);
+        setPins(res.data)
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -239,7 +250,7 @@ function ReactMap() {
             </Box>
             <TabPanel value={value} index={0}>
               <Paper sx={{ width: '100%' }}>
-                <Search onChange={buscarPorRegex}>
+                <Search onKeyUp={buscarPorRegex}>
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>
@@ -268,7 +279,7 @@ function ReactMap() {
                               {evento.category === "Arte y cultura" && (
                                 <TheaterComedyIcon />
                               )}
-                              {evento.category === "Gastronomía" && (
+                              {evento.category === "Gastronomia" && (
                                 <FoodBankIcon />
                               )}
                               {evento.category === "Deportes" && (
@@ -371,7 +382,10 @@ function ReactMap() {
                         </Typography>
                       </CardContent>
                       <CardActions disableSpacing>
-                        Va el boton de facebook
+                      <div class="fb-share-button" data-href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-layout="button" data-size="small">
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ&amp"src="sdkpreparse" class="fb-xfbml-parse-ignore">
+                          Compartir</a>
+                        </div>
                       </CardActions>
                     </Card>
                   </Popup>
