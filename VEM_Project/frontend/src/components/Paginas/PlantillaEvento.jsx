@@ -51,11 +51,19 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
 import Button from '@mui/material/Button';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import ImageUploading from "react-images-uploading";
+
+
+
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const drawerWidth = 300;
+
 
 export default function PlantillaEvento() {
     const navigate = useNavigate();
@@ -68,6 +76,10 @@ export default function PlantillaEvento() {
         icon: <HomeIcon />,
         router: "/Dashboard"
     };
+
+    const Input = styled('input')({
+        display: 'none',
+    });
 
     const eventos = [
         {
@@ -88,8 +100,8 @@ export default function PlantillaEvento() {
     ];
 
     const notificar = async (data) => {
-        try{
-            const res = await axios.post("/api/publicitarios/gFollowers", {name:auth.user.username})
+        try {
+            const res = await axios.post("/api/publicitarios/gFollowers", { name: auth.user.username })
             let lista = res.data
             console.log(res.data)
             for (let i = 0; i < lista.length; i++) {
@@ -105,10 +117,19 @@ export default function PlantillaEvento() {
                 };
                 const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
             }
-        }catch (err) {
+        } catch (err) {
             console.log(err);
         }
     };
+
+    const datosImagen = (imagen) => {
+        setImages(imagen[0]);
+        console.log(imagen[0]);
+    };
+
+    const [images, setImages] = React.useState();
+    const maxNumber = 69;
+
 
     const crearEvento = async (data) => {
         const evento = {
@@ -119,20 +140,29 @@ export default function PlantillaEvento() {
             latitude: newPlace.lat,
             long: newPlace.long,
             fechaInicio: fecha[0].startDate,
-            fechaFinalizacion: fecha[0].endDate
+            fechaFinalizacion: fecha[0].endDate,
         };
         if (data.link) {
             evento.link = data.link;
         }
+        const image = {
+            filename: images.file.name,
+            path: 'img/uploads/' + images.file.name,
+            originalname: images.file.name,
+            mimetype: images.file.type,
+            size: images.file.size,
+        }
+        evento.imgBanner = image;
+        console.log(evento);
         try {
             const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
-            navigate("/Dashboard");
-            notificar()
+            //navigate("/Dashboard");
+            //notificar()
         } catch (err) {
             console.log(err);
         }
     };
-    
+
     const handleClick = () => {
         setOpen(!open);
     };
@@ -393,6 +423,50 @@ export default function PlantillaEvento() {
                                 </FormControl>
                             </Grid>
                         </Grid>
+
+                        <Grid container spacing={2}
+                            mt={3}
+                            pb={3}
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="center"
+                            style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
+                        >
+                            <Grid item>
+                                <ImageUploading
+                                    multiple
+                                    value={images}
+                                    onChange={datosImagen}
+                                    maxNumber={maxNumber}
+                                    dataURLKey="data_url"
+                                >
+                                    {({
+                                        imageList,
+                                        onImageUpload,
+                                        onImageRemoveAll,
+                                        onImageUpdate,
+                                        onImageRemove,
+                                        isDragging,
+                                        dragProps
+                                    }) => (
+                                        // write your building UI
+                                        <div className="upload__image-wrapper">
+                                            <button
+                                                style={isDragging ? { color: "red" } : null}
+                                                onClick={onImageUpload}
+                                                {...dragProps}
+                                            >
+                                                Click or Drop here
+                                            </button>
+                                            &nbsp;
+                                            <button onClick={onImageRemoveAll}>Remove all images</button>
+                                            
+                                        </div>
+                                    )}
+                                </ImageUploading>
+                            </Grid>
+                        </Grid>
+
                         <Grid container spacing={2}
                             mt={3}
                             pb={3}

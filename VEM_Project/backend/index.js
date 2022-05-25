@@ -9,6 +9,21 @@ const publicitariosRoute = require('./routes/publicitarios');
 const clientesRoute = require('./routes/clientes');
 const fs = require('fs');
 
+const multer = require('multer');
+const path = require('path');
+const uuid = require('uuid');
+const { format }  = require('timeago.js');
+
+//Middleware image storage
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, '/public/img/uploads'),
+    filename: (req, file, cb, filename) => {
+        cb(null, uuid.v4() + path.extname(file.originalname));
+    }
+});
+app.use(multer({ storage: storage }).single('image'));
+
+
 dotenv.config(); // Le damos la configuración inicial al dotenv
 
 app.use(express.json());

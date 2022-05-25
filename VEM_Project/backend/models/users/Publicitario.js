@@ -1,6 +1,17 @@
 const mongoose = require('mongoose'); // Libreria para conectar nuestra base de datos
 const { appConfig } = require('../../config');
 
+const imageSchema = new mongoose.Schema({
+    filename: {type: String},
+    path: {type: String},
+    originalname: {type: String},
+    mimetype: {type: String},
+    size: {type: Number},
+    created_at: {type: Date, default: Date.now()}
+})
+
+module.exports = imageSchema;
+
 const ResenaSchema = new mongoose.Schema(
     {
         username: {
@@ -23,6 +34,8 @@ const ResenaSchema = new mongoose.Schema(
 
     }, { timestamps: true });
 module.exports = ResenaSchema;
+
+
 const EstadisticaSchema = new mongoose.Schema(
     { //Creamos la tabla de usuarios
         mes: {
@@ -80,14 +93,14 @@ const PinSchema = new mongoose.Schema({
         type: Date,
         require: true
     },
-    imgUrl: {
-        type: String,
+    imgBanner: {
+        type: imageSchema,
         require: false
     },
-    imgEventoPasado: {
-        type: String,
+    imgEventoPasado: [{
+        type: imageSchema,
         require: false
-    },
+    }],
     comentarios: [{
         type: ResenaSchema,
     }],
@@ -97,10 +110,10 @@ const PinSchema = new mongoose.Schema({
 },
     { timestamps: true });
 
-PinSchema.methods.setImgUrl = function setImgUrl(filename) {
+/*PinSchema.methods.setImgUrl = function setImgUrl(filename) {
     const { host, port } = appConfig
     this.imgUrl = `${host}:${port}/public/${filename}`
-}
+}*/
 
 const PublicitarioSchema = new mongoose.Schema({
     username: {
@@ -116,6 +129,10 @@ const PublicitarioSchema = new mongoose.Schema({
         max: 60,
         require: true,
         unique: true
+    },
+    imagePerfil: {
+        type: imageSchema,
+        require: false
     },
     password: {
         type: String,

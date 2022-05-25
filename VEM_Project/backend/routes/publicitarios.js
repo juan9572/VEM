@@ -102,7 +102,8 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
         {mes:"Noviembre", cantidad:0},
         {mes:"Diciembre", cantidad:0},
     ]
-    newPin.estadistica = defaultEsta    
+    newPin.estadistica = defaultEsta 
+    newPin.imgBanner = req.imgBanner;   
     try{
         const creador = await Publicitario.findOne({"username": name});
         creador.eventosCreados.push(newPin);
