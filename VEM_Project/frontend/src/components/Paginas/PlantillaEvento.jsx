@@ -132,6 +132,13 @@ export default function PlantillaEvento() {
 
 
     const crearEvento = async (data) => {
+        const image = {
+            filename: images.file.name,
+            path: 'img/uploads/' + images.file.name,
+            originalname: images.file.name,
+            mimetype: images.file.type,
+            size: images.file.size,
+        }
         const evento = {
             name: auth.user.username,
             title: data.title,
@@ -141,18 +148,11 @@ export default function PlantillaEvento() {
             long: newPlace.long,
             fechaInicio: fecha[0].startDate,
             fechaFinalizacion: fecha[0].endDate,
+            imgBanner: image,
         };
         if (data.link) {
             evento.link = data.link;
         }
-        const image = {
-            filename: images.file.name,
-            path: 'img/uploads/' + images.file.name,
-            originalname: images.file.name,
-            mimetype: images.file.type,
-            size: images.file.size,
-        }
-        evento.imgBanner = image;
         console.log(evento);
         try {
             const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde

@@ -3,8 +3,21 @@ const Publicitario = require('../models/users/Publicitario'); //Importamos los m
 const Cliente = require('../models/users/Cliente');
 const bcrypt = require('bcrypt');// Librearia para poder encriptar datos
 const fs = require('fs');
-const upload = require('../libs/storage')
 var ObjectId = require('mongoose').Types.ObjectId; 
+const multer = require('multer');
+const path = require('path');
+const uuid = require('uuid');
+
+
+//Middleware
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, '../public/img/uploads'),
+    filename: (req, file, cb, filename) => {
+        cb(null, uuid.v4() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
 
 // Registrar publicitario
 router.post('/register',async (req, res) => {
@@ -83,8 +96,13 @@ router.post('/login',async (req, res) => {
     }
 });
 
+router.post('/upload', upload.single('image'), async(req, res)=>{
+    console.log(req.file);
+    res.status(200).json('cualquier mierda');
+});
+
 //Creación de un PIN
-router.post("/crearEvento",upload.single('image'),async (req,res)=>{
+router.post("/crearEvento", async (req,res)=>{
     const name = req.body.name;
     const newPin = req.body;
     delete newPin.name
@@ -102,8 +120,7 @@ router.post("/crearEvento",upload.single('image'),async (req,res)=>{
         {mes:"Noviembre", cantidad:0},
         {mes:"Diciembre", cantidad:0},
     ]
-    newPin.estadistica = defaultEsta 
-    newPin.imgBanner = req.imgBanner;   
+    newPin.estadistica = defaultEsta  
     try{
         const creador = await Publicitario.findOne({"username": name});
         creador.eventosCreados.push(newPin);
