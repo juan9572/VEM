@@ -16,6 +16,7 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemButton from '@mui/material/ListItemButton';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import FoodBankIcon from '@mui/icons-material/FoodBank';
@@ -225,9 +226,8 @@ function ReactMap() {
   };
 
   const buscarPorRegex = async (evento) => {
-    console.log(evento.target.value);
     try {
-      if (evento.target.value == "") {
+      if (evento.target.value === "") {
         setPins(totalPins)
       } else {
         const res = await axios.post("/api/publicitarios/getBusquedaEvento", [evento.target.value]);
@@ -237,6 +237,13 @@ function ReactMap() {
       console.log(err);
     }
   }
+
+  const [selectedIndex, setSelectedIndex] = React.useState(null);
+
+  const handleListItemClick = (index) => {
+    setSelectedIndex(index);
+    handleMarkerClick(pins[index]._id,pins[index].latitude,pins[index].long);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -272,25 +279,30 @@ function ReactMap() {
                   >
                     {pins.map((evento, index) => (
                       <div key={index}>
-                        <ListItem sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 0.05)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 0.05)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 0.05)' : 'rgba(255, 20, 0, 0.05)' }}>
-                          <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 1)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 1)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 1)' : 'rgba(255, 20, 0, 1)' }}>
-                              {evento.category === "Mascotas" && (
-                                <PetsIcon />
-                              )}
-                              {evento.category === "Arte y cultura" && (
-                                <TheaterComedyIcon />
-                              )}
-                              {evento.category === "Gastronomia" && (
-                                <FoodBankIcon />
-                              )}
-                              {evento.category === "Deportes" && (
-                                <SportsVolleyballIcon />
-                              )}
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={evento.title} secondary={evento.category} />
-                        </ListItem>
+                        <ListItemButton
+                          selected={selectedIndex === index}
+                          onClick={() => handleListItemClick(index)}
+                        >
+                          <ListItem sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 0.05)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 0.05)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 0.05)' : 'rgba(255, 20, 0, 0.05)'}}>
+                            <ListItemAvatar>
+                              <Avatar sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 1)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 1)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 1)' : 'rgba(255, 20, 0, 1)' }}>
+                                {evento.category === "Mascotas" && (
+                                  <PetsIcon />
+                                )}
+                                {evento.category === "Arte y cultura" && (
+                                  <TheaterComedyIcon />
+                                )}
+                                {evento.category === "Gastronomia" && (
+                                  <FoodBankIcon />
+                                )}
+                                {evento.category === "Deportes" && (
+                                  <SportsVolleyballIcon />
+                                )}
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={evento.title} secondary={evento.category} />
+                          </ListItem>
+                        </ListItemButton>
                         <Divider variant="inset" component="li" />
                       </div>
                     ))}
@@ -385,12 +397,12 @@ function ReactMap() {
                       </CardContent>
                       <CardActions spacing={4}>
                         <Link href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdQw4w9WgXcQ&amp" src="sdkpreparse" target="_blank" rel="noreferrer" color="inherit">
-                          <ShareIcon sx={{fontSize:20}} />
+                          <ShareIcon sx={{ fontSize: 20 }} />
                         </Link>
-                        {evento.link?
-                        <Link href={evento.link} target="_blank" rel="noreferrer" color="inherit">
-                          Ver más
-                        </Link>:null}
+                        {evento.link ?
+                          <Link href={evento.link} target="_blank" rel="noreferrer" color="inherit">
+                            Ver más
+                          </Link> : null}
                       </CardActions>
                     </Card>
                   </Popup>

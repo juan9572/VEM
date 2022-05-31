@@ -37,7 +37,6 @@ router.post('/register', upload.single('image') ,async(req,res)=>{
             res.status(409).json({"field":"email","error":"Este email ya esta en uso"});
             return;
         }*/
-        //console.log(req.body);
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
         const newCliente = new Cliente({
@@ -55,7 +54,7 @@ router.post('/register', upload.single('image') ,async(req,res)=>{
 
         //const clientes = await Cliente.find().lean();
         //fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
-         //Se crea el backup, para tener las bases de datos sincronizadas
+        //Se crea el backup, para tener las bases de datos sincronizadas
 
         res.status(200).json(credentials_cliente);
     }catch(err){
