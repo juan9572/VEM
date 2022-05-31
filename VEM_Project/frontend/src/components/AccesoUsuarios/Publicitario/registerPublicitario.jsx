@@ -26,7 +26,7 @@ import useAuth from '../../Auth/useAuth';
 const theme = createTheme();
 
 export default function SignInSide() {
-    const [ errorServidor, setErrorServidor ] = React.useState(false);
+    const [errorServidor, setErrorServidor] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const categorias = [{ categoria: 'Arte y cultura' }, { categoria: 'Deportes' }, { categoria: 'Gastronomía' }, { categoria: 'Mascotas' }];
     const auth = useAuth();
@@ -42,7 +42,7 @@ export default function SignInSide() {
         };
         try {
             const res = await axios.post("api/publicitarios/register", publicitario).catch(
-                function(error){
+                function (error) {
                     if (error.response.status === 200) {
                     } else if (error.response.data.field === "username") {
                         setError("username", { type: "error", message: error.response.data.error });
@@ -50,13 +50,15 @@ export default function SignInSide() {
                         setError("email", { type: "error", message: error.response.data.error });
                     } else if (error.response.data.field === "nit") {
                         setError("nit", { type: "error", message: error.response.data.error });
-                    } else{
+                    } else {
                         setOpen(true);
                         setErrorServidor(true);
                     }
                 }
             ); //La Api lo pasa al backend
-            auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+            if (res) {
+                auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+            }
         } catch (err) {
             console.log(err);
         }

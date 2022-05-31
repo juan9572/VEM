@@ -38,18 +38,20 @@ export default function SignInSide() {
       const res = await axios.post("/api/clientes/login", cliente).catch(
         function (error) {
           if (error.response.status === 200) {
-            
+
           } else if (error.response.status === 409) {
             setError("username", { type: "error", message: error.response.data.error });
             setError("password", { type: "error", message: error.response.data.error });
-          } else{
+          } else {
             setOpen(true);
             setErrorServidor(true);
           }
         }
       ); //La Api lo pasa al backend
-      navigate("/");
-      auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      if (res) {
+        navigate("/");
+        auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      }
     } catch (err) {
       console.log(err);
     }

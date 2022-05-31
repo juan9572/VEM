@@ -51,16 +51,8 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
 import Button from '@mui/material/Button';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import ImageUploading from "react-images-uploading";
-
-
-
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 const drawerWidth = 300;
 
@@ -153,11 +145,11 @@ export default function PlantillaEvento() {
         if (data.link) {
             evento.link = data.link;
         }
-        console.log(evento);
         try {
-            const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
+            //const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
+            const img = await axios.post("/api/publicitarios/upload",image);
             //navigate("/Dashboard");
-            //notificar()
+            //notificar();
         } catch (err) {
             console.log(err);
         }

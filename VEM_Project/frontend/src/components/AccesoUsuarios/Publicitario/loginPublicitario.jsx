@@ -47,7 +47,9 @@ export default function SignInSide() {
           }
         }
       ); //La Api lo pasa al backend
-      auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      if (res) {
+        auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+      }
     } catch (err) {
       console.log(err);
     }

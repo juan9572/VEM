@@ -21,6 +21,7 @@ import PrivateRouteC from './components/Paginas/PrivateRouteC';
 import PrivateRouteP from './components/Paginas/PrivateRouteP';
 import WithNav from './components/Paginas/WithNavAndFooter';
 import Dashboard from './components/Navbar/Sidebar/Sidebar';
+import EditarEvento from './components/Paginas/EditarEvento';
 
 function App() {
   return (
@@ -87,7 +88,7 @@ function App() {
             <Route path="/Dashboard/CrearEvento" element={<Plantilla />} />
           </Route>
           <Route path="/Dashboard/EditarEvento" element={<PrivateRouteP />}>
-            <Route path="/Dashboard/EditarEvento" element={<Dashboard />} />
+            <Route path="/Dashboard/EditarEvento" element={<EditarEvento />} />
           </Route>
           <Route path="/Dashboard/VerDatosEvento" element={<PrivateRouteP />}>
             <Route path="/Dashboard/VerDatosEvento" element={<VerDatosEvento />} />

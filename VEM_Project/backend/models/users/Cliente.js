@@ -25,6 +25,10 @@ const ClienteSchema = new mongoose.Schema({
         max:110,
         min:-1
     },
+    imagePerfil: {
+        type: String,
+        require: false
+    },
     seguidos:[{
         type: String
     }]
