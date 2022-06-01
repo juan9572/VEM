@@ -102,11 +102,7 @@ export default function EditarEvento() {
 
     const editEvent = React.useCallback(
         (id) => () => {
-            setRows((prevRows) =>
-                prevRows.map((row) =>
-                    row.id === id ? { ...row, isAdmin: !row.isAdmin } : row,
-                ),
-            );
+            return navigate(`/Dashboard/EditarEvento/${id}`)
         },
         [],
     );

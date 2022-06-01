@@ -480,4 +480,21 @@ router.post("/deleteEvent", async (req, res) => {
     }
 });
 
+router.post("/getEventoEspecifico", async (req, res) => {
+    try{
+        const publicitario = await Publicitario.findOne({username: req.body.username});
+        const id = new ObjectId(req.body.id);
+        let evento;
+        for(let i = 0; i < publicitario.eventosCreados.length; i++){
+            if(publicitario.eventosCreados[i]._id.equals(id)){
+                evento = publicitario.eventosCreados[i];
+                break;
+            }
+        }
+        res.status(200).json(evento);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
 module.exports = router;

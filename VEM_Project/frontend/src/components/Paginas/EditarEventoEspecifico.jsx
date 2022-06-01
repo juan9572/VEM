@@ -52,6 +52,7 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
 import Button from '@mui/material/Button';
+import { useParams } from 'react-router-dom';
 
 const drawerWidth = 300;
 
@@ -61,6 +62,7 @@ export default function PlantillaEvento() {
     const [open, setOpen] = React.useState(false);
     const auth = useAuth();
     const [errorServidor, setErrorServidor] = React.useState(false);
+    const { nombreEvento } = useParams();
 
     const dashboard = {
         text: "Dashboard",
@@ -91,32 +93,41 @@ export default function PlantillaEvento() {
         }
     ];
 
-    const notificar = async (data) => {
-        try {
-            const res = await axios.post("/api/publicitarios/gFollowers", { name: auth.user.username })
-            let lista = res.data
-            console.log(res.data)
-            for (let i = 0; i < lista.length; i++) {
-                var dato = {
-                    service_id: 'service_lfewldj',
-                    template_id: 'template_b26cy9f',
-                    user_id: '1nddrz4D7Xy8naENC',
-                    template_params: {
-                        'email': lista[i].email,
-                        'to_name': lista[i].username,
-                        'from_name': auth.user.username
-                    }
-                };
-                const aaa = await axios.post("https://api.emailjs.com/api/v1.0/email/send", dato)
+    const [evento,setEvento] = React.useState({});
+    const [title, setTitle] = React.useState(null);
+    const [description, setDescription] = React.useState(null);
+    const [category, setCategory] = React.useState(null);
+    const [latitude,setLatitude] = React.useState(null);
+    const [long,setLong] = React.useState(null);
+    const [link,setLink] = React.useState(null);
+
+
+    React.useLayoutEffect(() => {
+        const getData = async () => {
+            try {
+                const info = { "id": nombreEvento, "username":auth.user.username };
+                const data = await axios.post("/api/publicitarios/getEventoEspecifico", info);
+                setEvento(data.data);
+                setTitle(evento.title);
+                setDescription(evento.description);
+                setCategory(evento.category);
+                setLatitude(evento.latitude);
+                setLong(evento.long);
+                if(long && latitude){
+                    sacarCordenadas({lngLat:{
+                        lng:long,
+                        lat:latitude
+                    }});
+                }
+                setLink(evento.link);
+            } catch (err) {
+                console.log(err);
             }
-        } catch (err) {
-            console.log(err);
         }
-    };
+        getData();
+    }, [evento]);
 
-
-
-    const crearEvento = async (data) => {
+    const actualizarEvento = async (data) => {
         const evento = {
             name: auth.user.username,
             title: data.title,
@@ -129,13 +140,10 @@ export default function PlantillaEvento() {
         };
         if (data.link) {
             evento.link = data.link;
-        }else{
-            evento.link = "";
         }
         try {
-            const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
-            navigate("/Dashboard");
-            //notificar();
+            //const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
+            //navigate("/Dashboard");
         } catch (err) {
             console.log(err);
         }
@@ -144,20 +152,11 @@ export default function PlantillaEvento() {
     const handleClick = () => {
         setOpen(!open);
     };
-    const defaultValues = {
-        title: "",
-        description: "",
-        category: "",
-        latitude: 0,
-        long: 0,
-        fechaInicio: "",
-        fechaFinalizacion: ""
-    };
+
     const { handleSubmit, control, setError } = useForm({
-        mode: 'all',
+        mode: 'onChange',
         reValidateMode: 'onSubmit',
         shouldFocusError: false,
-        defaultValues
     });
     const [viewState, setViewState] = useState({ //Para crear el mapa
         latitude: 6.25184,
@@ -250,7 +249,7 @@ export default function PlantillaEvento() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                <Typography variant="h3">Crear evento</Typography>
+                <Typography variant="h3">Actualizar evento</Typography>
                 {errorServidor &&
                     <Collapse in={open}>
                         <Alert
@@ -274,7 +273,7 @@ export default function PlantillaEvento() {
                         </Alert>
                     </Collapse>
                 }
-                <Box component="form" noValidate onSubmit={handleSubmit((data) => crearEvento(data))}
+                <Box component="form" noValidate onSubmit={handleSubmit((data) => actualizarEvento(data))}
                     sx={{
                         mt: 1, width: '100%'
                     }}>
@@ -294,7 +293,7 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item xs={3}>
-                                <Controller
+                            {title?<Controller
                                     control={control}
                                     name="title"
                                     rules={
@@ -315,6 +314,7 @@ export default function PlantillaEvento() {
                                             inputRef={ref}
                                             margin="normal"
                                             required
+                                            defaultValue={title}
                                             fullWidth
                                             id="title"
                                             label="Titulo"
@@ -323,10 +323,10 @@ export default function PlantillaEvento() {
                                             helperText={error ? formState.errors.title.message : null}
                                         />
                                     )}
-                                />
+                                />:null}
                             </Grid>
                             <Grid item xs={6}>
-                                <Controller
+                            {description?<Controller
                                     control={control}
                                     name="description"
                                     rules={
@@ -345,6 +345,7 @@ export default function PlantillaEvento() {
                                             inputRef={ref}
                                             margin="normal"
                                             multiline
+                                            defaultValue={description}
                                             maxRows={4}
                                             required
                                             fullWidth
@@ -355,7 +356,7 @@ export default function PlantillaEvento() {
                                             helperText={error ? formState.errors.description.message : null}
                                         />
                                     )}
-                                />
+                                />:null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -367,7 +368,7 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item>
-
+                            {category? 
                                 <FormControl>
                                     <FormLabel id="demo-row-radio-buttons-group-label" required style={{ fontSize: 25, margin: "auto" }}>Categoria</FormLabel>
                                     <Controller
@@ -388,6 +389,7 @@ export default function PlantillaEvento() {
                                                 value={value}
                                                 onBlur={onBlur}
                                                 onChange={onChange}
+                                                defaultValue={category}
                                                 aria-labelledby="demo-row-radio-buttons-group-label"
                                                 name="row-radio-buttons-group"
                                             >
@@ -399,6 +401,7 @@ export default function PlantillaEvento() {
                                         )}
                                     />
                                 </FormControl>
+                                :null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -411,7 +414,7 @@ export default function PlantillaEvento() {
                         >
                             <Grid item>
                                 <Typography variant="h5">Selecciona el lugar del evento *</Typography>
-                                <Map
+                                {long&&latitude?<Map
                                     ref={mapRef}
                                     {...viewState}
                                     onMove={evt => setViewState(evt.viewState)}
@@ -440,7 +443,7 @@ export default function PlantillaEvento() {
                                             closeButton={true}
                                         />
                                     )}
-                                </Map>
+                                </Map>:null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -452,7 +455,7 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item xs={8}>
-                                <Controller
+                            {link?<Controller
                                     control={control}
                                     name="link"
                                     rules={
@@ -469,6 +472,7 @@ export default function PlantillaEvento() {
                                             onChange={onChange}
                                             checked={value}
                                             inputRef={ref}
+                                            defaultValue={link}
                                             margin="normal"
                                             fullWidth
                                             id="link"
@@ -477,6 +481,7 @@ export default function PlantillaEvento() {
                                         />
                                     )}
                                 />
+                            :null}
                             </Grid>
                             <Grid container spacing={2}
                                 mt={3}
@@ -505,7 +510,7 @@ export default function PlantillaEvento() {
                                     variant="contained"
                                     sx={{ mt: 3, mb: 5 }}
                                 >
-                                    Crear evento
+                                    Editar evento
                                 </Button>
                             </Grid>
                         </Grid>
