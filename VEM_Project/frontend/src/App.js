@@ -22,6 +22,7 @@ import PrivateRouteP from './components/Paginas/PrivateRouteP';
 import WithNav from './components/Paginas/WithNavAndFooter';
 import Dashboard from './components/Navbar/Sidebar/Sidebar';
 import EditarEvento from './components/Paginas/EditarEvento';
+import EditarEventoEspecifico from './components/Paginas/EditarEventoEspecifico';
 
 function App() {
   return (
@@ -89,6 +90,9 @@ function App() {
           </Route>
           <Route path="/Dashboard/EditarEvento" element={<PrivateRouteP />}>
             <Route path="/Dashboard/EditarEvento" element={<EditarEvento />} />
+          </Route>
+          <Route path="/Dashboard/EditarEvento/:nombreEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/EditarEvento/:nombreEvento" element={<EditarEventoEspecifico />} />
           </Route>
           <Route path="/Dashboard/VerDatosEvento" element={<PrivateRouteP />}>
             <Route path="/Dashboard/VerDatosEvento" element={<VerDatosEvento />} />

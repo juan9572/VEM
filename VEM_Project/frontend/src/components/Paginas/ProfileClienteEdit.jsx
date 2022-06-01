@@ -31,6 +31,7 @@ export default function ProfileClienteEdit() {
     const [usuario,setUsuario] = React.useState({});
     const [email, setEmail] = React.useState(null);
     const [age, setAge] = React.useState(null);
+    
     useLayoutEffect(() => {
         if (username !== auth.user.username) {
             navigate("*");
