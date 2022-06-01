@@ -28,36 +28,35 @@ export default function ProfileClienteEdit() {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
     const { username } = useParams();
-    const [usuario,setUsuario] = useState(null);
+    const [usuario,setUsuario] = React.useState({});
+    const [email, setEmail] = React.useState(null);
+    const [age, setAge] = React.useState(null);
     useLayoutEffect(() => {
         if (username !== auth.user.username) {
             navigate("*");
         }
-        console.log("a");
         const getData = async () =>{ 
             try{
                 const name = {"username": username};
                 const data = await axios.post("/api/clientes/getCliente",name);
-                console.log(data);
                 setUsuario({
                     username:data.data.username,
                     email:data.data.email,
                     age:data.data.age
                 });
-                console.log(usuario);
-                console.log(control._defaultValues);
+                setEmail(usuario.email);
+                setAge(usuario.age);
             }catch(err){
                 console.log(err);
             }
         }
         getData();
-      }, []);
+      }, [usuario, email, age]);
     //GET THE DATA FROM THE BACKEND AND SHOWED TO THE DEFAULT_VALUES
     const { handleSubmit, control, setError, reset } = useForm({
-        mode: 'all',
-        reValidateMode: 'onSubmit',
-        shouldFocusError: false,
-        defaultValues:usuario
+        mode: 'onChange',
+        reValidateMode: 'onSumbit',
+        shouldFocusError: false
     });
     const crearCliente = async (data) => {
         let edad = data.age ? data.age : -1;
@@ -65,22 +64,10 @@ export default function ProfileClienteEdit() {
             username: data.username,
             email: data.email,
             age: edad,
-            password: data.password,
+            current: username
         };
         try {
-            const res = await axios.post("api/clientes/register", cliente).catch(
-                function (error) {
-                    if (error.response.status === 200) {
-                    } else if (error.response.data.field === "username") {
-                        setError("username", { type: "error", message: error.response.data.error });
-                    } else if (error.response.data.field === "email") {
-                        setError("email", { type: "error", message: error.response.data.error });
-                    } else {
-                        setOpen(true);
-                        setErrorServidor(true);
-                    }
-                }
-            ); //La Api lo pasa al backend
+            const res = await axios.post("/api/clientes/actualizar", cliente); //La Api lo pasa al backend
             auth.login(res.data);
             return navigate("/");
         } catch (err) {
@@ -227,6 +214,7 @@ export default function ProfileClienteEdit() {
                                                 margin="normal"
                                                 required
                                                 fullWidth
+                                                defaultValue={username}
                                                 id="username"
                                                 label="Nombre de usuario"
                                                 name="username"
@@ -238,6 +226,7 @@ export default function ProfileClienteEdit() {
                                     />
                                     <Grid container spacing={3}>
                                         <Grid item xs={12} sm={8}>
+                                        {email?(
                                             <Controller
                                                 control={control}
                                                 name="email"
@@ -264,6 +253,7 @@ export default function ProfileClienteEdit() {
                                                         margin="normal"
                                                         required
                                                         fullWidth
+                                                        defaultValue={email}
                                                         id="email"
                                                         label="Correo electrónico"
                                                         name="email"
@@ -272,8 +262,9 @@ export default function ProfileClienteEdit() {
                                                         helperText={error ? formState.errors.email.message : null}
                                                     />
                                                 )}
-                                            />
+                                                />):null}
                                         </Grid>
+                                        {age?(
                                         <Grid item xs={12} sm={4}>
                                             <Controller
                                                 control={control}
@@ -299,6 +290,7 @@ export default function ProfileClienteEdit() {
                                                         inputRef={ref}
                                                         margin="normal"
                                                         fullWidth
+                                                        defaultValue={age}
                                                         id="age"
                                                         label="Edad"
                                                         name="age"
@@ -308,37 +300,8 @@ export default function ProfileClienteEdit() {
                                                 )}
                                             />
                                         </Grid>
+                                        ):null}
                                     </Grid>
-                                    <Controller
-                                        control={control}
-                                        name="password"
-                                        rules={
-                                            {
-                                                required: { value: true, message: "Este campo es requerido" }
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            <TextField
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                checked={value}
-                                                inputRef={ref}
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                name="password"
-                                                label="Contraseña"
-                                                type="password"
-                                                id="password"
-                                                autoComplete="new-password"
-                                                error={Boolean(error)}
-                                                helperText={error ? formState.errors.password.message : null}
-                                            />
-                                        )}
-                                    />
                                     <Button
                                         type="submit"
                                         variant="contained"

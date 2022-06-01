@@ -141,5 +141,38 @@ router.post("/preguntaSeguido", async (req, res) => {
     }
 });
 
+router.post("/actualizar", async (req, res) => {
+    const currentUser = req.body.current
+    delete req.body.current
+    try {
+        const actualizar = await Publicitario.findOneAndUpdate({ "username": name, "eventosCreados.title": filter },
+            {
+                '$set': {
+                    'eventosCreados.$.title': datosPin.title,
+                    'eventosCreados.$.description': datosPin.description,
+                    'eventosCreados.$.category': datosPin.category,
+                    'eventosCreados.$.link': datosPin.link,
+                    'eventosCreados.$.fechaInicio': datosPin.fechaInicio,
+                    'eventosCreados.$.fechaFinalizacion': datosPin.fechaFinalizacion
+                }
+            });
+        const publi = await Publicitario.findOne({ 'username': name })
+        let index = 0;
+
+        for (let i = 0; i < publi.eventosCreados.length; i++) {
+            if (publi.eventosCreados[i].title == datosPin.title) {
+                index = i;
+            }
+        }
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
+        //Se crea el backup, para tener las bases de datos sincronizadas
+
+        res.status(200).json(publi.eventosCreados[index]);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 
 module.exports = router;
