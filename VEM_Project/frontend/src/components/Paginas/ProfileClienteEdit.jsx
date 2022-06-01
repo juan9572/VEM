@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import { Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Imagen from '../../FondoProfile.jpg';
-
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -34,7 +33,7 @@ export default function ProfileClienteEdit() {
     const [usuario, setUsuario] = React.useState({});
     const [email, setEmail] = React.useState(null);
     const [age, setAge] = React.useState(null);
-    const [imageChanged, setImageChanged] = React.useState(false)
+    const [imageChanged, setImageChanged] = React.useState(false);
     useEffect(() => {
         if (username !== auth.user.username) {
             navigate("*");
@@ -63,7 +62,14 @@ export default function ProfileClienteEdit() {
         shouldFocusError: false,
         defaultValues: usuario
     });
-    const crearCliente = async (data) => {
+    const [image,setImage] = useState();
+    const form = new FormData();
+    const imageHandler = (e) => {
+        setImage(e.target.files[0]);
+        setFile(URL.createObjectURL(e.target.files[0]));
+        setImageChanged(true);
+    };
+    const actualizarCliente = async (data) => {
         let edad = data.age ? data.age : -1;
         const cliente = { //Se reciben los datos
             email: data.email,
@@ -71,12 +77,25 @@ export default function ProfileClienteEdit() {
             current: username
         };
         try {
-            //const res = await axios.post("/api/clientes/actualizar", cliente); //La Api lo pasa al backend
+            const res = await axios.post("/api/clientes/actualizar", cliente); //La Api lo pasa al backend
+            subirImagen();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const subirImagen = async() => {
+        try {
             if(imageChanged){
-                form.append("username", auth.user.username);
-                const fi = await axios.post("api/clientes/upload", form, { headers: { "Content-Type": "multipart/form-data" } });
-                setFilename(fi.data)
-                setImageChanged(false)
+                form.append('username', auth.user.username);
+                form.append('image',image);
+                const fi = await axios.post("/api/clientes/upload", form, {
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': `multipart/form-data; boundary=${form._boundary}`
+                    }
+                });
+                setFilename(fi.data);
+                setImageChanged(false);
             }
             return navigate("/");
         } catch (err) {
@@ -88,12 +107,6 @@ export default function ProfileClienteEdit() {
         swipe: false,
         indicators: false,
         navButtonsAlwaysInvisible: true,
-    };
-    const form = new FormData();
-    const imageHandler = (e) => {
-        form.append("image", e.target.files[0]);
-        setFile(URL.createObjectURL(e.target.files[0]));
-        setImageChanged(true)
     };
     return (
         <div className="profile">
@@ -178,18 +191,6 @@ export default function ProfileClienteEdit() {
                                     </Alert>
                                 </Collapse>
                             }
-                            <Grid container>
-                                <Grid container ml={5}
-                                    direction="column"
-                                    alignItems="center"
-                                    justifyContent="center" >
-                                    <div className="App">
-                                        <h2>Add Image:</h2>
-                                        <input type="file" onChange={imageHandler} />
-                                        <img src={file} />
-                                    </div>
-                                </Grid>
-                            </Grid>
                             <Grid
                                 container
                                 direction="column"
@@ -197,7 +198,19 @@ export default function ProfileClienteEdit() {
                                 alignItems="center"
                                 mr={10}
                             >
-                                <Box component="form" noValidate onSubmit={handleSubmit((data) => crearCliente(data))} sx={{ mt: 1, width: '100%' }}>
+                                <Box component="form" noValidate onSubmit={handleSubmit((data) => actualizarCliente(data))} sx={{ mt: 1, width: '100%' }}>
+                                    <Grid container>
+                                        <Grid container ml={5}
+                                            direction="column"
+                                            alignItems="center"
+                                            justifyContent="center" >
+                                            <div className="App">
+                                                <h2>Add Image:</h2>
+                                                <input type="file" onChange={imageHandler} />
+                                                <img src={file} />
+                                            </div>
+                                        </Grid>
+                                    </Grid>
                                     <Controller
                                         control={control}
                                         name="username"

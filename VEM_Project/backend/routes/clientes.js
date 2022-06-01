@@ -17,12 +17,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('image'), async(req, res)=>{
-    console.log(req)
+    console.log(req.file);
+    console.log(req.body);
     const cliente = await Cliente.findOneAndUpdate({"username": req.body.username}, {
         '$set': {
             'imagePerfil': req.file.filename
         }
-    })
+    });
+    await cliente.save();
+    const clientes = await Cliente.find().lean();
+    fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
     res.status(200).json(req.file.filename);
 });
 
