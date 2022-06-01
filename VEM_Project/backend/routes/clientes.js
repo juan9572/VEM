@@ -8,7 +8,7 @@ const uuid = require('uuid');
 
 //Middleware
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../public/img/uploads'),
+    destination: path.join(__dirname, '../../frontend/src/img'),
     filename: (req, file, cb, filename) => {
         cb(null, uuid.v4() + path.extname(file.originalname));
     }
@@ -17,15 +17,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('image'), async(req, res)=>{
-    console.log(req.body.username);
-    console.log(req.file.path.substring(req.file.destination.length-38));
-    res.status(200).json("Se mando correctamente");
+    console.log(req)
+    const cliente = await Cliente.findOneAndUpdate({"username": req.body.username}, {
+        '$set': {
+            'imagePerfil': req.file.filename
+        }
+    })
+    res.status(200).json(req.file.filename);
 });
 
 // Registrar cliente
 router.post('/register', upload.single('image') ,async(req,res)=>{
     try{
-        /*
+        
         //Validamos que no se haya registrado con ese username, correo electronico y nit
         //Username
         if(await Cliente.findOne({username: req.body.username}).lean()){
@@ -36,7 +40,7 @@ router.post('/register', upload.single('image') ,async(req,res)=>{
         if(await Cliente.findOne({email: req.body.email}).lean()){
             res.status(409).json({"field":"email","error":"Este email ya esta en uso"});
             return;
-        }*/
+        }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
         const newCliente = new Cliente({
@@ -45,15 +49,16 @@ router.post('/register', upload.single('image') ,async(req,res)=>{
             age: req.body.age,
             password:hashedPassword,
             seguidos:[],
+            imagePerfil: ""
         });
-        //const cliente = await newCliente.save();
+        const cliente = await newCliente.save();
         const credentials_cliente = {
             "username":"cliente.username",
             "rol":"C"
         };
 
-        //const clientes = await Cliente.find().lean();
-        //fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
+        const clientes = await Cliente.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
         //Se crea el backup, para tener las bases de datos sincronizadas
 
         res.status(200).json(credentials_cliente);
@@ -145,30 +150,18 @@ router.post("/actualizar", async (req, res) => {
     const currentUser = req.body.current
     delete req.body.current
     try {
-        const actualizar = await Publicitario.findOneAndUpdate({ "username": name, "eventosCreados.title": filter },
+        const actualizar = await Cliente.findOneAndUpdate({ "username": currentUser},
             {
                 '$set': {
-                    'eventosCreados.$.title': datosPin.title,
-                    'eventosCreados.$.description': datosPin.description,
-                    'eventosCreados.$.category': datosPin.category,
-                    'eventosCreados.$.link': datosPin.link,
-                    'eventosCreados.$.fechaInicio': datosPin.fechaInicio,
-                    'eventosCreados.$.fechaFinalizacion': datosPin.fechaFinalizacion
+                    'email': req.body.email,
+                    'age': req.body.age
                 }
             });
-        const publi = await Publicitario.findOne({ 'username': name })
-        let index = 0;
-
-        for (let i = 0; i < publi.eventosCreados.length; i++) {
-            if (publi.eventosCreados[i].title == datosPin.title) {
-                index = i;
-            }
-        }
-        const publicitarios = await Publicitario.find().lean();
-        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
-        //Se crea el backup, para tener las bases de datos sincronizadas
-
-        res.status(200).json(publi.eventosCreados[index]);
+        await actualizar.save()
+        const clientes = await Cliente.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Clientes_Backup_Collection.json',JSON.stringify(clientes));
+        
+        res.status(200).json("ok");
     } catch (err) {
         res.status(500).json(err);
     }

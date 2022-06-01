@@ -50,11 +50,9 @@ export default function SignInSide() {
                     }
                 }
             ); //La Api lo pasa al backend
-            formData.append("username", "Elvio");
-            await axios.post("api/clientes/upload",formData,{headers: { "Content-Type": "multipart/form-data; boundary=--------------------------333111619066549934015298"}});
             if (res) {
-                //navigate("/");
-                //auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
+                navigate("/");
+                auth.login(res.data); //Queda almacenado en el almacenamiento local así evitamos que estar diciendole que se loguee
             }
         } catch (err) {
             console.log(err);
@@ -75,10 +73,6 @@ export default function SignInSide() {
         shouldFocusError: false,
         defaultValues
     });
-    const formData = new FormData();
-    const imageHandler = (e) => {
-        formData.append("image", e.target.files[0]);
-    };
     return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -288,19 +282,6 @@ export default function SignInSide() {
                                     <Link style={{ textDecoration: 'underline' }} to={'/Login-Cliente'}><Button variant="">Ya tienes cuenta?, Logueate</Button></Link>
                                 </Grid>
                             </Grid>
-                            <div className="container">
-                                <h1 className="heading">Add your Image</h1>
-                                <div className="img-holder">
-                                    <img src={null} alt="" id="img" className="img" />
-                                </div>
-                                <input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} />
-                                <div className="label">
-                                    <label className="image-upload" htmlFor="input">
-                                        <i className="material-icons">add_photo_alternate</i>
-                                        Choose your Photo
-                                    </label>
-                                </div>
-                            </div>
                         </Box>
                     </Box>
                 </Grid>

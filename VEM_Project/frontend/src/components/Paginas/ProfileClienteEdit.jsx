@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import Box from '@mui/material/Box';
 import { Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Imagen from '../../FondoProfile.jpg';
-import ImagenProfile from './vsco5c3ca40baab64.jpg';
+
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuth from '../Auth/useAuth';
 import { styled } from '@mui/material/styles';
 import { useForm, Controller } from "react-hook-form";
@@ -23,52 +23,61 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 
 export default function ProfileClienteEdit() {
+    const ImagenProfile = "../../frontend/src/img/"
+    const [file, setFile] = React.useState();
     const auth = useAuth();
     const [errorServidor, setErrorServidor] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
-    const { username } = useParams();
-    const [usuario,setUsuario] = React.useState({});
+    let { username } = useParams();
+    const [filename, setFilename] = React.useState()
+    const [usuario, setUsuario] = React.useState({});
     const [email, setEmail] = React.useState(null);
     const [age, setAge] = React.useState(null);
-    useLayoutEffect(() => {
+    const [imageChanged, setImageChanged] = React.useState(false)
+    useEffect(() => {
         if (username !== auth.user.username) {
             navigate("*");
         }
-        const getData = async () =>{ 
-            try{
-                const name = {"username": username};
-                const data = await axios.post("/api/clientes/getCliente",name);
+        const getData = async () => {
+            try {
+                const name = { "username": auth.user.username };
+                const data = await axios.post("/api/clientes/getCliente", name);
                 setUsuario({
-                    username:data.data.username,
-                    email:data.data.email,
-                    age:data.data.age
+                    username: data.data.username,
+                    email: data.data.email,
+                    age: data.data.age
                 });
                 setEmail(usuario.email);
                 setAge(usuario.age);
-            }catch(err){
+            } catch (err) {
                 console.log(err);
             }
         }
         getData();
-      }, [usuario, email, age]);
+    }, [usuario]);
     //GET THE DATA FROM THE BACKEND AND SHOWED TO THE DEFAULT_VALUES
-    const { handleSubmit, control, setError, reset } = useForm({
+    const { handleSubmit, control, setError } = useForm({
         mode: 'onChange',
-        reValidateMode: 'onSumbit',
-        shouldFocusError: false
+        reValidateMode: 'onChange',
+        shouldFocusError: false,
+        defaultValues: usuario
     });
     const crearCliente = async (data) => {
         let edad = data.age ? data.age : -1;
         const cliente = { //Se reciben los datos
-            username: data.username,
             email: data.email,
             age: edad,
             current: username
         };
         try {
-            const res = await axios.post("/api/clientes/actualizar", cliente); //La Api lo pasa al backend
-            auth.login(res.data);
+            //const res = await axios.post("/api/clientes/actualizar", cliente); //La Api lo pasa al backend
+            if(imageChanged){
+                form.append("username", auth.user.username);
+                const fi = await axios.post("api/clientes/upload", form, { headers: { "Content-Type": "multipart/form-data" } });
+                setFilename(fi.data)
+                setImageChanged(false)
+            }
             return navigate("/");
         } catch (err) {
             console.log(err);
@@ -80,9 +89,12 @@ export default function ProfileClienteEdit() {
         indicators: false,
         navButtonsAlwaysInvisible: true,
     };
-    const Input = styled('input')({
-        display: 'none',
-    });
+    const form = new FormData();
+    const imageHandler = (e) => {
+        form.append("image", e.target.files[0]);
+        setFile(URL.createObjectURL(e.target.files[0]));
+        setImageChanged(true)
+    };
     return (
         <div className="profile">
             <div className="profileRight">
@@ -171,17 +183,11 @@ export default function ProfileClienteEdit() {
                                     direction="column"
                                     alignItems="center"
                                     justifyContent="center" >
-
-                                    <label htmlFor="contained-button-file">
-                                        <Input accept="image/*" id="contained-button-file" type="file" />
-                                        <Button component="span" sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}>
-                                            <Avatar
-                                                src={ImagenProfile}
-                                                sx={{ width: 160, height: 160, }}
-                                            />
-                                        </Button>
-                                    </label>
-                                    <Typography variant="h6">Cambiar foto de perfil</Typography>
+                                    <div className="App">
+                                        <h2>Add Image:</h2>
+                                        <input type="file" onChange={imageHandler} />
+                                        <img src={file} />
+                                    </div>
                                 </Grid>
                             </Grid>
                             <Grid
@@ -197,7 +203,7 @@ export default function ProfileClienteEdit() {
                                         name="username"
                                         rules={
                                             {
-                                                required: { value: true, message: "Este campo es requerido" },
+                                                required: { value: false, message: "Este campo es requerido" },
                                                 maxLength: { value: 35, message: "El máximo de caracteres es 35" },
                                                 minLength: { value: 2, message: "El mínimo de caracteres es 2" }
                                             }}
@@ -214,7 +220,7 @@ export default function ProfileClienteEdit() {
                                                 margin="normal"
                                                 required
                                                 fullWidth
-                                                defaultValue={username}
+                                                value={username}
                                                 id="username"
                                                 label="Nombre de usuario"
                                                 name="username"
@@ -226,81 +232,81 @@ export default function ProfileClienteEdit() {
                                     />
                                     <Grid container spacing={3}>
                                         <Grid item xs={12} sm={8}>
-                                        {email?(
-                                            <Controller
-                                                control={control}
-                                                name="email"
-                                                rules={
-                                                    {
-                                                        required: { value: true, message: "Este campo es requerido" },
-                                                        maxLength: { value: 60, message: "El máximo de caracteres es 60" },
-                                                        minLength: { value: 5, message: "El mínimo de caracteres es 5" },
-                                                        pattern: {
-                                                            value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                                            message: 'No es un email válido',
-                                                        }
-                                                    }}
-                                                render={({
-                                                    field: { onChange, onBlur, value, ref },
-                                                    fieldState: { error },
-                                                    formState,
-                                                }) => (
-                                                    <TextField
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
-                                                        checked={value}
-                                                        inputRef={ref}
-                                                        margin="normal"
-                                                        required
-                                                        fullWidth
-                                                        defaultValue={email}
-                                                        id="email"
-                                                        label="Correo electrónico"
-                                                        name="email"
-                                                        autoComplete="email"
-                                                        error={Boolean(error)}
-                                                        helperText={error ? formState.errors.email.message : null}
-                                                    />
-                                                )}
-                                                />):null}
+                                            {email ? (
+                                                <Controller
+                                                    control={control}
+                                                    name="email"
+                                                    rules={
+                                                        {
+                                                            required: { value: true, message: "Este campo es requerido" },
+                                                            maxLength: { value: 60, message: "El máximo de caracteres es 60" },
+                                                            minLength: { value: 5, message: "El mínimo de caracteres es 5" },
+                                                            pattern: {
+                                                                value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                                message: 'No es un email válido',
+                                                            }
+                                                        }}
+                                                    render={({
+                                                        field: { onChange, onBlur, value, ref },
+                                                        fieldState: { error },
+                                                        formState,
+                                                    }) => (
+                                                        <TextField
+                                                            onBlur={onBlur}
+                                                            onChange={onChange}
+                                                            checked={value}
+                                                            inputRef={ref}
+                                                            margin="normal"
+                                                            required
+                                                            fullWidth
+                                                            defaultValue={email}
+                                                            id="email"
+                                                            label="Correo electrónico"
+                                                            name="email"
+                                                            autoComplete="email"
+                                                            error={Boolean(error)}
+                                                            helperText={error ? formState.errors.email.message : null}
+                                                        />
+                                                    )}
+                                                />) : null}
                                         </Grid>
-                                        {age?(
-                                        <Grid item xs={12} sm={4}>
-                                            <Controller
-                                                control={control}
-                                                name="age"
-                                                rules={
-                                                    {
-                                                        max: { value: 110, message: "No se permite esta edad" },
-                                                        min: { value: 5, message: "No se permite esta edad" },
-                                                        pattern: {
-                                                            value: /^[0-9]+$/,
-                                                            message: 'No es un número válido',
-                                                        }
-                                                    }}
-                                                render={({
-                                                    field: { onChange, onBlur, value, ref },
-                                                    fieldState: { error },
-                                                    formState,
-                                                }) => (
-                                                    <TextField
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
-                                                        checked={value}
-                                                        inputRef={ref}
-                                                        margin="normal"
-                                                        fullWidth
-                                                        defaultValue={age}
-                                                        id="age"
-                                                        label="Edad"
-                                                        name="age"
-                                                        error={Boolean(error)}
-                                                        helperText={error ? formState.errors.age.message : null}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        ):null}
+                                        {age ? (
+                                            <Grid item xs={12} sm={4}>
+                                                <Controller
+                                                    control={control}
+                                                    name="age"
+                                                    rules={
+                                                        {
+                                                            max: { value: 110, message: "No se permite esta edad" },
+                                                            min: { value: 5, message: "No se permite esta edad" },
+                                                            pattern: {
+                                                                value: /^[0-9]+$/,
+                                                                message: 'No es un número válido',
+                                                            }
+                                                        }}
+                                                    render={({
+                                                        field: { onChange, onBlur, value, ref },
+                                                        fieldState: { error },
+                                                        formState,
+                                                    }) => (
+                                                        <TextField
+                                                            onBlur={onBlur}
+                                                            onChange={onChange}
+                                                            checked={value}
+                                                            inputRef={ref}
+                                                            margin="normal"
+                                                            fullWidth
+                                                            defaultValue={age}
+                                                            id="age"
+                                                            label="Edad"
+                                                            name="age"
+                                                            error={Boolean(error)}
+                                                            helperText={error ? formState.errors.age.message : null}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                        ) : null}
                                     </Grid>
                                     <Button
                                         type="submit"
