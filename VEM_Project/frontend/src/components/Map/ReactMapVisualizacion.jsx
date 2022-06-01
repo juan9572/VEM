@@ -245,6 +245,11 @@ function ReactMap() {
     handleMarkerClick(pins[index]._id,pins[index].latitude,pins[index].long);
   };
 
+  const defaultValueForCurrentPlace = () => {
+    console.log("dada");
+    setCurrentPlaceId(null);
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -368,7 +373,7 @@ function ReactMap() {
                     onClick={() => { handleMarkerClick(evento._id, evento.latitude, evento.long); }}//Cuando se le de click sale el pop up
                   />
                 </Marker>
-                {evento._id === currentPlaceId && ( //si se le dio click a alguno sale el popup
+                {evento._id === currentPlaceId?( //si se le dio click a alguno sale el popup
                   <Popup
                     longitude={evento.long}
                     latitude={evento.latitude}
@@ -406,7 +411,7 @@ function ReactMap() {
                       </CardActions>
                     </Card>
                   </Popup>
-                )}
+                ):defaultValueForCurrentPlace}
               </div>
             ))}
           </Map>

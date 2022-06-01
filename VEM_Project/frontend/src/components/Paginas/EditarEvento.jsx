@@ -100,17 +100,6 @@ export default function EditarEvento() {
         getEventos();
     }, []);
 
-
-    const deleteEvent = React.useCallback(
-        (id) => () => {
-            console.log(id);
-            setTimeout(() => {
-                setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-            });
-        },
-        [],
-    );
-
     const editEvent = React.useCallback(
         (id) => () => {
             setRows((prevRows) =>
@@ -123,9 +112,25 @@ export default function EditarEvento() {
     );
 
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [select, setSelect] = React.useState(null);
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (data) => {
+        setSelect(data);
         setOpenDialog(true);
+    };
+
+    const handleBorrarEvento = async(data) => {
+        try{
+            const datos = {
+                username:auth.user.username,
+                id:data.id
+            }
+            const borrar = await axios.post("/api/publicitarios/deleteEvent",datos)
+            setOpenDialog(false);
+            setRows((prevRows) => prevRows.filter((row) => row.id !== data.id));
+        }catch(err){
+            console.log(err);
+        }
     };
 
     const handleClose = () => {
@@ -187,7 +192,7 @@ export default function EditarEvento() {
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
-                        onClick={handleClickOpen}
+                        onClick={() => {handleClickOpen(params.row)}}
                     />
                 ],
             },
@@ -261,17 +266,16 @@ export default function EditarEvento() {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
+                    {"Borrar evento"}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Let Google help apps determine location. This means sending anonymous
-                        location data to Google, even when no apps are running.
+                        Estas seguro que quieres borrar el evento: <b>{select?select.titulo:null}</b>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancelar</Button>
-                    <Button color="primary" onClick={handleClose}>
+                    <Button onClick={handleClose} variant="outlined">Cancelar</Button>
+                    <Button color ="primary" variant="contained" onClick={() => {handleBorrarEvento(select)}}>
                         Borrar
                     </Button>
                 </DialogActions>

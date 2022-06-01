@@ -210,7 +210,7 @@ router.post('/comentar', async (req, res) => {
         const newComentario = {
             "username": req.body.username,
             "mensaje": req.body.mensaje,
-            "rating": req.body.rating?req.body.rating:0
+            "rating": req.body.rating ? req.body.rating : 0
         }
         const comment = await Publicitario.findOne({ "eventosCreados.title": req.body.tituloEvento });
         let index = 0;
@@ -218,20 +218,20 @@ router.post('/comentar', async (req, res) => {
         for (let i = 0; i < comment.eventosCreados.length; i++) {
             if (comment.eventosCreados[i].title == req.body.tituloEvento) {
                 index = i;
-                for(let j = 0; j < comment.eventosCreados[i].comentarios.length; j++){
+                for (let j = 0; j < comment.eventosCreados[i].comentarios.length; j++) {
                     ratingActual = ratingActual + comment.eventosCreados[i].comentarios[j].rating;
                 }
                 break;
             }
         }
         ratingActual += newComentario.rating;
-        ratingActual /= comment.eventosCreados[index].comentarios.length+1;
+        ratingActual /= comment.eventosCreados[index].comentarios.length + 1;
         comment.eventosCreados[index].comentarios.push(newComentario);
         comment.eventosCreados[index].rating = ratingActual;
         await comment.save();
         let result = {
-            rating:comment.eventosCreados[index].rating,
-            comment:comment.eventosCreados[index].comentarios[comment.eventosCreados[index].comentarios.length-1]
+            rating: comment.eventosCreados[index].rating,
+            comment: comment.eventosCreados[index].comentarios[comment.eventosCreados[index].comentarios.length - 1]
         }
         const publicitarios = await Publicitario.find().lean();
         fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
@@ -259,7 +259,7 @@ router.post("/getComentarios", async (req, res) => {
         for (let i = 0; i < coment.length; i++) {
             rating = rating + coment[i].rating;
         }
-        if(coment.length != 0){
+        if (coment.length != 0) {
             rating = rating / coment.length;
         }
         event.rating = rating;
@@ -270,8 +270,8 @@ router.post("/getComentarios", async (req, res) => {
                 }
             });
         let resultado = {
-            coment:coment,
-            event:event
+            coment: coment,
+            event: event
         };
         res.status(200).json(resultado);
     } catch (err) {
@@ -465,11 +465,19 @@ router.post("/gFollowers", async (req, res) => {
     }
 });
 
-router.delete("/deleteEvent", async (req, res) => {
-    const publicitario = Publicitario.findOne({ username: req.body.username });
-    console.log("antes",publicitario.eventosCreados);
-    publicitario.eventosCreados.filter((evento) => evento._id !== req.body.id);
-    console.log("después",publicitario.eventosCreados);
+router.post("/deleteEvent", async (req, res) => {
+    try {
+        const publicitario = await Publicitario.findOne({ username: req.body.username });
+        const id = new ObjectId(req.body.id);
+        const eventos = publicitario.eventosCreados.filter((evento) => !evento._id.equals(id));
+        publicitario.eventosCreados = eventos;
+        await publicitario.save();
+        const publicitarios = await Publicitario.find().lean();
+        fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
+        res.status(200).json("Ok");
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 module.exports = router;
