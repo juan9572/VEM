@@ -14,7 +14,9 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import HomeIcon from '@mui/icons-material/Home'; import AppBar from '../Navbar/NavbarP';
+import HomeIcon from '@mui/icons-material/Home'; 
+import CampaignIcon from '@mui/icons-material/Campaign';
+import AppBar from '../Navbar/NavbarP';
 import Footer from '../Footer';
 import ListSubheader from '@mui/material/ListSubheader';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -56,6 +58,11 @@ export default function VerDatosEvento() {
             text: "Estadísticas de eventos",
             icon: <BarChartIcon />,
             router: "/Dashboard/VerDatosEvento"
+        },
+        {
+            text: "Muestra tu eventos",
+            icon: <CampaignIcon />,
+            router: "/Dashboard/CompartirEvento"
         }
     ];
 

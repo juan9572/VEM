@@ -40,9 +40,8 @@ function EventoIndividual() {
     };
     try {
       const res = await axios.post("/api/publicitarios/comentar", newComentario); //Se llama a la Api para que los guarde
-      setComentarios([...comentarios, newComentario]);
-      
-
+      setComentarios([...comentarios, res.data.comment]);
+      setRating(res.data.rating);
     } catch (err) {
       console.log(err);
     }
@@ -68,11 +67,10 @@ function EventoIndividual() {
     const getComentarios = async () => {
       try {
         const res = await axios.post("/api/publicitarios/getComentarios", [_id]);
-        const eve = await axios.post("/api/publicitarios/getInformacionEvento", [_id])
-        let comentarios = res.data;
-        let evento = eve.data
-        setRating(evento.rating)
-        setEvent(evento)
+        let comentarios = res.data.coment;
+        let evento = res.data.event;
+        setRating(evento.rating);
+        setEvent(evento);
         setComentarios(comentarios);
       } catch (err) {
         console.log(err);

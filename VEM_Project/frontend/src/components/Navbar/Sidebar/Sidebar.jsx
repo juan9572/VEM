@@ -14,7 +14,9 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import HomeIcon from '@mui/icons-material/Home'; import AppBar from '../NavbarP';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import HomeIcon from '@mui/icons-material/Home'; 
+import AppBar from '../NavbarP';
 import Footer from '../../Footer';
 import ListSubheader from '@mui/material/ListSubheader';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -58,6 +60,11 @@ export default function Sidebar() {
             text: "Estadísticas de eventos",
             icon: <BarChartIcon />,
             router: "/Dashboard/VerDatosEvento"
+        },
+        {
+            text: "Muestra tu eventos",
+            icon: <CampaignIcon />,
+            router: "/Dashboard/CompartirEvento"
         }
     ];
 

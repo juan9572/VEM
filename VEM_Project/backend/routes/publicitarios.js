@@ -18,7 +18,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
 // Registrar publicitario
 router.post('/register', async (req, res) => {
     try {
@@ -102,11 +101,10 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 });
 
 //Creación de un PIN
-router.post("/crearEvento", upload.single('image'), async (req, res) => {
-    console.log(req.body);
+router.post("/crearEvento", async (req, res) => {
     const name = req.body.name;
     const newPin = req.body;
-    delete newPin.name
+    delete newPin.name;
     const defaultEsta = [
         { mes: "Enero", cantidad: 0 },
         { mes: "Febrero", cantidad: 0 },
@@ -120,8 +118,9 @@ router.post("/crearEvento", upload.single('image'), async (req, res) => {
         { mes: "Octubre", cantidad: 0 },
         { mes: "Noviembre", cantidad: 0 },
         { mes: "Diciembre", cantidad: 0 },
-    ]
-    newPin.estadistica = defaultEsta
+    ];
+    newPin.estadistica = defaultEsta;
+    newPin.rating = 0;
     try {
         const creador = await Publicitario.findOne({ "username": name });
         creador.eventosCreados.push(newPin);
@@ -208,28 +207,35 @@ router.get("/getFinalEvento", async (req, res) => {
 
 router.post('/comentar', async (req, res) => {
     try {
-
         const newComentario = {
             "username": req.body.username,
             "mensaje": req.body.mensaje,
-            "rating": req.body.rating
+            "rating": req.body.rating?req.body.rating:0
         }
         const comment = await Publicitario.findOne({ "eventosCreados.title": req.body.tituloEvento });
         let index = 0;
+        let ratingActual = 0;
         for (let i = 0; i < comment.eventosCreados.length; i++) {
             if (comment.eventosCreados[i].title == req.body.tituloEvento) {
                 index = i;
+                for(let j = 0; j < comment.eventosCreados[i].comentarios.length; j++){
+                    ratingActual = ratingActual + comment.eventosCreados[i].comentarios[j].rating;
+                }
                 break;
             }
         }
+        ratingActual += newComentario.rating;
+        ratingActual /= comment.eventosCreados[index].comentarios.length+1;
         comment.eventosCreados[index].comentarios.push(newComentario);
+        comment.eventosCreados[index].rating = ratingActual;
         await comment.save();
-
+        let result = {
+            rating:comment.eventosCreados[index].rating,
+            comment:comment.eventosCreados[index].comentarios[comment.eventosCreados[index].comentarios.length-1]
+        }
         const publicitarios = await Publicitario.find().lean();
         fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
-        //Se crea el backup, para tener las bases de datos sincronizadas
-
-        res.status(200).json(comment);
+        res.status(200).json(result);
     }
     catch (err) {
         res.status(500).json(err);
@@ -241,43 +247,33 @@ router.post("/getComentarios", async (req, res) => {
     const name = req.body[0];
     try {
         const comentarios = await Publicitario.findOne({ "eventosCreados.title": name }, 'eventosCreados');
-        let coment = []
+        let coment = [];
+        let event;
         for (let i = 0; i < comentarios.eventosCreados.length; i++) {
             if (comentarios.eventosCreados[i].title == name) {
                 coment = comentarios.eventosCreados[i].comentarios;
+                event = comentarios.eventosCreados[i];
             }
         }
-
-        let rating = 0
+        let rating = 0;
         for (let i = 0; i < coment.length; i++) {
-            rating = rating + coment[i].rating
+            rating = rating + coment[i].rating;
         }
-        rating = rating / coment.length
+        if(coment.length != 0){
+            rating = rating / coment.length;
+        }
+        event.rating = rating;
         const actualizar = await Publicitario.findOneAndUpdate({ "eventosCreados.title": name },
             {
                 '$set': {
                     'eventosCreados.$.rating': rating,
                 }
             });
-
-        res.status(200).json(coment);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
-
-router.post("/getInformacionEvento", async (req, res) => {
-    const name = req.body[0];
-    try {
-        const publi = await Publicitario.findOne({ "eventosCreados.title": name }, 'eventosCreados');
-        let event
-        for (let i = 0; i < publi.eventosCreados.length; i++) {
-            if (publi.eventosCreados[i].title == name) {
-                event = publi.eventosCreados[i]
-            }
-        }
-
-        res.status(200).json(event);
+        let resultado = {
+            coment:coment,
+            event:event
+        };
+        res.status(200).json(resultado);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -467,6 +463,13 @@ router.post("/gFollowers", async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
+});
+
+router.delete("/deleteEvent", async (req, res) => {
+    const publicitario = Publicitario.findOne({ username: req.body.username });
+    console.log("antes",publicitario.eventosCreados);
+    publicitario.eventosCreados.filter((evento) => evento._id !== req.body.id);
+    console.log("después",publicitario.eventosCreados);
 });
 
 module.exports = router;

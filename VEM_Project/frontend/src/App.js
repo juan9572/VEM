@@ -93,6 +93,9 @@ function App() {
           <Route path="/Dashboard/VerDatosEvento" element={<PrivateRouteP />}>
             <Route path="/Dashboard/VerDatosEvento" element={<VerDatosEvento />} />
           </Route>
+          <Route path="/Dashboard/CompartirEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/CompartirEvento" element={<VerDatosEvento />} />
+          </Route>
           
           <Route element={<WithNav />}> {/* Cambiar esto pa que funcione*/}
             <Route path="/Profile/:username" element={<PrivateRouteP />}>

@@ -4,28 +4,16 @@ import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import FoodBankIcon from '@mui/icons-material/FoodBank';
-import PetsIcon from '@mui/icons-material/Pets';
-import SportsVolleyballIcon from '@mui/icons-material/SportsVolleyball';
-import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import { Button } from '@mui/material';
-import CardHeader from '@mui/material/CardHeader';
-import CardActions from '@mui/material/CardActions';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import HomeIcon from '@mui/icons-material/Home';
 import AppBar from '../Navbar/NavbarP';
 import Footer from '../Footer';
@@ -39,52 +27,17 @@ import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import Rating from '@mui/material/Rating';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const drawerWidth = 300;
-
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
-    },
-  }));
 
 export default function EditarEvento() {
     const navigate = useNavigate();
@@ -96,23 +49,6 @@ export default function EditarEvento() {
         icon: <HomeIcon />,
         router: "/Dashboard"
     };
-
-    const [pins, setPins] = React.useState([]);
-    const [totalPins, setTotalPins] = React.useState([]);
-
-    const buscarPorRegex = async (evento) => {
-        console.log(evento.target.value);
-        try {
-          if (evento.target.value == "") {
-            setPins(totalPins)
-          } else {
-            const res = await axios.post("/api/publicitarios/getBusquedaEvento", [evento.target.value]);
-            setPins(res.data)
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
 
     const eventos = [
         {
@@ -129,12 +65,135 @@ export default function EditarEvento() {
             text: "Estadísticas de eventos",
             icon: <BarChartIcon />,
             router: "/Dashboard/VerDatosEvento"
+        },
+        {
+            text: "Muestra tu eventos",
+            icon: <CampaignIcon />,
+            router: "/Dashboard/CompartirEvento"
         }
     ];
+
+    const [rows, setRows] = React.useState([]);
 
     const handleClick = () => {
         setOpen(!open);
     };
+
+    React.useEffect(() => { //Toma todos los eventos que hay
+        const getEventos = async () => {
+            try {
+                const res = await axios.post("/api/publicitarios/getEventosSamePublicitario", [auth.user.username]);
+                let eventos = [];
+                res.data.forEach(evento => eventos.push({
+                    id: evento._id,
+                    titulo: evento.title,
+                    categoria: evento.category,
+                    rating: evento.rating ? evento.rating : 0,
+                    fechaInicio: evento.fechaInicio.substring(0, 10),
+                    fechaFinalizacion: evento.fechaFinalizacion.substring(0, 10)
+                }));
+                setRows(eventos);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        getEventos();
+    }, []);
+
+
+    const deleteEvent = React.useCallback(
+        (id) => () => {
+            console.log(id);
+            setTimeout(() => {
+                setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+            });
+        },
+        [],
+    );
+
+    const editEvent = React.useCallback(
+        (id) => () => {
+            setRows((prevRows) =>
+                prevRows.map((row) =>
+                    row.id === id ? { ...row, isAdmin: !row.isAdmin } : row,
+                ),
+            );
+        },
+        [],
+    );
+
+    const [openDialog, setOpenDialog] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
+    const columns = React.useMemo(
+        () => [
+            {
+                field: 'titulo',
+                headerName: 'Titulo',
+                width: 250
+            },
+            {
+                field: 'categoria',
+                headerName: 'Categoria',
+                type: 'singleSelect',
+                valueOptions: [
+                    'Arte y cultura',
+                    'Deportes',
+                    'Mascotas',
+                    'Gastronomía',
+                ],
+                width: 150,
+            },
+            {
+                field: 'rating',
+                headerName: 'Rating',
+                renderCell: (cellValues) => {
+                    return (
+                        <Rating name="read-only" value={cellValues.row.rating} readOnly />
+                    );
+                },
+                width: 145,
+            },
+            {
+                field: 'fechaInicio',
+                headerName: 'Fecha Inicio',
+                type: 'number',
+                width: 140,
+            },
+            {
+                field: 'fechaFinalizacion',
+                headerName: 'Fecha Finalizacion',
+                description: 'This column has a value getter and is not sortable.',
+                sortable: false,
+                width: 140,
+            },
+            {
+                field: 'actions',
+                type: 'actions',
+                width: 80,
+                getActions: (params) => [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        onClick={editEvent(params.id)}
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleClickOpen}
+                    />
+                ],
+            },
+        ],
+        [editEvent],
+    );
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -195,56 +254,45 @@ export default function EditarEvento() {
                     <Divider />
                 </Box>
             </Drawer>
+            <Dialog
+                open={openDialog}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Let Google help apps determine location. This means sending anonymous
+                        location data to Google, even when no apps are running.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancelar</Button>
+                    <Button color="primary" onClick={handleClose}>
+                        Borrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 <Grid item xs={6} md={4}>
                     <Box sx={{ width: '100%' }}>
-                            <Paper sx={{ width: '100%' }}>
-                                <Search onKeyUp={buscarPorRegex}>
-                                    <SearchIconWrapper>
-                                        <SearchIcon />
-                                    </SearchIconWrapper>
-                                    <StyledInputBase
-                                        placeholder="Buscar..."
-                                        inputProps={{ 'aria-label': 'search' }}
+                        <Paper sx={{ width: '100%' }}>
+                            <Divider variant="inset" />
+                            <Paper style={{ maxHeight: 530, overflow: 'auto' }}>
+                                <div style={{ height: 400, width: '100%' }}>
+                                    <DataGrid
+                                        rows={rows}
+                                        columns={columns}
+                                        pageSize={5}
+                                        rowsPerPageOptions={[5]}
                                     />
-                                </Search>
-                                <Divider variant="inset" />
-                                <Paper style={{ maxHeight: 530, overflow: 'auto' }}>
-                                    <List
-                                        sx={{
-                                            width: '100%',
-                                            maxWidth: 400,
-                                            bgcolor: 'background.paper',
-                                        }}
-                                    >
-                                        {pins.map((evento, index) => (
-                                            <div key={index}>
-                                                <ListItem sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 0.05)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 0.05)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 0.05)' : 'rgba(255, 20, 0, 0.05)' }}>
-                                                    <ListItemAvatar>
-                                                        <Avatar sx={{ bgcolor: evento.category === "Mascotas" ? 'rgba(0, 106, 149, 1)' : evento.category === "Arte y cultura" ? 'rgba(151, 15, 242, 1)' : evento.category === "Deportes" ? 'rgba(3, 145, 69, 1)' : 'rgba(255, 20, 0, 1)' }}>
-                                                            {evento.category === "Mascotas" && (
-                                                                <PetsIcon />
-                                                            )}
-                                                            {evento.category === "Arte y cultura" && (
-                                                                <TheaterComedyIcon />
-                                                            )}
-                                                            {evento.category === "Gastronomia" && (
-                                                                <FoodBankIcon />
-                                                            )}
-                                                            {evento.category === "Deportes" && (
-                                                                <SportsVolleyballIcon />
-                                                            )}
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText primary={evento.title} secondary={evento.category} />
-                                                </ListItem>
-                                                <Divider variant="inset" component="li" />
-                                            </div>
-                                        ))}
-                                    </List>
-                                </Paper>
+                                </div>
                             </Paper>
+                        </Paper>
                     </Box>
                 </Grid>
                 <Footer />
