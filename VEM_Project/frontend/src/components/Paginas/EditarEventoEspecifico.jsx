@@ -128,6 +128,7 @@ export default function PlantillaEvento() {
     }, [evento]);
 
     const actualizarEvento = async (data) => {
+        console.log(data);
         const evento = {
             name: auth.user.username,
             title: data.title,
@@ -135,14 +136,16 @@ export default function PlantillaEvento() {
             category: data.category,
             latitude: newPlace.lat,
             long: newPlace.long,
-            fechaInicio: fecha[0].startDate,
-            fechaFinalizacion: fecha[0].endDate,
         };
+        if(fecha){
+            evento.fechaInicio = fecha[0].startDate;
+            evento.fechaFinalizacion = fecha[0].endDate;
+        }
         if (data.link) {
             evento.link = data.link;
         }
         try {
-            //const resEvento = await axios.post("/api/publicitarios/crearEvento", evento); //Se llama a la Api para que los guarde
+            const resEvento = await axios.post("/api/publicitarios/actualizarEvento", evento); //Se llama a la Api para que los guarde
             //navigate("/Dashboard");
         } catch (err) {
             console.log(err);
@@ -155,7 +158,7 @@ export default function PlantillaEvento() {
 
     const { handleSubmit, control, setError } = useForm({
         mode: 'onChange',
-        reValidateMode: 'onSubmit',
+        reValidateMode: 'onChange',
         shouldFocusError: false,
     });
     const [viewState, setViewState] = useState({ //Para crear el mapa
@@ -314,7 +317,7 @@ export default function PlantillaEvento() {
                                             inputRef={ref}
                                             margin="normal"
                                             required
-                                            defaultValue={title}
+                                            value={title}
                                             fullWidth
                                             id="title"
                                             label="Titulo"

@@ -194,15 +194,9 @@ function ReactMap() {
     const getEventos = async () => {
       try {
         const res = await axios.get("/api/publicitarios/getEventos");
-        let eventos = [];
-        for (let i = 0; i < res.data.length; i++) {
-          for (let j = 0; j < res.data[i].eventosCreados.length; j++) {
-            res.data[i].eventosCreados[j].publicitario = res.data[i].username;
-            eventos.push(res.data[i].eventosCreados[j]);
-          }
-        }
-        setPins(eventos);
-        setTotalPins(eventos);
+        console.log(res.data);
+        setPins(res.data);
+        setTotalPins(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -246,7 +240,6 @@ function ReactMap() {
   };
 
   const defaultValueForCurrentPlace = () => {
-    console.log("dada");
     setCurrentPlaceId(null);
   }
 

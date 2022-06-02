@@ -135,9 +135,8 @@ router.post("/crearEvento", async (req, res) => {
 });
 
 router.post("/actualizarEvento", async (req, res) => {
-    const datosPin = req.body[0];
-    const filter = req.body[1];
-    const name = req.body[2];
+    console.log(req.body);
+    /*
     try {
         const actualizar = await Publicitario.findOneAndUpdate({ "username": name, "eventosCreados.title": filter },
             {
@@ -165,14 +164,23 @@ router.post("/actualizarEvento", async (req, res) => {
         res.status(200).json(publi.eventosCreados[index]);
     } catch (err) {
         res.status(500).json(err);
-    }
+    }*/
 });
 
 //Obtener todos los pins del mapa
 router.get("/getEventos", async (req, res) => {
     try {
-        const pins = await Publicitario.find({});
-        res.status(200).json(pins);
+        const publicitarios = await Publicitario.find();
+        const fecha = new Date();
+        let eventos = [];
+        for (let i = 0; i < publicitarios.length; i++) {
+            for (let j = 0; j < publicitarios[i].eventosCreados.length; j++) {
+                if (publicitarios[i].eventosCreados[j].fechaFinalizacion > fecha) {
+                    eventos.push(publicitarios[i].eventosCreados[j]);
+                }
+            }
+        }
+        res.status(200).json(eventos);
     } catch (err) {
         res.status(500).json(err);
     }
