@@ -10,7 +10,7 @@ const uuid = require('uuid');
 
 //Middleware
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../../frontend/src/img'),
+    destination: path.join(__dirname, '../../frontend/public/img'),
     filename: (req, file, cb, filename) => {
         cb(null, uuid.v4() + path.extname(file.originalname));
     }

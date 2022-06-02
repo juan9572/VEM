@@ -6,49 +6,52 @@ import { Paper } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Imagen from '../../FondoProfile.jpg';
-import ImagenProfile from './vsco5c3ca40baab64.jpg';
+
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import useAuth from '../Auth/useAuth';
 
 export default function ProfielCliente() {
+    const ImagenProfile = "../../frontend/src/img"
     const navigate = useNavigate();
     const auth = useAuth();
     const { username } = useParams();
-    const [usuario,setUsuario] = useState({});
+    const [usuario, setUsuario] = useState({});
     const [cantidadSeguidos, setCantidad] = useState(0)
     useEffect(() => { //Toma todos los eventos que hay
-        if(username !== auth.user.username){
+        if (username !== auth.user.username) {
             navigate("*");
         }
-        const getData = async () =>{ 
-          try{
-            const name = {"username": username};
-            const res = await axios.post("/api/clientes/getCliente",name);
-            setUsuario({
-                "name":res.data.username,
-                "email":res.data.email,
-                "createdAt":res.data.createdAt.substring(0,10),
-                "age":res.data.age,
-                "seguidos": res.data.seguidos
-            });
-            setCantidad(usuario.seguidos.length);
-          }catch(err){
-            console.log(err);
-          }
+        const getData = async () => {
+            try {
+                const name = { "username": username };
+                const res = await axios.post("/api/clientes/getCliente", name);
+                setUsuario({
+                    "name": res.data.username,
+                    "email": res.data.email,
+                    "createdAt": res.data.createdAt.substring(0, 10),
+                    "age": res.data.age,
+                    "seguidos": res.data.seguidos,
+                    "imagePerfil": res.data.imagePerfil
+                });
+                setCantidad(usuario.seguidos.length);
+            } catch (err) {
+                console.log(err);
+            }
         }
         getData();
-      });
+    });
     const settings = {
         cycleNavigation: false,
         swipe: false,
         indicators: false,
         navButtonsAlwaysInvisible: true,
     };
+
     return (
         <div className="profile">
             <div className="profileRight">
@@ -97,14 +100,16 @@ export default function ProfielCliente() {
                                             <Typography sx={{ "&:hover": { color: "#347aeb" }, cursor: "pointer" }}>Seguidos</Typography>
                                         </Stack>
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        <Avatar
-                                            src={ImagenProfile}
-                                            sx={{ width: 140, height: 140, transform: 'translateY(-30%)', position: 'absolute' }}
-                                        />
-                                    </Grid>
+                                    {usuario.imagePerfil ? (
+                                        <Grid item xs={4}>
+                                            <Avatar
+                                                src={process.env.PUBLIC_URL + `/img/${auth.user.image}`}
+                                                sx={{ width: 140, height: 140, transform: 'translateY(-30%)', position: 'absolute' }}
+                                            />
+                                        </Grid>
+                                    ) : null}
                                     <Grid item mt={2} mr={14}>
-                                        <Button variant="contained" onClick={() => {navigate(`/Profile/${auth.user.username}/editProfile`)}}>Editar perfil</Button>
+                                        <Button variant="contained" onClick={() => { navigate(`/Profile/${auth.user.username}/editProfile`) }}>Editar perfil</Button>
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -134,7 +139,7 @@ export default function ProfielCliente() {
                             >
                                 <Grid container direction="row" justifyContent="center" alignItems="flex-start">
                                     <Typography mt={1} fontWeight="600" variant="h5">{usuario.name}</Typography>
-                                    {usuario.age !== -1 ?<Typography mt={1} fontWeight="0" variant="h5">, {usuario.age} años</Typography>:null}
+                                    {usuario.age !== -1 ? <Typography mt={1} fontWeight="0" variant="h5">, {usuario.age} años</Typography> : null}
                                 </Grid>
                                 <Grid item xs={2} textAlign="center">
                                     <Typography mt={6} fontWeight="0" variant="h6">Te uniste el día</Typography>

@@ -94,6 +94,11 @@ export default function ProfileClienteEdit() {
                         'Content-Type': `multipart/form-data; boundary=${form._boundary}`
                     }
                 });
+                auth.login({
+                    username: auth.user.username,
+                    rol: auth.user.rol,
+                    image: fi.data
+                })
                 setFilename(fi.data);
                 setImageChanged(false);
             }

@@ -8,7 +8,7 @@ const uuid = require('uuid');
 
 //Middleware
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../../frontend/src/img'),
+    destination: path.join(__dirname, '../../frontend/public/img'),
     filename: (req, file, cb, filename) => {
         cb(null, uuid.v4() + path.extname(file.originalname));
     }
@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('image'), async(req, res)=>{
     console.log(req.file);
-    console.log(req.body);
+    
     const cliente = await Cliente.findOneAndUpdate({"username": req.body.username}, {
         '$set': {
             'imagePerfil': req.file.filename
@@ -57,8 +57,9 @@ router.post('/register', upload.single('image') ,async(req,res)=>{
         });
         const cliente = await newCliente.save();
         const credentials_cliente = {
-            "username":"cliente.username",
-            "rol":"C"
+            "username":newCliente.username,
+            "rol":"C",
+            "image":""
         };
 
         const clientes = await Cliente.find().lean();
@@ -88,7 +89,8 @@ router.post('/login',async (req, res) => {
         //Devolver respuesta
         const credentials_cliente = {
             "username":cliente.username,
-            "rol":"C"
+            "rol":"C",
+            "image":cliente.imagePerfil?cliente.imagePerfil:""
         };
         res.status(200).json(credentials_cliente);
     }catch(err){
