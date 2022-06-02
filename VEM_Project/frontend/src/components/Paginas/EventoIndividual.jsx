@@ -21,7 +21,7 @@ import useAuth from '../Auth/useAuth';
 function EventoIndividual() {
   const { _id } = useParams()
   const auth = useAuth();
-  const [rating,setRating] = React.useState(0)
+  const [rating, setRating] = React.useState(0)
   const [event, setEvent] = React.useState({})
   const [value, setValue] = React.useState(0)
   const [mensaje, setMensaje] = React.useState("")
@@ -53,7 +53,17 @@ function EventoIndividual() {
   {
     img: Imagen,
     title: "cliente"
-  }
+  },
+  {
+    img: Imagen,
+    title: "Logo"
+  },{
+    img: Imagen,
+    title: "Logo"
+  },{
+    img: Imagen,
+    title: "Logo"
+  },
   ]
 
   const settings = {
@@ -78,7 +88,7 @@ function EventoIndividual() {
     }
     getComentarios();
   }, []);
-  
+
   return (
     <div>
       <Carousel
@@ -101,7 +111,7 @@ function EventoIndividual() {
           {<img style={{ display: 'none' }} src={Imagen} alt={"Error"} />}
           <Box
             sx={{
-              position: 'absolute',
+              position: 'relative',
               top: 0,
               bottom: 0,
               right: 0,
@@ -111,94 +121,112 @@ function EventoIndividual() {
           />
         </Paper>
       </Carousel>
-      <div className="card-container">
-        <div className="image-container">
-          <img src={Imagen} alt='' />
-        </div>
-        <div className="card-content">
-          <div className="card-items">
-            <h3>Nombre:</h3>
-            <p>{event.title}</p>
-          </div>
-          <div className="card-items">
-            <h3>Rating</h3>
-            <Rating name="read-only" value={rating} readOnly />
-          </div>
-          <div className="card-items">
-            <h3>Fecha finalización:</h3>
-            <p>{event.fechaFinalizacion}</p>
-          </div>
-          <div className="card-body">
-            <h3>Descripción:</h3>
-            <p>{event.description}</p>
-          </div>
-        </div>
-        <div className="btn">
-          <button className="loginBtn" type="submit">
-            Seguir a xxx
-          </button>
-          
-        </div>
-      </div>
-      <Grid imagenes>
-        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-          {itemData.map((item) => (
-            <ImageListItem key={item.img}>
-              <img
-                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                alt={item.title}
-                loading="lazy"
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
+      <Grid
+        container
+        spacing={2}
+        direction="row"
+        alignItems="left"
+        justifyContent="left"
+      >
+        <Grid container spacing={2}
+          mt={3}
+          pb={3}
+          direction="row"
+          alignItems="left"
+          justifyContent="center"
+          style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
+        >
+          <Grid item xs={3}>
+            <div className="card-container">
+              <div className="image-container">
+                <img src={Imagen} alt='' />
+              </div>
+              <div className="card-content">
+                <div className="card-items">
+                  <h3>Nombre:</h3>
+                  <p>{event.title}</p>
+                </div>
+                <div className="card-items">
+                  <h3>Rating</h3>
+                  <Rating name="read-only" value={rating} readOnly />
+                </div>
+                <div className="card-items">
+                  <h3>Fecha finalización:</h3>
+                  <p>{event.fechaFinalizacion}</p>
+                </div>
+                <div className="card-body">
+                  <h3>Descripción:</h3>
+                  <p>{event.description}</p>
+                </div>
+              </div>
+              <div className="btn">
+                <button className="loginBtn" type="submit">
+                  Seguir publicitario
+                </button>
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs = {3}>
+            <Grid item imagenes>
+              <ImageList sx={{ width: 500, height: 165 }} cols={3} rowHeight={165}>
+                {itemData.map((item) => (
+                  <ImageListItem key={item.img}>
+                    <img
+                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                      alt={item.title}
+                      loading="lazy"
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
 
+            </Grid>
+            <Grid item comentar width={500}>
+              <Box component="form" noValidate onSubmit={agregarComentario} sx={{ mt: 1, width: '100%' }}>
+                <TextField
+                  onChange={(e) => setMensaje(e.target.value)}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="mensaje"
+                  label="Que opinas?"
+                  name="mensaje"
+                  autoComplete="organization"
+                />
+                <Rating
+                  name="rating"
+                  value={parseInt(value)}
+                  onChange={(event, newvalue) => {
+                    setValue(newvalue);
+                  }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 5 }}
+                >
+                  Comentar
+                </Button>
+              </Box>
+            </Grid>
+            <Grid comentarios>
+              <h1>Comentarios</h1>
+              {comentarios.map((comentario) => (
+                <div class="comment mt-4 text-justify float-left" text->
+                  <h4>{comentario.username}</h4>
+                  <Rating name="read-only" value={comentario.rating} readOnly />
+                  <p>{comentario.mensaje}</p>
+                  <span>{comentario.createdAt.substring(0, 10)}</span>
+                  <br></br>
+                </div>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
-      <Grid comentar>
-        <Box component="form" noValidate onSubmit={agregarComentario} sx={{ mt: 1, width: '100%' }}>
-          <TextField
-            onChange={(e) => setMensaje(e.target.value)}
-            margin="normal"
-            required
-            fullWidth
-            id="mensaje"
-            label="Que opinas?"
-            name="mensaje"
-            autoComplete="organization"
-          />
-          <Rating
-            name="rating"
-            value={parseInt(value)}
-            onChange={(event, newvalue) => {
-              setValue(newvalue);
-            }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 5 }}
-          >
-            Comentar
-          </Button>
-        </Box>
-      </Grid>
-      <Grid comentarios>
-      <h1>Comments</h1>
-        {comentarios.map((comentario) => (
-          <div class="comment mt-4 text-justify float-left">
-          <h4>{comentario.username}</h4>
-          <Rating name="read-only" value={comentario.rating} readOnly />
-          <span>{comentario.createdAt}</span>
-          <br></br>
-          <p>{comentario.mensaje}</p>
-        </div>
-        ))}
-      </Grid>
-
     </div>
-
   );
 
 }

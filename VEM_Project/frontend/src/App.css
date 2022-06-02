@@ -75,3 +75,7 @@ input::placeholder, textarea::placeholder{
     top:10px;
     right:10px;
 }
+
+.comment-item{
+    font-size: large;
+}
