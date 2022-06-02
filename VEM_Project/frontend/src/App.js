@@ -22,6 +22,8 @@ import PrivateRouteP from './components/Paginas/PrivateRouteP';
 import WithNav from './components/Paginas/WithNavAndFooter';
 import Dashboard from './components/Navbar/Sidebar/Sidebar';
 import EditarEvento from './components/Paginas/EditarEvento';
+import CompartirEvento from './components/Paginas/CompartirEvento';
+import CompartirEventoEspecifico from './components/Paginas/CompartirEventoEspecifico';
 import EditarEventoEspecifico from './components/Paginas/EditarEventoEspecifico';
 
 function App() {
@@ -98,7 +100,10 @@ function App() {
             <Route path="/Dashboard/VerDatosEvento" element={<VerDatosEvento />} />
           </Route>
           <Route path="/Dashboard/CompartirEvento" element={<PrivateRouteP />}>
-            <Route path="/Dashboard/CompartirEvento" element={<VerDatosEvento />} />
+            <Route path="/Dashboard/CompartirEvento" element={<CompartirEvento />} />
+          </Route>
+          <Route path="/Dashboard/CompartirEvento/:nombreEvento" element={<PrivateRouteP />}>
+            <Route path="/Dashboard/CompartirEvento/:nombreEvento" element={<CompartirEventoEspecifico />} />
           </Route>
           
           <Route element={<WithNav />}> {/* Cambiar esto pa que funcione*/}
@@ -106,14 +111,6 @@ function App() {
               <Route path="/Profile/:username" element={<ProfielCliente />} />
             </Route>
           </Route>
-          {/*<Route path="/Dashboard-Estadisticas" element={null} />
-          <Route path="/CrearEventos" element={null} />
-          <Route path="/EditarEventos" element={null} />
-          <Route path="/BorrarEventos" element={null} />
-          <Route path="/CrearBannerEvento" element={null} />
-          <Route path="/EditarBannerEvento" element={null} />
-          <Route path="/EditarPerfil" element={null} />*/}
-          {/* Perfiles de publicitarios*/}
           {/* Fin de rutas accesibles por usuario con rol de publicitario  */}
           {/* Error 404 */}
           <Route path="*" element={<Page404 />} />

@@ -1,18 +1,15 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import Box from '@mui/material/Box';
 import { Paper } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import Imagen from '../../FondoProfile.jpg';
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import useAuth from '../Auth/useAuth';
-import { styled } from '@mui/material/styles';
 import { useForm, Controller } from "react-hook-form";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -22,7 +19,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 
 export default function ProfileClienteEdit() {
-    const ImagenProfile = "../../frontend/src/img/"
     const [file, setFile] = React.useState();
     const auth = useAuth();
     const [errorServidor, setErrorServidor] = React.useState(false);

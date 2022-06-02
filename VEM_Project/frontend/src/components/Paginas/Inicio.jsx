@@ -3,25 +3,30 @@ import Carousel from '../Carousel/reactCarousel';
 import Imagen from '../../17010.jpg';
 import Imagen2 from '../../ola-de-colores-6815.jpg';
 import MainSection from '../CardSection';
-const banners = [
-  {
-    titulo: "Lear Music Reader",
-    descripcion: "A PDF Reader specially designed for musicians.",
-    fecha: "2022-02-02",
-    lugar: "Medellin",
-    image: Imagen,
-    linkEvento: 'EventosFinalizados'
-  },
-  {
-    titulo: "Viernes de descuentos",
-    descripcion: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod hendrerit neque quis dapibus. Proin ultricies est eget fringilla efficitur. Aliquam mattis felis vel mi aliquet placerat. Quisque velit turpis, gravida vitae mi nec, fringilla tempus sem. Sed congue pretium imperdiet. Etiam sapien leo, vestibulum nec erat a, iaculis dapibus orci.",
-    fecha: "2022-04-04",
-    lugar: "Bogota xd",
-    image: Imagen2,
-    linkEvento: 'EventosFinalizados'
-  },
-];
+import axios from 'axios';
+
 function Inicio() {
+  const [banners,setBanners] = React.useState([]);
+  React.useEffect(() => { //Toma todos los eventos que hay
+    const getData = async () => {
+        try {
+            const banner = await axios.get("/api/publicitarios/getBanners");
+            let eventos = [];
+            banner.data.forEach(evento => eventos.push({
+              titulo:evento.title,
+              descripcion:evento.description,
+              fecha:evento.fechaInicio.substring(0, 10),
+              lugar:evento.sitio,
+              image:process.env.PUBLIC_URL +`/img/${evento.imgBanner}`,
+              linkEvento: `EventosFinalizados/${evento.title}`
+            }));
+            setBanners(eventos);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    getData();
+});
   return (
     <div>
       <Carousel banners={banners} />

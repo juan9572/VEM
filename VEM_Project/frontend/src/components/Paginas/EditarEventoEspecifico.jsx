@@ -93,19 +93,19 @@ export default function PlantillaEvento() {
         }
     ];
 
-    const [evento,setEvento] = React.useState({});
+    const [evento, setEvento] = React.useState({});
     const [title, setTitle] = React.useState(null);
     const [description, setDescription] = React.useState(null);
     const [category, setCategory] = React.useState(null);
-    const [latitude,setLatitude] = React.useState(null);
-    const [long,setLong] = React.useState(null);
-    const [link,setLink] = React.useState(null);
+    const [latitude, setLatitude] = React.useState(null);
+    const [long, setLong] = React.useState(null);
+    const [link, setLink] = React.useState(null);
 
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const getData = async () => {
             try {
-                const info = { "id": nombreEvento, "username":auth.user.username };
+                const info = { "id": nombreEvento, "username": auth.user.username };
                 const data = await axios.post("/api/publicitarios/getEventoEspecifico", info);
                 setEvento(data.data);
                 setTitle(evento.title);
@@ -113,11 +113,13 @@ export default function PlantillaEvento() {
                 setCategory(evento.category);
                 setLatitude(evento.latitude);
                 setLong(evento.long);
-                if(long && latitude){
-                    sacarCordenadas({lngLat:{
-                        lng:long,
-                        lat:latitude
-                    }});
+                if (long && latitude) {
+                    sacarCordenadas({
+                        lngLat: {
+                            lng: long,
+                            lat: latitude
+                        }
+                    });
                 }
                 setLink(evento.link);
             } catch (err) {
@@ -129,7 +131,7 @@ export default function PlantillaEvento() {
 
     const actualizarEvento = async (data) => {
         console.log(data);
-        const evento = {
+        const eventoC = {
             name: auth.user.username,
             title: data.title,
             description: data.description,
@@ -137,15 +139,15 @@ export default function PlantillaEvento() {
             latitude: newPlace.lat,
             long: newPlace.long,
         };
-        if(fecha){
-            evento.fechaInicio = fecha[0].startDate;
-            evento.fechaFinalizacion = fecha[0].endDate;
+        if (fecha) {
+            eventoC.fechaInicio = fecha[0].startDate;
+            eventoC.fechaFinalizacion = fecha[0].endDate;
         }
         if (data.link) {
-            evento.link = data.link;
+            eventoC.link = data.link;
         }
         try {
-            const resEvento = await axios.post("/api/publicitarios/actualizarEvento", evento); //Se llama a la Api para que los guarde
+            const resEvento = await axios.post("/api/publicitarios/actualizarEvento", eventoC); //Se llama a la Api para que los guarde
             //navigate("/Dashboard");
         } catch (err) {
             console.log(err);
@@ -296,7 +298,7 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item xs={3}>
-                            {title?<Controller
+                                {title ? <Controller
                                     control={control}
                                     name="title"
                                     rules={
@@ -326,10 +328,10 @@ export default function PlantillaEvento() {
                                             helperText={error ? formState.errors.title.message : null}
                                         />
                                     )}
-                                />:null}
+                                /> : null}
                             </Grid>
                             <Grid item xs={6}>
-                            {description?<Controller
+                                {description ? <Controller
                                     control={control}
                                     name="description"
                                     rules={
@@ -359,7 +361,7 @@ export default function PlantillaEvento() {
                                             helperText={error ? formState.errors.description.message : null}
                                         />
                                     )}
-                                />:null}
+                                /> : null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -371,40 +373,40 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item>
-                            {category? 
-                                <FormControl>
-                                    <FormLabel id="demo-row-radio-buttons-group-label" required style={{ fontSize: 25, margin: "auto" }}>Categoria</FormLabel>
-                                    <Controller
-                                        control={control}
-                                        name="category"
-                                        rules={
-                                            {
-                                                required: { value: true },
+                                {category ?
+                                    <FormControl>
+                                        <FormLabel id="demo-row-radio-buttons-group-label" required style={{ fontSize: 25, margin: "auto" }}>Categoria</FormLabel>
+                                        <Controller
+                                            control={control}
+                                            name="category"
+                                            rules={
+                                                {
+                                                    required: { value: true },
 
-                                            }}
-                                        render={({
-                                            field: { onChange, onBlur, value, ref },
-                                            fieldState: { error },
-                                            formState,
-                                        }) => (
-                                            < RadioGroup
-                                                row
-                                                value={value}
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                                defaultValue={category}
-                                                aria-labelledby="demo-row-radio-buttons-group-label"
-                                                name="row-radio-buttons-group"
-                                            >
-                                                <FormControlLabel value="Deportes" control={<Radio icon={<SportsVolleyballOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<SportsVolleyballIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Deportes" />
-                                                <FormControlLabel value="Gastronomia" control={<Radio icon={<FoodBankOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<FoodBankIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Gastronomia" />
-                                                <FormControlLabel value="Mascotas" control={<Radio icon={<PetsIcon sx={{ fontSize: 70 }} />} checkedIcon={<PetsIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Mascotas" />
-                                                <FormControlLabel value="Arte y cultura" control={<Radio icon={<TheaterComedyOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<TheaterComedyIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Arte y cultura" />
-                                            </RadioGroup>
-                                        )}
-                                    />
-                                </FormControl>
-                                :null}
+                                                }}
+                                            render={({
+                                                field: { onChange, onBlur, value, ref },
+                                                fieldState: { error },
+                                                formState,
+                                            }) => (
+                                                < RadioGroup
+                                                    row
+                                                    value={value}
+                                                    onBlur={onBlur}
+                                                    onChange={onChange}
+                                                    defaultValue={category}
+                                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                                    name="row-radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="Deportes" control={<Radio icon={<SportsVolleyballOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<SportsVolleyballIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Deportes" />
+                                                    <FormControlLabel value="Gastronomia" control={<Radio icon={<FoodBankOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<FoodBankIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Gastronomia" />
+                                                    <FormControlLabel value="Mascotas" control={<Radio icon={<PetsIcon sx={{ fontSize: 70 }} />} checkedIcon={<PetsIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Mascotas" />
+                                                    <FormControlLabel value="Arte y cultura" control={<Radio icon={<TheaterComedyOutlinedIcon sx={{ fontSize: 70 }} />} checkedIcon={<TheaterComedyIcon sx={{ fontSize: 70 }} />} />} labelPlacement="bottom" label="Arte y cultura" />
+                                                </RadioGroup>
+                                            )}
+                                        />
+                                    </FormControl>
+                                    : null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -417,7 +419,7 @@ export default function PlantillaEvento() {
                         >
                             <Grid item>
                                 <Typography variant="h5">Selecciona el lugar del evento *</Typography>
-                                {long&&latitude?<Map
+                                {long && latitude ? <Map
                                     ref={mapRef}
                                     {...viewState}
                                     onMove={evt => setViewState(evt.viewState)}
@@ -446,7 +448,7 @@ export default function PlantillaEvento() {
                                             closeButton={true}
                                         />
                                     )}
-                                </Map>:null}
+                                </Map> : null}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}
@@ -458,7 +460,7 @@ export default function PlantillaEvento() {
                             style={{ border: '1px solid #D9F1FF', backgroundColor: "#F7FCFF" }}
                         >
                             <Grid item xs={8}>
-                            {link?<Controller
+                                {link ? <Controller
                                     control={control}
                                     name="link"
                                     rules={
@@ -484,7 +486,7 @@ export default function PlantillaEvento() {
                                         />
                                     )}
                                 />
-                            :null}
+                                    : null}
                             </Grid>
                             <Grid container spacing={2}
                                 mt={3}

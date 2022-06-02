@@ -18,6 +18,21 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+router.post('/upload', upload.single('image'), async (req, res) => {
+    const id = new ObjectId(req.body.id);
+    const actualizar = await Publicitario.findOneAndUpdate({ "username": req.body.username, "eventosCreados._id": id },
+    {
+        '$set': {
+            'eventosCreados.$.sitio': req.body.sitio,
+            'eventosCreados.$.imgBanner': req.file.filename,
+        }
+    });
+    await actualizar.save();
+    const publicitarios = await Publicitario.find().lean();
+    fs.writeFileSync('./database/collections/VEM_BD_Publicitarios_Backup_Collection.json', JSON.stringify(publicitarios));
+    res.status(200).json("Ok");
+});
+
 // Registrar publicitario
 router.post('/register', async (req, res) => {
     try {
@@ -95,11 +110,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/upload', upload.single('image'), async (req, res) => {
-    console.log(req.body);
-    res.status(200).json("Melo");
-});
-
 //Creación de un PIN
 router.post("/crearEvento", async (req, res) => {
     const name = req.body.name;
@@ -165,6 +175,23 @@ router.post("/actualizarEvento", async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }*/
+});
+
+router.get("/getBanners", async (req, res) => {
+    try {
+        const publicitarios = await Publicitario.find();
+        let eventos = [];
+        for (let i = 0; i < publicitarios.length; i++) {
+            for (let j = 0; j < publicitarios[i].eventosCreados.length; j++) {
+                if (publicitarios[i].eventosCreados[j].imgBanner) {
+                    eventos.push(publicitarios[i].eventosCreados[j]);
+                }
+            }
+        }
+        res.status(200).json(eventos);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 //Obtener todos los pins del mapa

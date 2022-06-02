@@ -17,8 +17,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/upload', upload.single('image'), async(req, res)=>{
-    console.log(req.file);
-    
     const cliente = await Cliente.findOneAndUpdate({"username": req.body.username}, {
         '$set': {
             'imagePerfil': req.file.filename
